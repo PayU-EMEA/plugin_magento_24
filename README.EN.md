@@ -53,7 +53,7 @@ The module adds two payment methods:
 ## Installation
 
 #### Using Composer
-`composer require payu/magento23-payment-gateway`
+`composer require payu/magento24-payment-gateway`
 
 #### By copying files to a server
 1. Download the latest version of the module from the [GitHub repository][ext4]

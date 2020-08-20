@@ -4,26 +4,24 @@
         <policy id="connect-src">
             <values>
                 <value id="payu" type="host">secure.payu.com</value>
+                <value id="payu-sandbox" type="host">merch-prod.snd.payu.com</value>
             </values>
         </policy>
         <policy id="script-src">
             <values>
                 <value id="payu" type="host">secure.payu.com</value>
+                <value id="payu-sandbox" type="host">secure.snd.payu.com</value>
             </values>
         </policy>
         <policy id="img-src">
             <values>
-                <value id="payu" type="host">secure.payu.com</value>
-            </values>
-        </policy>
-        <policy id="form-action">
-            <values>
-                <value id="payu" type="host">secure.payu.com</value>
+                <value id="payu-static" type="host">static.payu.com</value>
             </values>
         </policy>
         <policy id="frame-src">
             <values>
                 <value id="payu" type="host">secure.payu.com</value>
+                <value id="payu-sandbox" type="host">merch-prod.snd.payu.com</value>
             </values>
         </policy>
     </policies>
