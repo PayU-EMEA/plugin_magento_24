@@ -16,12 +16,9 @@
         "AFL-3.0"
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.3",
         "ext-json": "*",
-        "magento/framework": "102.0.*",
-        "magento/module-sales": "102.0.*",
-        "magento/module-checkout": "100.3.*",
-        "magento/module-payment": "100.3.*"
+        "magento/module-sales": "103.0.*"
     },
     "autoload": {
         "files": [
