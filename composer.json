@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": ">=7.3",
+        "ext-json": "*",
         "magento/module-sales": "103.0.*"
     },
     "autoload": {
