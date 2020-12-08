@@ -1,3 +1,6 @@
+## 1.0.2
+ * Remove Apple Pay when not available
+
 ## 1.0.1
  * Fix create refund and invoice from admin
 
