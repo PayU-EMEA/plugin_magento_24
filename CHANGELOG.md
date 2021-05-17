@@ -1,3 +1,7 @@
+## 1.0.3
+ * Fix doubles PENDING status
+ * Set correct state
+
 ## 1.0.2
  * Remove Apple Pay when not available
 
