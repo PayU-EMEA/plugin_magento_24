@@ -14,11 +14,11 @@ interface PayURefundOrderInterface
      * @param int $orderId
      * @param string $type
      * @param string $description
-     * @param int|null $amount
+     * @param float $amount
      *
      * @return array
      * @throws \OpenPayU_Exception
      * @throws \OpenPayU_Exception_Network
      */
-    public function execute($orderId, $type, $description = '', $amount = null);
+    public function execute($orderId, $type, $description, $amount);
 }

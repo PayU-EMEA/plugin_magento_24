@@ -31,7 +31,7 @@ class RefundRequest extends AbstractRequest implements BuilderInterface
             'TXN_ID' => $this->getTxnId(),
             'paymentCode' => $this->payment->getMethodInstance()->getCode(),
             'description' => $this->getLastCreditMemoComment(),
-            static::BUILD_SUBJECT_AMOUNT => $buildSubject[static::BUILD_SUBJECT_AMOUNT] * 100
+            static::BUILD_SUBJECT_AMOUNT => $buildSubject[static::BUILD_SUBJECT_AMOUNT]
         ];
     }
 

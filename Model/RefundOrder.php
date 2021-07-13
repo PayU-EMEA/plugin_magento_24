@@ -66,7 +66,7 @@ class RefundOrder implements PayURefundOrderInterface
     /**
      * {@inheritdoc}
      */
-    public function execute($orderId, $type, $description = '', $amount = null)
+    public function execute($orderId, $type, $description, $amount)
     {
         if (empty($orderId)) {
             return [];
@@ -89,7 +89,7 @@ class RefundOrder implements PayURefundOrderInterface
 
         $this->payUConfig->setDefaultConfig($type, $storeId);
         $payURefund = $this->openPayURefund;
-        $response = $payURefund::create($orderId, $description, $amount);
+        $response = $payURefund::create($orderId, $description, number_format($amount * 100, 0 ,'.', ''));
 
         return ['status' => $response->getStatus()];
     }
