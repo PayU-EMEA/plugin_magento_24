@@ -156,7 +156,7 @@ class PaymentMethods extends Template
         $this->gatewayConfig->setMethodCode(ConfigProvider::CODE);
         if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId) &&
             !(bool)$this->payUConfig->isCrediCardCurrencyRates()) {
-            return json_encode([]);
+            return "";
         }
 
         return json_encode(
@@ -183,7 +183,7 @@ class PaymentMethods extends Template
         $storeId = $this->_storeManager->getStore()->getId();
         $this->gatewayConfig->setMethodCode(CardConfigProvider::CODE);
         if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId)) {
-            return json_encode([]);
+            return "";
         }
 
         $userPayMethods = $this->getUserStoredCards();
