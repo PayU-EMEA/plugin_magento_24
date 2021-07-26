@@ -71,7 +71,7 @@
 "An unexpected error occurred. Please check your card details and try again.","Wystąpił nieoczekiwany błąd. Sprawdź dane karty i spróbuj ponownie."
 "Thank you for your order from %store_name.","Dziękujemy za zamówienie z %store_name."
 "Once your package ships we will send you a tracking number.", "W momencie wysyłki zamówienia zostaniesz poinformowany o numerze przesyłki"
-"You can repay this order by <a href=""%repay_url"">this link</a>.","Zamówienie możesz opłacić <a href=""%repay_url"">pod tym linkiem</a>."
+"If you have not yet paid for the order, you can do so by going to <a href=""%repay_url"">this link</a>.","Jeżeli jeszcze nie opłaciłeś zamówienia możesz to zrobić <a href=""%repay_url"">pod tym linkiem</a>."
 "You can check the status of your order by <a href=""%account_url"">logging into your account</a>.","Możesz sprawdzić status swojego zamówienia <a href=""%account_url"">logując się na swoje konto</a>."
 "If you have questions about your order, you can email us at <a href=""mailto:%store_email"">%store_email</a>","Jeśli masz pytania odnośnie zamówienia, możesz wysłać maila na adres <a href=""mailto:%store_email"">%store_email</a>"
 "or call us at <a href=""tel:%store_phone"">%store_phone</a>","lub zadzwoń <a href=""tel:%store_phone"">%store_phone</a>"
