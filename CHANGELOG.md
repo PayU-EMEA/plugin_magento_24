@@ -1,3 +1,8 @@
+## 1.0.4
+ * Fix #5 - Impossible create order when repay is enabled
+ * Fix #8 - wrong amount in refund
+ * Update PayU SDK
+
 ## 1.0.3
  * Fix doubles PENDING status
  * Set correct state
