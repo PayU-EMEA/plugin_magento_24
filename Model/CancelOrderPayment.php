@@ -3,6 +3,7 @@
 namespace PayU\PaymentGateway\Model;
 
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\SalesRule\Model\Coupon\UpdateCouponUsages;
 use PayU\PaymentGateway\Api\CancelOrderPaymentInterface;
 use PayU\PaymentGateway\Api\OrderPaymentResolverInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -49,6 +50,11 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
     private $payUConfig;
 
     /**
+     * @var UpdateCouponUsages
+     */
+    private $updateCouponUsages;
+
+    /**
      * CancelOrderPayment constructor.
      *
      * @param OrderRepositoryInterface $orderRepository
@@ -56,6 +62,7 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param TransactionRepositoryInterface $transactionRepository
      * @param Transaction $transaction
+     * @param UpdateCouponUsages $updateCouponUsages
      * @param PayUConfigInterface $payUConfig
      */
     public function __construct(
@@ -64,6 +71,7 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
         SearchCriteriaBuilder $searchCriteriaBuilder,
         TransactionRepositoryInterface $transactionRepository,
         Transaction $transaction,
+        UpdateCouponUsages $updateCouponUsages,
         PayUConfigInterface $payUConfig
     ) {
         $this->orderRepository = $orderRepository;
@@ -71,6 +79,7 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->transactionRepository = $transactionRepository;
         $this->transaction = $transaction;
+        $this->updateCouponUsages = $updateCouponUsages;
         $this->payUConfig = $payUConfig;
     }
 
@@ -87,6 +96,7 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
                 !$this->payUConfig->isRepaymentActive($payment->getMethod())) {
                 $order->cancel();
                 $this->orderRepository->save($order);
+                $this->updateCouponUsages->execute($order, false);
             }
         }
     }
