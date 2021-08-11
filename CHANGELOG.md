@@ -1,3 +1,7 @@
+## 1.0.5
+* Fix #10 - Restore Coupon Code after Order Cancellation
+* Fix #12 - Hide "My Stored Cards" when Payu Cards is not active
+
 ## 1.0.4
  * Fix #5 - Impossible create order when repay is enabled
  * Fix #8 - wrong amount in refund
