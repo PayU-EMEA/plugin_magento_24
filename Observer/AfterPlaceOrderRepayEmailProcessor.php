@@ -74,13 +74,12 @@ class AfterPlaceOrderRepayEmailProcessor
     /**
      * Send Repay Email
      *
-     * @param Payment $payment
+     * @param Order $order
      *
      * @return void
      */
-    public function process(Payment $payment)
+    public function process(Order $order)
     {
-        $order = $payment->getOrder();
         $store = $order->getStore();
         $emailTempVariables = [
             'repay_url' => $this->urlBuilder->getUrl(

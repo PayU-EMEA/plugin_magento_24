@@ -11,30 +11,33 @@ use PayU\PaymentGateway\Model\Ui\ConfigProvider;
 use Magento\Sales\Model\Order\Payment;
 
 /**
- * Class AfterPlaceOrderObserver
+ * Class RepaymentEmailObserver
  * @package PayU\PaymentGateway\Observer
  */
-class AfterPlaceOrderObserver implements ObserverInterface
+class RepaymentEmailObserver implements ObserverInterface
 {
-    /**
-     * Status pending
-     */
-    const STATUS_PENDING = 'pending';
-
     /**
      * @var PayUConfigInterface
      */
     private $payUConfig;
 
     /**
+     * @var AfterPlaceOrderRepayEmailProcessor
+     */
+    private $emailProcessor;
+
+    /**
      * StatusAssignObserver constructor.
      *
      * @param PayUConfigInterface $payUConfig
+     * @param AfterPlaceOrderRepayEmailProcessor $emailProcessor
      */
     public function __construct(
-        PayUConfigInterface $payUConfig
+        PayUConfigInterface $payUConfig,
+        AfterPlaceOrderRepayEmailProcessor $emailProcessor
     ) {
         $this->payUConfig = $payUConfig;
+        $this->emailProcessor = $emailProcessor;
     }
 
     /**
@@ -42,23 +45,14 @@ class AfterPlaceOrderObserver implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        /** @var Payment $payment */
-        $payment = $observer->getData('payment');
-        $method = $payment->getMethod();
+        /** @var Order $order */
+        $order = $observer->getData('order');
+        $method = $order->getPayment()->getMethod();
         if ($method !== CardConfigProvider::CODE && $method !== ConfigProvider::CODE) {
             return;
         }
-        $this->assignStatus($payment);
-    }
-
-    /**
-     * @param Payment $payment
-     *
-     * @return void
-     */
-    private function assignStatus(Payment $payment)
-    {
-        $order = $payment->getOrder();
-        $order->setState(Order::STATE_NEW)->setStatus(static::STATUS_PENDING);
+        if ($this->payUConfig->isRepaymentActive($method)) {
+            $this->emailProcessor->process($order);
+        }
     }
 }
