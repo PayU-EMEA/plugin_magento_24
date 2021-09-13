@@ -1,3 +1,6 @@
+## 1.0.6
+* Fix #14 - Link to repayment in email was incorrect
+
 ## 1.0.5
 * Fix #10 - Restore Coupon Code after Order Cancellation
 * Fix #12 - Hide "My Stored Cards" when Payu Cards is not active
