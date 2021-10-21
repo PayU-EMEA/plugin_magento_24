@@ -177,13 +177,20 @@ class CreateOrderResolver implements CreateOrderResolverInterface
     private function getBuyer()
     {
         $address = $this->order->getShippingAddress();
-        if ($address === null) {
-            $result[static::BUYER_EMAIL] = $this->customerSession->getCustomer()->getEmail();
-        } else {
-            $result[static::BUYER_EMAIL] = $address->getEmail();
+        $billingAddress = $this->order->getBillingAddress();
+
+        $result[static::BUYER_EMAIL] = $address === null
+            ? $this->customerSession->getCustomer()->getEmail()
+            : $address->getEmail();
+
+        if ($billingAddress !== null) {
+            $result['firstName'] = $billingAddress->getFirstname();
+            $result['lastName'] = $billingAddress->getLastname();
+        } elseif ($address !== null) {
             $result['firstName'] = $address->getFirstname();
             $result['lastName'] = $address->getLastname();
         }
+
         $result['extCustomerId'] = $this->order->getCustomerId();
         $result['language'] = $this->availableLocale->execute();
 
