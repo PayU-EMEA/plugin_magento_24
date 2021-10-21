@@ -34,7 +34,7 @@
 "Payment does not exist","Płatność nie istnieje"
 "Payment could not be captured","Płatność nie może być przechwycona."
 "Shipping address should be provided","Wymagany adres dostawy"
-"Order %1 from store %2","Zamówienie %1 ze sklepu %2"
+Order %1 [%2],Zamówienie %1 [%2]
 "Authorized amount of %1. Transaction ID: ""%2""","Autoryzowana ilość %1. ID transakcji: ""%2"""
 "Action ""%1"" is not supported.","Akcja ""%1"" nie jest wspierana"
 "We can\'t update the payment right now.","Nie można obecnie zaktualizować płatności."

@@ -168,7 +168,9 @@ class CreateOrderResolver implements CreateOrderResolverInterface
      */
     private function getOrderDescription()
     {
-        return __('Order %1 from store %2', $this->order->getOrderIncrementId(), $this->urlBuilder->getBaseUrl());
+        $shopUrl = str_replace('www.', '', parse_url($this->urlBuilder->getBaseUrl(), PHP_URL_HOST));
+
+        return __('Order %1 [%2]', $this->order->getOrderIncrementId(), $shopUrl);
     }
 
     /**
