@@ -1,3 +1,7 @@
+## 1.0.7
+* Get customer data from billing address
+* Fix #15 - Shorter order description
+
 ## 1.0.6
 * Fix #14 - Link to repayment in email was incorrect
 
