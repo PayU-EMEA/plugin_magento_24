@@ -1,3 +1,7 @@
+## 1.0.8
+* Update PayU SDK
+* Get customer IP from request
+
 ## 1.0.7
 * Get customer data from billing address
 * Fix #15 - Shorter order description
