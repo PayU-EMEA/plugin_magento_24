@@ -131,7 +131,7 @@ class CreateOrderResolver implements CreateOrderResolverInterface
         $paymentData = [
             'txn_type' => 'A',
             'description' => $this->getOrderDescription(),
-            'customerIp' => $this->http->getClientIp(),
+            'customerIp' => $this->getIp(),
             'extOrderId' => $this->getExtOrderId(),
             'totalAmount' => $this->getFormatAmount($this->order->getGrandTotalAmount()),
             'currencyCode' => $this->order->getCurrencyCode(),
@@ -287,5 +287,15 @@ class CreateOrderResolver implements CreateOrderResolverInterface
             'mcpFxTableId' => $rates->id,
             'mcpPartnerId' => $this->payUConfig->getMultiCurrencyPricingPartnerId()
         ];
+    }
+
+    /**
+     * @return string
+     */
+    private function getIp()
+    {
+        $ip = explode(',', trim($this->http->getClientIp()));
+
+        return filter_var($ip[0], FILTER_VALIDATE_IP) ? $ip[0] : '127.0.0.1';
     }
 }
