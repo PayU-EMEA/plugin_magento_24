@@ -1,3 +1,6 @@
+## 1.0.9
+* Fix #16 - Customer IP
+
 ## 1.0.8
 * Update PayU SDK
 * Get customer IP from request
