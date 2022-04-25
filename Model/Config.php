@@ -159,7 +159,7 @@ class Config implements PayUConfigInterface
             str_replace(
                 ' ',
                 '',
-                $this->gatewayConfig->getValue('main_parameters/payment_methods_order', $this->storeId)
+                $this->gatewayConfig->getValue('main_parameters/payment_methods_order', $this->storeId) ?? ''
             )
         );
     }
