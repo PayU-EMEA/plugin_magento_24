@@ -2,6 +2,7 @@
 
 namespace PayU\PaymentGateway\Model;
 
+use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Sales\Api\OrderPaymentRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use PayU\PaymentGateway\Api\OrderPaymentResolverInterface;
@@ -89,6 +90,9 @@ class WaitingOrderPayment implements WaitingOrderPaymentInterface
     public function execute($txnId, $payUStatus)
     {
         $payment = $this->paymentResolver->getByTransactionTxnId($txnId);
+        if ($payment === null) {
+            throw new CommandException(__('Payment does not exist'));
+        }
         if ($this->payUConfig->isRepaymentActive($payment->getMethod())) {
             $this->processWithRepayment($payment, $payUStatus);
         } else {

@@ -2,6 +2,7 @@
 
 namespace PayU\PaymentGateway\Model;
 
+use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\SalesRule\Model\Coupon\UpdateCouponUsages;
 use PayU\PaymentGateway\Api\CancelOrderPaymentInterface;
@@ -89,6 +90,9 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
     public function execute($txnId, $amount)
     {
         $payment = $this->orderPaymentResolver->getByTransactionTxnId($txnId);
+        if ($payment === null) {
+            throw new CommandException(__('Payment does not exist'));
+        }
         $order = $payment->getOrder();
         if ($order->canCancel() && $amount == $payment->getAmountAuthorized()) {
             $this->closeTransactions($order->getEntityId(), $payment->getEntityId());

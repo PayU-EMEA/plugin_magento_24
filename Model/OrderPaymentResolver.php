@@ -71,8 +71,13 @@ class OrderPaymentResolver implements OrderPaymentResolverInterface
         $searchCriteria = $this->searchCriteriaBuilder->addFilter('txn_id', $txnId, 'eq')->create();
         $transactionList = $this->transactionRepository->getList($searchCriteria)->getItems();
         reset($transactionList);
-        /** @var \Magento\Sales\Api\Data\TransactionInterface $transaction */
+        /** @var \Magento\Sales\Api\Data\TransactionInterface | false $transaction */
         $transaction = current($transactionList);
+
+        if ($transaction === false) {
+            return null;
+        }
+
         /** @var Payment $payment */
         $payment = $this->paymentRepository->get($transaction->getPaymentId());
         $payment->setData('is_active', !$transaction->getIsClosed());

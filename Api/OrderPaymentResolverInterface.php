@@ -24,7 +24,7 @@ interface OrderPaymentResolverInterface
     /**
      * @param string $txnId
      *
-     * @return Payment
+     * @return Payment | null
      */
     public function getByTransactionTxnId($txnId);
 }
