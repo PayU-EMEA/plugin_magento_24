@@ -1,3 +1,7 @@
+## 1.0.10
+* Fix #21
+* Better handling errors in notifications
+
 ## 1.0.9
 * Fix #16 - Customer IP
 
