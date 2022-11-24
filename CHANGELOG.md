@@ -1,3 +1,6 @@
+## 1.0.11
+* Licence updated
+
 ## 1.0.10
 * Fix #21
 * Better handling errors in notifications
