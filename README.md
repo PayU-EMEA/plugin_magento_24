@@ -1,7 +1,6 @@
 [**English version**][ext8]
 
 # Moduł PayU dla Magento 2 w wersji 2.4
-``Moduł jest wydawany na licencji GPL.``
 
 **Jeżeli masz jakiekolwiek pytania lub chcesz zgłosić błąd zapraszamy do kontaktu z naszym wsparciem pod adresem: tech@payu.pl.**
 
