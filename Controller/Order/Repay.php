@@ -90,11 +90,12 @@ class Repay extends Action
         $method = strip_tags(trim($this->getRequest()->getParam('method', '')));
         $payUMethod = strip_tags(trim($this->getRequest()->getParam('payu_method', '')));
         $payUMethodType = strip_tags(trim($this->getRequest()->getParam('payu_method_type', '')));
+        $payuBrowser = $this->getRequest()->getParam('payu_browser', []);
         if ($orderId === null) {
             $returnData[static::ERROR_FIELD] = __('Wrong Request');
         }
         try {
-            $returnData = $this->repayOrderResolver->resolve($orderId, $method, $payUMethodType, $payUMethod);
+            $returnData = $this->repayOrderResolver->resolve($orderId, $method, $payUMethodType, $payUMethod, $payuBrowser);
         } catch (NoSuchEntityException $exception) {
             $this->logger->critical($exception->getMessage());
             $returnData[static::ERROR_FIELD] = __(static::ERROR_MESASGE);

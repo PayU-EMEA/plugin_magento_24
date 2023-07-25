@@ -39,11 +39,6 @@ interface PayUConfigInterface
     const ENVIRONMENT_SECURE = 'secure';
 
     /**
-     * Grant type code
-     */
-    const GRANT_TYPE_GRANT_TYPE = 'grant_type';
-
-    /**
      * Client Credentials code
      */
     const GRANT_TYPE_CLIENT_CREDENTIALS = 'client_credentials';
@@ -77,6 +72,28 @@ interface PayUConfigInterface
      * Pay by card code
      */
     const PAYU_CC_TRANSFER_KEY = 'CARD_TOKEN';
+
+    /**
+     * Browser data
+     */
+    const PAYU_BROWSER_PREFIX = 'payu_browser_';
+    const PAYU_BROWSER_SCREEN_WIDTH = 'screenWidth';
+    const PAYU_BROWSER_JAVA_ENABLED = 'javaEnabled';
+    const PAYU_BROWSER_TIMEZONE_OFFSET = 'timezoneOffset';
+    const PAYU_BROWSER_SCREEN_HEIGHT = 'screenHeight';
+    const PAYU_BROWSER_USER_AGENT = 'userAgent';
+    const PAYU_BROWSER_COLOR_DEPTH = 'colorDepth';
+    const PAYU_BROWSER_LANGUAGE = 'language';
+
+    const PAYU_BROWSER = [
+        self::PAYU_BROWSER_SCREEN_WIDTH,
+        self::PAYU_BROWSER_JAVA_ENABLED,
+        self::PAYU_BROWSER_TIMEZONE_OFFSET,
+        self::PAYU_BROWSER_SCREEN_HEIGHT,
+        self::PAYU_BROWSER_USER_AGENT,
+        self::PAYU_BROWSER_COLOR_DEPTH,
+        self::PAYU_BROWSER_LANGUAGE,
+    ];
 
     /**
      * Get cache config

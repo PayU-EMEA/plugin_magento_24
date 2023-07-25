@@ -63,7 +63,7 @@ class RepayOrder implements PayURepayOrderInterface
     /**
      * {@inheritdoc}
      */
-    public function execute(OrderInterface $order, $method, $payUMethodType, $payUMethod, $transactionId)
+    public function execute(OrderInterface $order, $method, $payUMethodType, $payUMethod, $payuBrowser, $transactionId)
     {
         /** @var Payment $payment */
         $payment = $order->getPayment();
@@ -73,6 +73,7 @@ class RepayOrder implements PayURepayOrderInterface
             $method,
             $payUMethod,
             $payUMethodType,
+            $payuBrowser,
             $transactionId
         );
         $this->addPaymentToOrder($order, $payment, $transactionId);
@@ -125,11 +126,12 @@ class RepayOrder implements PayURepayOrderInterface
      * @param string $method
      * @param string $payUMethod
      * @param string $payUMethodType
+     * @param array $payuBrowser
      * @param string $transactionId
      *
      * @return OrderPaymentInterface|Payment
      */
-    private function makeNewPayment(Payment $payment, $orderId, $method, $payUMethod, $payUMethodType, $transactionId)
+    private function makeNewPayment(Payment $payment, $orderId, $method, $payUMethod, $payUMethodType, $payuBrowser, $transactionId)
     {
         /** @var Payment $newPayment */
         $newPayment = $this->paymentRepository->create();
@@ -144,6 +146,7 @@ class RepayOrder implements PayURepayOrderInterface
         $newPayment->setAdditionalInformation(PayUConfigInterface::PAYU_METHOD_CODE, $payUMethod);
         $newPayment->setAdditionalInformation(PayUConfigInterface::PAYU_METHOD_TYPE_CODE, $payUMethodType);
         $newPayment->setAdditionalInformation('method_title', 'PayU');
+        $newPayment->setAdditionalInformation('payu_browser', $payuBrowser);
         $newPayment->setLastTransId($transactionId);
 
         return $this->paymentRepository->save($newPayment);

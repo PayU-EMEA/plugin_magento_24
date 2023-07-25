@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
-    <event name="payment_method_assign_data">
+    <event name="payment_method_assign_data_payu_gateway">
         <observer name="payu_payment_gateway_data_assign" instance="PayU\PaymentGateway\Observer\DataAssignObserver"/>
+    </event>
+    <event name="payment_method_assign_data_payu_gateway_card">
+        <observer name="payu_payment_gateway_data_assign_card" instance="PayU\PaymentGateway\Observer\DataAssignObserver"/>
     </event>
     <event name="sales_order_payment_place_end">
         <observer name="payu_payment_gateway_after_place_order" instance="PayU\PaymentGateway\Observer\AfterPlaceOrderObserver"/>

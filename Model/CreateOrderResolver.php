@@ -2,16 +2,17 @@
 
 namespace PayU\PaymentGateway\Model;
 
-use Magento\Framework\UrlInterface;
-use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Payment\Gateway\Data\OrderAdapterInterface;
+use Magento\Checkout\Model\Session as CheckoutSession;
+use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Phrase;
+use Magento\Framework\UrlInterface;
+use Magento\Payment\Gateway\Data\OrderAdapterInterface;
+use Magento\Sales\Model\Order\Item;
+use Magento\Sales\Model\Order\Payment;
+use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use PayU\PaymentGateway\Api\CreateOrderResolverInterface;
 use PayU\PaymentGateway\Api\GetAvailableLocaleInterface;
-use Magento\Checkout\Model\Session as CheckoutSession;
-use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Store\Model\Store;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Api\PayUGetMultiCurrencyPricingInterface;
 use PayU\PaymentGateway\Api\PayUMcpExchangeRateResolverInterface;
@@ -31,11 +32,6 @@ class CreateOrderResolver implements CreateOrderResolverInterface
      * @var GetAvailableLocaleInterface
      */
     private $availableLocale;
-
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
 
     /**
      * @var CheckoutSession
@@ -82,7 +78,6 @@ class CreateOrderResolver implements CreateOrderResolverInterface
      *
      * @param UrlInterface $urlBuilder
      * @param GetAvailableLocaleInterface $availableLocale
-     * @param OrderRepositoryInterface $orderRepository
      * @param CheckoutSession $checkoutSession
      * @param CustomerSession $customerSession
      * @param PayUGetMultiCurrencyPricingInterface $currencyPricing
@@ -92,27 +87,26 @@ class CreateOrderResolver implements CreateOrderResolverInterface
      * @param \Magento\Framework\App\Request\Http $http
      */
     public function __construct(
-        UrlInterface $urlBuilder,
-        GetAvailableLocaleInterface $availableLocale,
-        OrderRepositoryInterface $orderRepository,
-        CheckoutSession $checkoutSession,
-        CustomerSession $customerSession,
+        UrlInterface                         $urlBuilder,
+        GetAvailableLocaleInterface          $availableLocale,
+        CheckoutSession                      $checkoutSession,
+        CustomerSession                      $customerSession,
         PayUGetMultiCurrencyPricingInterface $currencyPricing,
         PayUMcpExchangeRateResolverInterface $exchangeRateResolver,
-        PayUConfigInterface $payUConfig,
-        StoreManagerInterface $storeManager,
-        \Magento\Framework\App\Request\Http $http
-    ) {
+        PayUConfigInterface                  $payUConfig,
+        StoreManagerInterface                $storeManager,
+        \Magento\Framework\App\Request\Http  $http
+    )
+    {
         $this->urlBuilder = $urlBuilder;
         $this->availableLocale = $availableLocale;
-        $this->orderRepository = $orderRepository;
         $this->checkoutSession = $checkoutSession;
         $this->customerSession = $customerSession;
         $this->currencyPricing = $currencyPricing;
         $this->exchangeRateResolver = $exchangeRateResolver;
         $this->payUConfig = $payUConfig;
         $this->store = $storeManager->getStore();
-        $this->http  = $http;
+        $this->http = $http;
     }
 
     /**
@@ -120,13 +114,17 @@ class CreateOrderResolver implements CreateOrderResolverInterface
      */
     public function resolve(
         OrderAdapterInterface $order,
-        $methodTypeCode,
-        $methodCode,
-        $totalDue = null,
-        $orderCurrencyCode = null,
-        $coninueUrl = 'checkout/onepage/success'
-    ) {
+        Payment               $payment,
+                              $methodTypeCode,
+                              $methodCode,
+                              $browser,
+                              $totalDue = null,
+                              $orderCurrencyCode = null,
+                              $continueUrl = 'checkout/onepage/success'
+    )
+    {
         $this->order = $order;
+
 
         $paymentData = [
             'txn_type' => 'A',
@@ -136,10 +134,9 @@ class CreateOrderResolver implements CreateOrderResolverInterface
             'totalAmount' => $this->getFormatAmount($this->order->getGrandTotalAmount()),
             'currencyCode' => $this->order->getCurrencyCode(),
             'notifyUrl' => $this->getNotifyUrl($methodTypeCode, $methodCode),
-            'continueUrl' => $this->urlBuilder->getUrl($coninueUrl),
-            'settings' => ['invoiceDisabled' => 'true'],
+            'continueUrl' => $this->urlBuilder->getUrl($continueUrl),
             'buyer' => $this->getBuyer(),
-            'products' => $this->getProductArray(),
+            'products' => $this->getProductArray($payment),
         ];
         if ($this->isPayUMethod($methodTypeCode, $methodCode)) {
             $paymentData['payMethods']['payMethod'] = ['type' => $methodTypeCode, 'value' => $methodCode];
@@ -152,6 +149,14 @@ class CreateOrderResolver implements CreateOrderResolverInterface
             $paymentData['mcpData'] = $this->getMcpData($totalDue);
         }
 
+        $threeDsAuthentication = $this->getThreeDsAuthentication($paymentData, $browser);
+
+        if ($threeDsAuthentication !== false) {
+            $paymentData['threeDsAuthentication'] = $threeDsAuthentication;
+        }
+
+        print_r($paymentData);
+        die();
         return $paymentData;
     }
 
@@ -172,25 +177,127 @@ class CreateOrderResolver implements CreateOrderResolverInterface
      */
     private function getBuyer()
     {
-        $address = $this->order->getShippingAddress();
+        $shippingAddress = $this->order->getShippingAddress();
         $billingAddress = $this->order->getBillingAddress();
 
-        $result[static::BUYER_EMAIL] = $address === null
+        $result['email'] = $billingAddress === null
             ? $this->customerSession->getCustomer()->getEmail()
-            : $address->getEmail();
+            : $billingAddress->getEmail();
 
         if ($billingAddress !== null) {
             $result['firstName'] = $billingAddress->getFirstname();
             $result['lastName'] = $billingAddress->getLastname();
-        } elseif ($address !== null) {
-            $result['firstName'] = $address->getFirstname();
-            $result['lastName'] = $address->getLastname();
+            $result['phone'] = $billingAddress->getTelephone();
+        } elseif ($shippingAddress !== null) {
+            $result['firstName'] = $shippingAddress->getFirstname();
+            $result['lastName'] = $shippingAddress->getLastname();
+            $result['phone'] = $shippingAddress->getTelephone();
+
         }
 
         $result['extCustomerId'] = $this->order->getCustomerId();
         $result['language'] = $this->availableLocale->execute();
 
+
+        if ($shippingAddress !== null) {
+            $result['delivery'] = [
+                'street' => $shippingAddress->getStreetLine1() . ($shippingAddress->getStreetLine2() ? ' ' . $shippingAddress->getStreetLine2() : ''),
+                'postalCode' => $shippingAddress->getPostcode(),
+                'city' => $shippingAddress->getCity()
+            ];
+
+            if (strlen($shippingAddress->getCountryId()) === 2) {
+                $result['delivery']['countryCode'] = $shippingAddress->getCountryId();
+            }
+        }
+
         return $result;
+    }
+
+    /**
+     * @param array $ocrData
+     * @param array $browser
+     *
+     * @return array | null
+     */
+    private function getThreeDsAuthentication($ocrData, $browser)
+    {
+        if (!isset($ocrData['payMethods'])
+            || $ocrData['payMethods']['payMethod']['type'] === 'CARD_TOKEN'
+            || $ocrData['payMethods']['payMethod']['value'] === 'c'
+            || $ocrData['payMethods']['payMethod']['value'] === 'ap'
+            || $ocrData['payMethods']['payMethod']['value'] === 'jp'
+            || $ocrData['payMethods']['payMethod']['value'] === 'ma'
+            || $ocrData['payMethods']['payMethod']['value'] === 'vc'
+        ) {
+            $billingAddress = $this->order->getBillingAddress();
+
+            $threeDsAuthentication = null;
+
+            if ($billingAddress === null) {
+                return $threeDsAuthentication;
+            }
+
+            $name = $billingAddress->getFirstname() . ' ' . $billingAddress->getLastname();
+            $address = $billingAddress->getStreetLine1() . ($billingAddress->getStreetLine2() ? ' ' . $billingAddress->getStreetLine2() : '');
+            $postalCode = $billingAddress->getPostcode();
+            $city = $billingAddress->getCity();
+            $countryCode = $billingAddress->getCountryId();
+
+            $isBillingAddress = !empty($address) || !empty($postalCode) || !empty($city) || (!empty($countryCode) && strlen($countryCode) === 2);
+
+            if (!empty($name) || $isBillingAddress) {
+                $threeDsAuthentication = [
+                    'cardholder' => []
+                ];
+
+                if (!empty($name)) {
+                    $threeDsAuthentication['cardholder']['name'] = mb_substr($name, 0, 50);
+                }
+
+                if ($isBillingAddress) {
+                    $threeDsAuthentication['cardholder']['billingAddress'] = [];
+                }
+
+                if (!empty($countryCode) && strlen($countryCode) === 2) {
+                    $threeDsAuthentication['cardholder']['billingAddress']['countryCode'] = $countryCode;
+                }
+
+                if (!empty($address)) {
+                    $threeDsAuthentication['cardholder']['billingAddress']['street'] = mb_substr($address, 0, 50);
+                }
+
+                if (!empty($city)) {
+                    $threeDsAuthentication['cardholder']['billingAddress']['city'] = mb_substr($city, 0, 50);
+                }
+
+                if (!empty($postalCode)) {
+                    $threeDsAuthentication['cardholder']['billingAddress']['postalCode'] = mb_substr($postalCode, 0, 16);
+                }
+            }
+
+            if (isset($ocrData['payMethods']['payMethod']['type']) && $ocrData['payMethods']['payMethod']['type'] === 'CARD_TOKEN') {
+                $browserData = [
+                    'requestIP' => $this->getIP()
+                ];
+
+                foreach (PayUConfigInterface::PAYU_BROWSER as $bd) {
+                    $browserData[$bd] = $browser[$bd] ?? '';
+                }
+
+                if (empty($browserData['userAgent'])) {
+                    if ($_SERVER['HTTP_USER_AGENT']) {
+                        $browserData['userAgent'] = $_SERVER['HTTP_USER_AGENT'];
+                    }
+                }
+
+                $threeDsAuthentication['browser'] = $browserData;
+            }
+
+            return $threeDsAuthentication;
+        }
+
+        return null;
     }
 
     /**
@@ -251,15 +358,57 @@ class CreateOrderResolver implements CreateOrderResolverInterface
      *
      * @return array
      */
-    private function getProductArray()
+    private function getProductArray(Payment $payment)
     {
-        return [
-            [
-                'name' => $this->getOrderDescription(),
-                'unitPrice' => $this->getFormatAmount($this->order->getGrandTotalAmount()),
-                'quantity' => 1
-            ]
-        ];
+        $list = [];
+        $i = 0;
+
+        /** @var Item $product */
+        foreach ($this->order->getItems() as $product) {
+            if (!$product->isDeleted() && !$product->getParentItemId()) {
+                if ($product->getParentItem() === null) {
+                    $quantity = $product->getQtyOrdered();
+                    $name = $product->getName();
+
+                    if (fmod($quantity, 1) !== 0.0) {
+                        $quantity = ceil($quantity);
+                        $name = '[' . $product->getQtyOrdered() . '] ' . $name;
+                    }
+
+                    if ($quantity === 0) {
+                        $quantity = 1;
+                    }
+
+
+                    $list[$i] = [
+                        'quantity' => $quantity,
+                        'name' => mb_substr($name, 0, 255),
+                        'unitPrice' => $this->getFormatAmount($product->getPriceInclTax())
+                    ];
+
+                    if ($product->getIsVirtual()) {
+                        $list[$i]['virtual'] = true;
+                    }
+                }
+                $i++;
+            }
+        }
+
+        if ($payment->getOrder()->getShippingMethod() !== null) {
+            $list[] = [
+                'quantity' => 1,
+                'name' => mb_substr('Shipment [' . $payment->getOrder()->getShippingDescription() . ']', 0, 255),
+                'unitPrice' => $this->getFormatAmount($payment->getOrder()->getShippingAmount())
+            ];
+        }
+
+        if ($payment->getOrder()->getDiscountAmount() !== null && $payment->getOrder()->getDiscountAmount() != 0) {
+            $list[] = [
+                'quantity' => 1,
+                'name' => 'Discount',
+                'unitPrice' => $this->getFormatAmount($payment->getOrder()->getDiscountAmount())
+            ];
+        }
     }
 
     /**

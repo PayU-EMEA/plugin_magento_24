@@ -101,20 +101,21 @@ class RepayOrderResolver
      * @param string $method
      * @param string $payUMethodType
      * @param string $payUMethod
+     * @param array $payuBrowser
      *
      * @return array
      * @throws NoSuchEntityException
      * @throws \Exception
      */
-    public function resolve($orderId, $method, $payUMethodType, $payUMethod)
+    public function resolve($orderId, $method, $payUMethodType, $payUMethod, $payuBrowser)
     {
         $returnData = [static::SUCCESS_FIELD => false];
         /** @var Order $order */
         $order = $this->orderRepository->get($orderId);
-        $createOrderData = $this->getCreateOrderData($order, $payUMethodType, $payUMethod);
+        $createOrderData = $this->getCreateOrderData($order, $payUMethodType, $payUMethod, $payuBrowser);
         $response = $this->payUCreateOrder->execute($method, $createOrderData);
         if ($this->isSuccessfulTransaction($response)) {
-            $this->payURepayOrder->execute($order, $method, $payUMethodType, $payUMethod, $response['orderId']);
+            $this->payURepayOrder->execute($order, $method, $payUMethodType, $payUMethod, $payuBrowser, $response['orderId']);
             $statusCode = $response[AbstractResponseValidator::VALIDATION_SUBJECT_STATUS]->statusCode;
             if (array_key_exists(PayUCreateOrderInterface::REDIRECT_URI_FIELD, $response) &&
                 ($statusCode === \OpenPayU_Order::SUCCESS ||
@@ -141,16 +142,19 @@ class RepayOrderResolver
      * @param Order $order
      * @param string $payUMethodType
      * @param string $payUMethod
+     * @param array $payuBrowser
      *
      * @return array
      */
-    private function getCreateOrderData($order, $payUMethodType, $payUMethod)
+    private function getCreateOrderData($order, $payUMethodType, $payUMethod, $payuBrowser)
     {
         $orderAdapter = $this->orderAdapterFactory->create(['order' => $order]);
         $createOrderData = $this->createOrderResolver->resolve(
             $orderAdapter,
+            $order->getPayment(),
             $payUMethodType,
             $payUMethod,
+            $payuBrowser,
             $order->getGrandTotal(),
             $order->getOrderCurrencyCode(),
             'sales/order/history'

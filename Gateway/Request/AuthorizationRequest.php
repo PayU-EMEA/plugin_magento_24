@@ -32,14 +32,22 @@ class AuthorizationRequest extends AbstractRequest implements BuilderInterface
     {
         parent::build($buildSubject);
 
+        $browserData = [];
+        foreach (PayUConfigInterface::PAYU_BROWSER as $bd) {
+            $browserData[$bd] =
+                $this->payment->getAdditionalInformation(PayUConfigInterface::PAYU_BROWSER_PREFIX . $bd);
+        }
+
         return $this->createOrderResolver->resolve(
             $this->order,
+            $this->payment,
             $this->payment->getAdditionalInformation(
                 PayUConfigInterface::PAYU_METHOD_TYPE_CODE
             ),
             $this->payment->getAdditionalInformation(
                 PayUConfigInterface::PAYU_METHOD_CODE
-            )
+            ),
+            $browserData
         );
     }
 }

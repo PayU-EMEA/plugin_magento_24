@@ -17,9 +17,10 @@ interface PayURepayOrderInterface
      * @param string $method
      * @param string $payUMethodType
      * @param string $payUMethod
+     * @param array $payuBrowser
      * @param string $transactionId
      *
      * @return array
      */
-    public function execute(OrderInterface $order, $method, $payUMethodType, $payUMethod, $transactionId);
+    public function execute(OrderInterface $order, $method, $payUMethodType, $payUMethod, $payuBrowser, $transactionId);
 }

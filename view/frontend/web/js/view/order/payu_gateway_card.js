@@ -102,7 +102,16 @@ define(
                         'method': this.getCode(),
                         'payu_method': this.cardToken(),
                         'payu_method_type': this.transferKey,
-                        'order_id': this.orderId
+                        'order_id': this.orderId,
+                        'payu_browser': {
+                            'screenWidth': screen.width,
+                            'javaEnabled': navigator.javaEnabled(),
+                            'timezoneOffset': new Date().getTimezoneOffset(),
+                            'screenHeight': screen.height,
+                            'userAgent': navigator.userAgent,
+                            'colorDepth': screen.colorDepth,
+                            'language': navigator.language
+                        }
                     };
                 }
             }
