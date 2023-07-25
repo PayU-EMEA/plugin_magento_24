@@ -155,8 +155,6 @@ class CreateOrderResolver implements CreateOrderResolverInterface
             $paymentData['threeDsAuthentication'] = $threeDsAuthentication;
         }
 
-        print_r($paymentData);
-        die();
         return $paymentData;
     }
 
