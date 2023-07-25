@@ -1,3 +1,6 @@
+## 1.0.12
+* Sends more data for better detected frauds
+
 ## 1.0.11
 * Licence updated
 
