@@ -4,9 +4,9 @@
                name="payment[method]"
                class="radio"
                data-bind="attr: {id: getCode()}, value: getCode(), checked: isChecked"/>
-        <label class="label" data-bind="attr: {'for': getCode()}">
-            <img class="payu-payment__logo" data-bind="attr: {src: logoSrc}"/>
-            <span data-bind="i18n: 'Pay with PayU'"></span>
+        <label class="label payu-payment-label" data-bind="attr: {'for': getCode()}">
+            <img class="payu-payment-logo payu-payment-logo-pbl" data-bind="attr: {src: logoSrc}"/>
+            <span class="payu-payment-title" data-bind="i18n: 'Pay with PayU'"></span>
         </label>
     </div>
     <div class="payment-method-content">
@@ -16,7 +16,7 @@
                                                      foreach: methods">
                     <div class="method__single">
                         <div class="method__single--content"
-                             data-bind="attr: {tabindex: $index}, css: {'_disabled': $data.status !== $parent.enabledStatus, '_active': $data.value === $parent.payuMethod() }, click: $parent.setPayuMethod.bind($parent)">
+                             data-bind="attr: {tabindex: $index, title: $data.name, 'aria-disabled': $data.status !== $parent.enabledStatus}, css: {'_disabled': $data.status !== $parent.enabledStatus, '_active': $data.value === $parent.payuMethod() }, click: $parent.setPayuMethod.bind($parent)">
                             <span class="method__single__image"><img data-bind="attr: {src: $data.brandImageUrl}"/></span>
                         </div>
                     </div>

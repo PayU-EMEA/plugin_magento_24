@@ -2,61 +2,36 @@
 
 namespace PayU\PaymentGateway\Controller\Data;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Webapi\Exception;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
 use PayU\PaymentGateway\Model\Ui\ConfigProvider;
 
-/**
- * Class GetNotify
- * @package PayU\PaymentGateway\Controller\Data
- */
-class GetNotify extends Action implements CsrfAwareActionInterface
+class GetNotify implements HttpPostActionInterface, CsrfAwareActionInterface
 {
-    /**
-     * @var \OpenPayU_Order
-     */
-    private $payUOrder;
+    private PayUConfigInterface $payUConfig;
+    private NotifyOrderProcessor $notifyOrderProcessor;
+    private NotifyRefundProcessor $notifyRefundProcessor;
+    private RawFactory $resultRawFactory;
+    private RequestInterface $request;
 
-    /**
-     * @var PayUConfigInterface
-     */
-    private $payUConfig;
-
-    /**
-     * @var NotifyOrderProcessor
-     */
-    private $notifyOrderProcessor;
-
-    /**
-     * @var NotifyRefundProcessor;
-     */
-    private $notifyRefundProcessor;
-
-    /**
-     * @param Context $context
-     * @param NotifyOrderProcessor $notifyOrderProcessor
-     * @param NotifyRefundProcessor $notifyRefundProcessor
-     * @param \OpenPayU_Order $payUOrder
-     * @param PayUConfigInterface $payUConfig
-     */
     public function __construct(
-        Context $context,
-        NotifyOrderProcessor $notifyOrderProcessor,
+        RawFactory            $resultRawFactory,
+        RequestInterface      $request,
+        NotifyOrderProcessor  $notifyOrderProcessor,
         NotifyRefundProcessor $notifyRefundProcessor,
-        \OpenPayU_Order $payUOrder,
-        PayUConfigInterface $payUConfig
-    ) {
-        parent::__construct($context);
+        PayUConfigInterface   $payUConfig
+    )
+    {
+        $this->resultRawFactory = $resultRawFactory;
+        $this->request = $request;
         $this->notifyOrderProcessor = $notifyOrderProcessor;
         $this->notifyRefundProcessor = $notifyRefundProcessor;
-        $this->payUOrder = $payUOrder;
         $this->payUConfig = $payUConfig;
     }
 
@@ -65,13 +40,12 @@ class GetNotify extends Action implements CsrfAwareActionInterface
      */
     public function execute()
     {
-        $result = $this->resultFactory->create(ResultFactory::TYPE_RAW);
+        $result = $this->resultRawFactory->create();
+
         try {
-            $rawBody = $this->getRawBody();
+            $rawBody = trim($this->request->getContent());
             $this->initPayUConfig();
-            $order = $this->payUOrder;
-            $payUResultData = $order::consumeNotification($rawBody);
-            /** @var \stdClass $response */
+            $payUResultData = \OpenPayU_Order::consumeNotification($rawBody);
             $response = $payUResultData->getResponse();
             if (isset($response->order)) {
                 $orderRetrieved = $response->order;
@@ -81,14 +55,14 @@ class GetNotify extends Action implements CsrfAwareActionInterface
                     $orderRetrieved->totalAmount,
                     $this->getPaymentId($response)
                 );
-            }
-            if (isset($response->refund)) {
+            } else if (isset($response->refund)) {
                 $refundRetrieved = $response->refund;
                 $this->notifyRefundProcessor->process($refundRetrieved->status, $response->extOrderId);
             }
         } catch (\Exception $exception) {
-            $result->setHttpResponseCode(Exception::HTTP_INTERNAL_ERROR);
-            echo $exception->getMessage();
+            $result
+                ->setHttpResponseCode(Exception::HTTP_BAD_REQUEST)
+                ->setContents($exception->getMessage());
         }
 
         return $result;
@@ -112,45 +86,20 @@ class GetNotify extends Action implements CsrfAwareActionInterface
         return null;
     }
 
-    /**
-     * Get raw body from Request Content
-     *
-     * @return string
-     */
-    private function getRawBody()
+    private function initPayUConfig(): void
     {
-        $body = file_get_contents('php://input');
-        if (strlen(trim($body)) > 0) {
-            return trim($body);
+        $type = trim(strip_tags($this->request->getParam('type', '')));
+        $store = (int)trim(strip_tags($this->request->getParam('store', '')));
+
+        if ($type !== ConfigProvider::CODE && $type !== CardConfigProvider::CODE) {
+            throw new \Exception('Unknown type [' . $type . '].');
         }
 
-        return '';
+        $this->payUConfig->setDefaultConfig($type, $store);
     }
 
     /**
-     * Initialize PayU configuration
-     *
-     * @return void
-     */
-    private function initPayUConfig()
-    {
-        $type = trim(strip_tags($this->getRequest()->getParam('type', '')));
-        $store = (int)trim(strip_tags($this->getRequest()->getParam('store', '')));
-        $configType = ConfigProvider::CODE;
-        if ($type !== null && $type === PayUConfigInterface::PAYU_CC_TRANSFER_KEY) {
-            $configType = CardConfigProvider::CODE;
-        }
-        $this->payUConfig->setDefaultConfig($configType, $store);
-    }
-
-    /**
-     * Create exception in case CSRF validation failed.
-     * Return null if default exception will suffice.
-     *
-     * @param RequestInterface $request
-     *
-     * @return InvalidRequestException|null
-     * @SuppressWarnings(PMD.UnusedFormalParameter)
+     * @inheritdoc
      */
     public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
     {
@@ -158,17 +107,10 @@ class GetNotify extends Action implements CsrfAwareActionInterface
     }
 
     /**
-     * Perform custom request validation.
-     * Return null if default validation is needed.
-     *
-     * @param RequestInterface $request
-     *
-     * @return bool|null
-     * @SuppressWarnings(PMD.UnusedFormalParameter)
+     * @inheritdoc
      */
     public function validateForCsrf(RequestInterface $request): ?bool
     {
         return true;
     }
-
 }

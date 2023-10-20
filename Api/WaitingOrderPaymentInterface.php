@@ -9,10 +9,6 @@ use Magento\Payment\Gateway\Command\CommandException;
  */
 interface WaitingOrderPaymentInterface
 {
-    /**
-     * Payment status history key
-     */
-    const PAYU_HISTORY_STATUS = 'payUStatus';
 
     /**
      * Set order status by status from PayU REST API (REJECTED, PAYMENT_REWIEV)

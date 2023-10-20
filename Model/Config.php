@@ -16,16 +16,10 @@ use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
  */
 class Config implements PayUConfigInterface
 {
-    use ConfigDefaultTrait;
-    /**
-     * Config POS Parameters group
-     */
-    const GROUP_POS_PARAMETERS = 'pos_parameters';
-
     /**
      * Current Plugin Version
      */
-    const PLUGIN_VERSION = '1.0.12';
+    const PLUGIN_VERSION = '1.99.99';
 
     /**
      * @var \OpenPayU_Configuration
@@ -96,43 +90,39 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setDefaultConfig($code, $storeId = null)
+    public function setDefaultConfig($code, $storeId = null): PayUConfigInterface
     {
         if ($storeId !== null) {
             $this->storeId = $storeId;
         }
-        if (!$this->isActive($code)) {
+        $this->setGatewayConfigCode($code);
+        if (!$this->isActive()) {
             $this->setMerchantPosId('');
 
             return $this;
         }
+
+        // gateway config
+        $isSandboxEnvironment = $this->gatewayConfig->getValue('environment', $storeId) === '1';
+
+        // common config
+        $envPrefix = $isSandboxEnvironment ? 'sandbox_' : '';
+        $this->setGatewayConfigCode('payu');
+        $this->gatewayConfig->setMethodCode('payu');
+        $posId = $this->gatewayConfig->getValue($envPrefix . 'pos_id', $storeId);
+        $signatureKey = $this->gatewayConfig->getValue($envPrefix . 'second_key', $storeId);
+        $clientId = $this->gatewayConfig->getValue($envPrefix . 'client_id', $storeId);
+        $clientSecret = $this->gatewayConfig->getValue($envPrefix . 'client_secret', $storeId);
+        $this->setGatewayConfigCode($code);
+
         try {
-            $environment = $this->getGatewayConfig('main_parameters', 'environment');
-            if ($environment !== null && array_key_exists($environment, $this->environmentTypes)) {
-                $environment = $this->environmentTypes[$environment];
-            }
+            $environment = $isSandboxEnvironment ? PayUConfigInterface::ENVIRONMENT_SANBOX : PayUConfigInterface::ENVIRONMENT_SECURE;
             $this->setEnvironment($environment);
-            $environmentSuffix = '';
-            if ($environment === PayUConfigInterface::ENVIRONMENT_SANBOX) {
-                $environmentSuffix = $environment . '_';
-            }
-            $this->setMerchantPosId(
-                $this->getGatewayConfig(static::GROUP_POS_PARAMETERS, 'pos_id', $environmentSuffix)
-            );
-            $this->setSignatureKey(
-                $this->getGatewayConfig(static::GROUP_POS_PARAMETERS, 'second_key', $environmentSuffix)
-            );
-            $this->setOauthClientId(
-                $this->getGatewayConfig(static::GROUP_POS_PARAMETERS, 'client_id', $environmentSuffix)
-            );
-            $this->setOauthClientSecret(
-                $this->getGatewayConfig(static::GROUP_POS_PARAMETERS, 'client_secret', $environmentSuffix)
-            );
+            $this->setMerchantPosId($posId);
+            $this->setSignatureKey($signatureKey);
+            $this->setOauthClientId($clientId);
+            $this->setOauthClientSecret($clientSecret);
             $this->setOauthGrantType(PayUConfigInterface::GRANT_TYPE_CLIENT_CREDENTIALS);
-            if ($code === CardConfigProvider::CODE) {
-                $this->multiCurrencyPartnerId =
-                    $this->getGatewayConfig(static::GROUP_POS_PARAMETERS, 'mcp_partner_id', $environmentSuffix);
-            }
             $this->setSender('Magento 2 ver ' . $this->metadata->getVersion() . '/Plugin ver ' . static::PLUGIN_VERSION);
         } catch (\OpenPayU_Exception_Configuration $exception) {
             return $this;
@@ -159,7 +149,7 @@ class Config implements PayUConfigInterface
             str_replace(
                 ' ',
                 '',
-                $this->gatewayConfig->getValue('main_parameters/payment_methods_order', $this->storeId) ?? ''
+                $this->gatewayConfig->getValue('payment_methods_order', $this->storeId) ?? ''
             )
         );
     }
@@ -185,35 +175,120 @@ class Config implements PayUConfigInterface
     }
 
     /**
-     * Check if selected pay method is enable
-     *
-     * @param string $code
-     *
-     * @return bool
+     * Check if selected pay method is enabled
      */
-    private function isActive($code)
+    private function isActive(): bool
     {
-        $this->setGatewayConfigCode($code);
-
-        return (bool)$this->gatewayConfig->getValue('main_parameters/active', $this->storeId);
+        return (bool)$this->gatewayConfig->getValue('active', $this->storeId);
     }
 
     /**
-     * Get gateway config from magento configuration
-     *
-     * @param string $group
-     * @param string $field
-     * @param string $environmentSuffix
-     *
-     * @return string|null
+     * {@inheritdoc}
      */
-    private function getGatewayConfig($group, $field, $environmentSuffix = '')
+    public function setEnvironment($environment)
     {
-        $value = $this->gatewayConfig->getValue(
-            sprintf('%s%s/%1$s%s', $environmentSuffix, $group, $field),
-            $this->storeId
-        );
+        $config = $this->openPayUConfig;
+        $config::setEnvironment($environment);
 
-        return $value;
+        return $this;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setMerchantPosId($merchantPosId)
+    {
+        $config = $this->openPayUConfig;
+        $config::setMerchantPosId($merchantPosId);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSignatureKey($signatureKey)
+    {
+        $config = $this->openPayUConfig;
+        $config::setSignatureKey($signatureKey);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOauthClientId($oAuthClientId)
+    {
+        $config = $this->openPayUConfig;
+        $config::setOauthClientId($oAuthClientId);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOauthClientSecret($oAuthClientSecret)
+    {
+        $config = $this->openPayUConfig;
+        $config::setOauthClientSecret($oAuthClientSecret);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOauthGrantType($oAuthGrantType)
+    {
+        $config = $this->openPayUConfig;
+        $config::setOauthGrantType($oAuthGrantType);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOauthEmail($email)
+    {
+        $config = $this->openPayUConfig;
+        $config::setOauthEmail($email);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setCustomerExtId($customerId)
+    {
+        $config = $this->openPayUConfig;
+        $config::setOauthExtCustomerId($customerId);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSender($sender)
+    {
+        $config = $this->openPayUConfig;
+        $config::setSender($sender);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setGatewayConfigCode($code)
+    {
+        $this->gatewayConfig->setMethodCode($code);
+
+        return $this;
+    }
+
 }

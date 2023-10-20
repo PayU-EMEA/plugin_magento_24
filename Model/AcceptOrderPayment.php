@@ -2,10 +2,10 @@
 
 namespace PayU\PaymentGateway\Model;
 
+use Magento\Framework\DB\Transaction;
+use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Payment\Gateway\Command\CommandException;
 use PayU\PaymentGateway\Api\AcceptOrderPaymentInterface;
-use Magento\Framework\Event\ManagerInterface as EventManager;
-use Magento\Framework\DB\Transaction;
 use PayU\PaymentGateway\Api\OrderPaymentResolverInterface;
 
 /**
@@ -14,33 +14,16 @@ use PayU\PaymentGateway\Api\OrderPaymentResolverInterface;
  */
 class AcceptOrderPayment implements AcceptOrderPaymentInterface
 {
-    /**
-     * @var EventManager
-     */
-    private $eventManager;
+    private EventManager $eventManager;
+    private Transaction $transaction;
+    private OrderPaymentResolverInterface $paymentResolver;
 
-    /**
-     * @var Transaction
-     */
-    private $transaction;
-
-    /**
-     * @var OrderPaymentResolverInterface
-     */
-    private $paymentResolver;
-
-    /**
-     * AcceptOrderPayment constructor.
-     *
-     * @param EventManager $eventManager
-     * @param Transaction $transaction
-     * @param OrderPaymentResolverInterface $paymentResolver
-     */
     public function __construct(
-        EventManager $eventManager,
-        Transaction $transaction,
+        EventManager                  $eventManager,
+        Transaction                   $transaction,
         OrderPaymentResolverInterface $paymentResolver
-    ) {
+    )
+    {
         $this->eventManager = $eventManager;
         $this->transaction = $transaction;
         $this->paymentResolver = $paymentResolver;
@@ -49,7 +32,7 @@ class AcceptOrderPayment implements AcceptOrderPaymentInterface
     /**
      * {@inheritdoc}
      */
-    public function execute($txnId, $amount, $paymentId = null)
+    public function execute(string $txnId, float $amount, string $paymentId = null): void
     {
         $payment = $this->paymentResolver->getByTransactionTxnId($txnId);
         if ($payment === null) {

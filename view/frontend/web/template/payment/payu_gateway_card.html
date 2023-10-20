@@ -1,12 +1,12 @@
-<div class="payment-method payu-payment" data-bind="css: {'_active': (getCode() == isChecked())}">
+<div class="payment-method payu-payment-card" data-bind="css: {'_active': (getCode() == isChecked())}">
     <div class="payment-method-title field choice">
         <input type="radio"
                name="payment[method]"
                class="radio"
                data-bind="attr: {id: getCode()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
-        <label class="label" data-bind="attr: {'for': getCode()}">
-            <img class="payu-payment__logo" data-bind="attr: {src: logoSrc, alt: getTitle()}"/>
-            <span data-bind="i18n: 'Pay with a card'"></span>
+        <label class="label payu-payment-label" data-bind="attr: {'for': getCode()}">
+            <img class="payu-payment-logo payu-payment-logo-card" data-bind="attr: {src: logoSrc, alt: getTitle()}"/>
+            <span class="payu-payment-title" data-bind="i18n: 'Pay with a card'"></span>
         </label>
     </div>
     <div class="payment-method-content">
@@ -24,14 +24,11 @@
                     <div class="stored">
                         <!-- ko if: storedCardsExist() -->
                         <div class="stored__cards" data-bind="foreach: storedCards.list">
-                            <div class="payu-card" data-bind="css: {'_disabled': !$parent.isStoredActive($data), '_active': $parent.isStoredSelected($data)},
+                            <div class="payu-card" data-bind="attr: {'aria-disabled': !$parent.isStoredActive($data)}, css: {'_disabled': !$parent.isStoredActive($data), '_active': $parent.isStoredSelected($data)},
                                                               click: $parent.selectStored.bind($parent)">
-                                <div class="payu-card__info">
-                                    <div class="payu-card__img-wrapper">
-                                        <img data-bind="attr: {src: $data.brandImageUrl, alt: $data.cardBrand}"/>
-                                    </div>
-                                    <span data-bind="text: cardNumberMasked"></span>
-                                </div>
+                                <img data-bind="attr: {src: $data.brandImageUrl, alt: $data.cardBrand}"/>
+                                <span data-bind="text: cardNumberMasked"></span>
+                                <span><!--ko text: cardExpirationYear--><!--/ko-->/<!--ko text: cardExpirationMonth--><!--/ko--></span>
                             </div>
                         </div>
                         <!-- /ko -->

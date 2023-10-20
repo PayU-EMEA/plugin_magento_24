@@ -1,5 +1,6 @@
 <?php
 /**
+ * @var \Magento\Framework\Escaper $escaper
  * @var \Payu\PaymentGateway\Block\Order\Grid\Action $this
  */
 ?>
@@ -8,8 +9,8 @@
 $order = $this->getData('order');
 if ($order !== null):
     ?>
-    <a href="<?php echo $this->escapeHtml($this->getViewUrl($order)); ?>" class="action view">
-        <span><?php echo $this->escapeHtml(__('View Order')); ?></span>
+    <a href="<?= $escaper->escapeHtml($this->getViewUrl($order)); ?>" class="action view">
+        <span><?= $escaper->escapeHtml(__('View Order')); ?></span>
     </a>
     <?php
     if ($this->helper('Magento\Sales\Helper\Reorder')->canReorder($order->getEntityId())):
@@ -17,14 +18,14 @@ if ($order !== null):
         <a href="#" data-post='<?php /* @escapeNotVerified */
         echo $this->helper(\Magento\Framework\Data\Helper\PostHelper::class)->getPostData($block->getReorderUrl($order))
         ?>' class="action order">
-            <span><?php echo $this->escapeHtml(__('Reorder')); ?></span>
+            <span><?= $escaper->escapeHtml(__('Reorder')); ?></span>
         </a>
         <?php
     endif;
     if ($this->isOrderCanRepay($order->getEntityId())):
         ?>
         <a href="<?php echo $this->getOrderRepayUrl($order); ?>" class="action order">
-            <span><?php echo $this->escapeHtml(__('Repay')); ?></span>
+            <span><?= $escaper->escapeHtml(__('Repay')); ?></span>
         </a>
         <?php
     endif;

@@ -81,17 +81,17 @@ class GetPayMethods implements PayUGetPayMethodsInterface
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function execute(string $code): array
     {
         try {
-            $this->payUConfig->setDefaultConfig(ConfigProvider::CODE);
+            $this->payUConfig->setDefaultConfig($code);
             $payURetrive = $this->openPayURetrieve;
             $response = $payURetrive::payMethods($this->availableLocale->execute())->getResponse();
             if (isset($response->payByLinks)) {
                 $this->result =
                     $this->sortPaymentMethods($response->payByLinks, $this->payUConfig->getPaymentMethodsOrder());
                 $this->gatewayConfig->setMethodCode(CardConfigProvider::CODE);
-                if ((bool)$this->gatewayConfig->getValue('main_parameters/active', $this->storeId)) {
+                if ((bool)$this->gatewayConfig->getValue('active', $this->storeId)) {
                     $this->removeCreditCard();
                 }
                 $this->removeTestPayment();

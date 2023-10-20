@@ -10,25 +10,13 @@ interface PayUUpdateOrderStatusInterface
 {
     /**
      * Update status of order
-     *
-     * @param string $type
-     * @param string $orderId
-     * @param string $status
-     *
-     * @return \OpenPayU_Result
      * @throws \OpenPayU_Exception
      */
-    public function update($type, $orderId, $status);
+    public function update(string $type, int $storeId, string $orderId, string $status): \OpenPayU_Result;
 
     /**
      * Cancel order action
-     *
-     * @param string $type
-     * @param string $orderId
-     * @param int $loop
-     *
-     * @return \OpenPayU_Result|null
      * @throws \OpenPayU_Exception
      */
-    public function cancel($type, $orderId, $loop = 1);
+    public function cancel(string $type, int $storeId, string $orderId): \OpenPayU_Result|null;
 }

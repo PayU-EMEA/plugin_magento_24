@@ -6,35 +6,19 @@ use Magento\Payment\Gateway\Command\CommandException;
 use PayU\PaymentGateway\Api\PayUUpdateRefundStatusInterface;
 use PayU\PaymentGateway\Model\UpdateRefundStatus;
 
-/**
- * Class NotifyRefundProcessor
- * @package PayU\PaymentGateway\Controller\Data
- */
 class NotifyRefundProcessor
 {
-    /**
-     * @var UpdateRefundStatus
-     */
-    private $updateRefundStatus;
+    private UpdateRefundStatus $updateRefundStatus;
 
-    /**
-     * @param UpdateRefundStatus $updateRefundStatus
-     */
     public function __construct(UpdateRefundStatus $updateRefundStatus)
     {
         $this->updateRefundStatus = $updateRefundStatus;
     }
 
     /**
-     * Process refund notify request
-     *
-     * @param string $status
-     * @param string $extOrderId
-     *
-     * @return void
      * @throws CommandException
      */
-    public function process($status, $extOrderId)
+    public function process(string $status, string $extOrderId): void
     {
         switch ($status) {
             case PayUUpdateRefundStatusInterface::STATUS_FINALIZED:

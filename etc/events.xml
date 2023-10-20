@@ -21,10 +21,7 @@
     <event name="payu_close_repayment_transaction">
         <observer name="payu_cancel_transaction" instance="PayU\PaymentGateway\Observer\CancelTransaction" />
     </event>
-    <event name="payu_deny_payment">
-        <observer name="payu_deny_payment_status_assign" instance="PayU\PaymentGateway\Observer\StatusAssignObserver"/>
-    </event>
-    <event name="sales_quote_collect_totals_after">
-        <observer name="payu_cmp_collect_totals" instance="PayU\PaymentGateway\Observer\McpCollectTotals" />
+    <event name="payu_payment_status_assign">
+        <observer name="payu_payment_status_assign" instance="PayU\PaymentGateway\Observer\StatusAssignObserver"/>
     </event>
 </config>

@@ -2,10 +2,6 @@
 
 namespace PayU\PaymentGateway\Api;
 
-/**
- * Interface PayUUpdateRefundStatusInterface
- * @package PayU\PaymentGateway\Api
- */
 interface PayUUpdateRefundStatusInterface
 {
     /**
@@ -20,19 +16,11 @@ interface PayUUpdateRefundStatusInterface
 
     /**
      * Cancel refund
-     *
-     * @param string $extOrderId
-     *
-     * @return void
      */
-    public function cancel($extOrderId);
+    public function cancel(string $extOrderId): void;
 
     /**
      * Update refund status of order
-     *
-     * @param string $extOrderId
-     *
-     * @return void
      */
-    public function addSuccessMessage($extOrderId);
+    public function addSuccessMessage(string $extOrderId): void;
 }

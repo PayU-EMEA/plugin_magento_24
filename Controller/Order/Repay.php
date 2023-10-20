@@ -2,18 +2,17 @@
 
 namespace PayU\PaymentGateway\Controller\Order;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Sales\Model\OrderRepository;
 use PayU\PaymentGateway\Api\RepaymentResolverInterface;
 use PayU\PaymentGateway\Model\Logger\Logger;
+use PayU\PaymentGateway\Model\RepayOrderCardResolver;
+use PayU\PaymentGateway\Model\RepayOrderResolver;
 
-/**
- * Class Repay
- * @package PayU\PaymentGateway\Controller\Order
- */
-class Repay extends Action
+class Repay implements HttpPostActionInterface
 {
     /**
      * Order ID param
@@ -35,45 +34,31 @@ class Repay extends Action
      */
     const ERROR_MESASGE = 'Can\'t repay order.';
 
-    /**
-     * @var JsonFactory
-     */
-    private $resultJsonFactory;
+    private OrderRepository $orderRepository;
+    private ResultFactory $resultFactory;
+    private RequestInterface $request;
+    private Logger $logger;
+    private RepayOrderResolver $repayOrderResolver;
+    private RepayOrderCardResolver $repayOrderCardResolver;
+    private RepaymentResolverInterface $repaymentResolver;
 
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @var RepayOrderResolver
-     */
-    private $repayOrderResolver;
-
-    /**
-     * @var RepaymentResolverInterface
-     */
-    private $repaymentResolver;
-
-    /**
-     * @param Context $context
-     * @param JsonFactory $resultJsonFactory
-     * @param Logger $logger
-     * @param RepayOrderResolver $repayOrderResolver
-     * @param RepaymentResolverInterface $repaymentResolver
-     */
     public function __construct(
-        Context $context,
-        JsonFactory $resultJsonFactory,
-        Logger $logger,
-        RepayOrderResolver $repayOrderResolver,
+        OrderRepository            $orderRepository,
+        ResultFactory              $resultFactory,
+        RequestInterface           $request,
+        Logger                     $logger,
+        RepayOrderResolver         $repayOrderResolver,
+        RepayOrderCardResolver     $repayOrderCardResolver,
         RepaymentResolverInterface $repaymentResolver
-    ) {
-        $this->resultJsonFactory = $resultJsonFactory;
+    )
+    {
+        $this->orderRepository = $orderRepository;
+        $this->resultFactory = $resultFactory;
+        $this->request = $request;
         $this->logger = $logger;
         $this->repayOrderResolver = $repayOrderResolver;
+        $this->repayOrderCardResolver = $repayOrderCardResolver;
         $this->repaymentResolver = $repaymentResolver;
-        parent::__construct($context);
     }
 
     /**
@@ -81,21 +66,39 @@ class Repay extends Action
      */
     public function execute()
     {
-        $isRepayment = $this->repaymentResolver->isRepayment((int)$this->getRequest()->getParam(static::ORDER_ID));
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+        $isRepayment = $this->repaymentResolver->isRepayment((int)$this->request->getParam(static::ORDER_ID));
         if (!$isRepayment) {
-            return $this->resultRedirectFactory->create()->setPath('sales/order/history');
+            return $resultRedirect->setPath('sales/order/history');
         }
+
+        $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
+
         $returnData = [static::SUCCESS_FIELD => false];
-        $orderId = (int)$this->getRequest()->getParam(static::ORDER_ID);
-        $method = strip_tags(trim($this->getRequest()->getParam('method', '')));
-        $payUMethod = strip_tags(trim($this->getRequest()->getParam('payu_method', '')));
-        $payUMethodType = strip_tags(trim($this->getRequest()->getParam('payu_method_type', '')));
-        $payuBrowser = $this->getRequest()->getParam('payu_browser', []);
-        if ($orderId === null) {
+        $orderId = (int)$this->request->getParam(static::ORDER_ID);
+        if ($orderId === 0) {
             $returnData[static::ERROR_FIELD] = __('Wrong Request');
+            return $result->setData($returnData);
         }
+
+        $method = strip_tags(trim($this->request->getParam('method', '')));
+
+        if ($method === 'payu_gateway') {
+            $repayResolver = $this->repayOrderResolver;
+        } elseif ($method === 'payu_gateway_card') {
+            $repayResolver = $this->repayOrderCardResolver;
+        } else {
+            $returnData[static::ERROR_FIELD] = __('Wrong Request');
+            return $result->setData($returnData);
+        }
+
+        $payUMethod = strip_tags(trim($this->request->getParam('payu_method', '')));
+        $payUMethodType = strip_tags(trim($this->request->getParam('payu_method_type', '')));
+        $payuBrowser = $this->request->getParam('payu_browser', []);
+
         try {
-            $returnData = $this->repayOrderResolver->resolve($orderId, $method, $payUMethodType, $payUMethod, $payuBrowser);
+            $order = $this->orderRepository->get($orderId);
+            $returnData = $repayResolver->execute($order, $method, $payUMethod, $payUMethodType, $payuBrowser);
         } catch (NoSuchEntityException $exception) {
             $this->logger->critical($exception->getMessage());
             $returnData[static::ERROR_FIELD] = __(static::ERROR_MESASGE);
@@ -104,6 +107,6 @@ class Repay extends Action
             $returnData[static::ERROR_FIELD] = __(static::ERROR_MESASGE);
         }
 
-        return $this->resultJsonFactory->create()->setData($returnData);
+        return $result->setData($returnData);
     }
 }

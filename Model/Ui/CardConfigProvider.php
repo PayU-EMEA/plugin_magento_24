@@ -94,16 +94,17 @@ class CardConfigProvider implements ConfigProviderInterface
     public function getConfig()
     {
         $this->gatewayConfig->setMethodCode(self::CODE);
+        $isActive = (bool)$this->gatewayConfig->getValue('active', $this->storeId);
 
-        $userPayMethods = $this->userPayMethods->execute();
+        $userPayMethods = $isActive ? $this->userPayMethods->execute() : [];
 
         return [
             'payment' => [
                 'payuGatewayCard' => [
-                    'isActive' => (bool)$this->gatewayConfig->getValue('main_parameters/active', $this->storeId),
+                    'isActive' => $isActive,
                     'logoSrc' => $this->assetRepository->getUrl(PayUConfigInterface::PAYU_CC_TRANSFER_LOGO_SRC),
-                    'secureFormConfig' => $this->secureFormConfig->execute(),
-                    'storedCards' => array_key_exists(PayUGetUserPayMethodsInterface::CARD_TOKENS, $userPayMethods) && $userPayMethods[PayUGetUserPayMethodsInterface::CARD_TOKENS] ? $userPayMethods[PayUGetUserPayMethodsInterface::CARD_TOKENS] : [],
+                    'secureFormConfig' => $isActive ? $this->secureFormConfig->execute() : [],
+                    'storedCards' => $isActive && array_key_exists(PayUGetUserPayMethodsInterface::CARD_TOKENS, $userPayMethods) && $userPayMethods[PayUGetUserPayMethodsInterface::CARD_TOKENS] ? $userPayMethods[PayUGetUserPayMethodsInterface::CARD_TOKENS] : [],
                     'transferKey' => PayUConfigInterface::PAYU_CC_TRANSFER_KEY,
                     'termsUrl' => PayUConfigInterface::PAYU_TERMS_URL,
                     'language' => $this->getLanguage()

@@ -8,6 +8,12 @@ namespace PayU\PaymentGateway\Api;
  */
 interface PayUConfigInterface
 {
+
+    /**
+     * Redirect url key for UI
+     */
+    const REDIRECT_URI_FIELD = 'redirectUri';
+
     /**
      * Method code key
      */
@@ -27,6 +33,11 @@ interface PayUConfigInterface
      * Show CCV Widget key
      */
     const PAYU_SHOW_CVV_WIDGET = 'payuShowCvvWidget';
+
+    /**
+     * Response status key
+     */
+    const PAYU_RESPONSE_STATUS = 'payu_response_status';
 
     /**
      * Sanbox code
@@ -56,12 +67,12 @@ interface PayUConfigInterface
     /**
      * PayU logo static link
      */
-    const PAYU_BANK_TRANSFER_LOGO_SRC = 'PayU_PaymentGateway::images/payu_logo.png';
+    const PAYU_BANK_TRANSFER_LOGO_SRC = 'PayU_PaymentGateway::images/payu-logo.svg';
 
     /**
      * PayU card logo static link
      */
-    const PAYU_CC_TRANSFER_LOGO_SRC = 'PayU_PaymentGateway::images/payu_cards.png';
+    const PAYU_CC_TRANSFER_LOGO_SRC = 'PayU_PaymentGateway::images/card-visa-mc.svg';
 
     /**
      * Pay by links code
@@ -94,20 +105,6 @@ interface PayUConfigInterface
         self::PAYU_BROWSER_COLOR_DEPTH,
         self::PAYU_BROWSER_LANGUAGE,
     ];
-
-    /**
-     * Get cache config
-     *
-     * @return PayUCacheConfigInterface
-     */
-    public function getCacheConfig();
-
-    /**
-     * Get Merchant POS ID
-     *
-     * @return string
-     */
-    public function getMerchantPosiId();
 
     /**
      * Set Environment SECURE|SANDBOX
@@ -184,12 +181,9 @@ interface PayUConfigInterface
     /**
      * Set default config
      *
-     * @param string $code
-     * @param int|null $storeId
-     *
      * @return $this
      */
-    public function setDefaultConfig($code, $storeId = null);
+    public function setDefaultConfig(string $code, int $storeId = null): self;
 
     /**
      * Set gateway config code
@@ -226,24 +220,10 @@ interface PayUConfigInterface
     public function isRepaymentActive($code);
 
     /**
-     * Get Multi Currency Pricing Partner ID
-     *
-     * @return string
-     */
-    public function getMultiCurrencyPricingPartnerId();
-
-    /**
      * Get payment methods order
      *
      * @return array
      */
     public function getPaymentMethodsOrder();
-
-    /**
-     * Get is enable currency rates for credit card
-     *
-     * @return bool
-     */
-    public function isCrediCardCurrencyRates();
 
 }

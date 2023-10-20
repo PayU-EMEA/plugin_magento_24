@@ -2,79 +2,38 @@
 
 namespace PayU\PaymentGateway\Model;
 
+use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\DB\Transaction;
 use Magento\Payment\Gateway\Command\CommandException;
+use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Api\TransactionRepositoryInterface;
+use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
 use Magento\SalesRule\Model\Coupon\UpdateCouponUsages;
 use PayU\PaymentGateway\Api\CancelOrderPaymentInterface;
 use PayU\PaymentGateway\Api\OrderPaymentResolverInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Sales\Api\TransactionRepositoryInterface;
-use Magento\Framework\DB\Transaction;
-use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
-use Magento\Sales\Api\Data\TransactionInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 
-/**
- * Class CancelOrderPayment
- * @package PayU\PaymentGateway\Model
- */
 class CancelOrderPayment implements CancelOrderPaymentInterface
 {
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
+    private OrderRepositoryInterface $orderRepository;
+    private OrderPaymentResolverInterface $orderPaymentResolver;
+    private SearchCriteriaBuilder $searchCriteriaBuilder;
+    private TransactionRepositoryInterface $transactionRepository;
+    private Transaction $transaction;
+    private PayUConfigInterface $payUConfig;
+    private UpdateCouponUsages $updateCouponUsages;
 
-    /**
-     * @var OrderPaymentResolverInterface
-     */
-    private $orderPaymentResolver;
-
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    private $searchCriteriaBuilder;
-
-    /**
-     * @var TransactionRepositoryInterface
-     */
-    private $transactionRepository;
-
-    /**
-     * @var Transaction
-     */
-    private $transaction;
-
-    /**
-     * @var PayUConfigInterface
-     */
-    private $payUConfig;
-
-    /**
-     * @var UpdateCouponUsages
-     */
-    private $updateCouponUsages;
-
-    /**
-     * CancelOrderPayment constructor.
-     *
-     * @param OrderRepositoryInterface $orderRepository
-     * @param OrderPaymentResolverInterface $orderPaymentResolver
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param TransactionRepositoryInterface $transactionRepository
-     * @param Transaction $transaction
-     * @param UpdateCouponUsages $updateCouponUsages
-     * @param PayUConfigInterface $payUConfig
-     */
     public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        OrderPaymentResolverInterface $orderPaymentResolver,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
+        OrderRepositoryInterface       $orderRepository,
+        OrderPaymentResolverInterface  $orderPaymentResolver,
+        SearchCriteriaBuilder          $searchCriteriaBuilder,
         TransactionRepositoryInterface $transactionRepository,
-        Transaction $transaction,
-        UpdateCouponUsages $updateCouponUsages,
-        PayUConfigInterface $payUConfig
-    ) {
+        Transaction                    $transaction,
+        UpdateCouponUsages             $updateCouponUsages,
+        PayUConfigInterface            $payUConfig
+    )
+    {
         $this->orderRepository = $orderRepository;
         $this->orderPaymentResolver = $orderPaymentResolver;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -87,7 +46,7 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
     /**
      * {@inheritdoc}
      */
-    public function execute($txnId, $amount)
+    public function execute(string $txnId, float $amount): void
     {
         $payment = $this->orderPaymentResolver->getByTransactionTxnId($txnId);
         if ($payment === null) {
@@ -105,13 +64,7 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
         }
     }
 
-    /**
-     * @param string $orderId
-     * @param string $paymentId
-     *
-     * @return void
-     */
-    private function closeTransactions($orderId, $paymentId)
+    private function closeTransactions(string $orderId, string $paymentId): void
     {
         $searchCriteria = $this->getSearchCriteriaForOrder($orderId)->addFilter(
             'payment_id',
@@ -128,12 +81,7 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
         $this->transaction->save();
     }
 
-    /**
-     * @param string $orderId
-     *
-     * @return int
-     */
-    private function getAllActiveTransaction($orderId)
+    private function getAllActiveTransaction(string $orderId): int
     {
         $searchCriteria = $this->getSearchCriteriaForOrder($orderId)->addFilter(
             'is_closed',
@@ -146,12 +94,8 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
 
     /**
      * Set Search Criteria for Order ID
-     *
-     * @param string $orderId
-     *
-     * @return SearchCriteriaBuilder
      */
-    private function getSearchCriteriaForOrder($orderId)
+    private function getSearchCriteriaForOrder(string $orderId): SearchCriteriaBuilder
     {
         $this->searchCriteriaBuilder->addFilter('order_id', $orderId, 'eq');
 

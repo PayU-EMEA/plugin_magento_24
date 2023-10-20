@@ -74,46 +74,16 @@ class PaymentMethods extends Template
     /**
      * Active gateway code
      */
-    const ACTIVE = 'main_parameters/active';
+    const ACTIVE = 'active';
+
+    private PayUGetPayMethodsInterface $payMethods;
+    private OrderRepositoryInterface $orderRepository;
+    private GetAvailableLocaleInterface $availableLocale;
+    private PayUGetUserPayMethodsInterface $userPayMethods;
+    private ?OrderInterface $order = null;
+    private GatewayConfig $gatewayConfig;
 
     /**
-     * @var PayUGetPayMethodsInterface
-     */
-    private $payMethods;
-
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
-
-    /**
-     * @var GetAvailableLocaleInterface
-     */
-    private $availableLocale;
-
-    /**
-     * @var PayUGetUserPayMethodsInterface
-     */
-    private $userPayMethods;
-
-    /**
-     * @var OrderInterface
-     */
-    private $order;
-
-    /**
-     * @var GatewayConfig
-     */
-    private $gatewayConfig;
-
-    /**
-     * @var PayUConfigInterface
-     */
-    private $payUConfig;
-
-    /**
-     * PaymentMethods constructor.
-     *
      * @param Context $context
      * @param PayUGetPayMethodsInterface $payMethods
      * @param PayUGetCreditCardSecureFormConfigInterface $secureFormConfig
@@ -121,7 +91,6 @@ class PaymentMethods extends Template
      * @param GetAvailableLocaleInterface $availableLocale
      * @param PayUGetUserPayMethodsInterface $userPayMethods
      * @param GatewayConfig $gatewayConfig
-     * @param PayUConfigInterface $payUConfig
      * @param array $data
      */
     public function __construct(
@@ -132,7 +101,6 @@ class PaymentMethods extends Template
         GetAvailableLocaleInterface $availableLocale,
         PayUGetUserPayMethodsInterface $userPayMethods,
         GatewayConfig $gatewayConfig,
-        PayUConfigInterface $payUConfig,
         array $data = []
     ) {
         $this->payMethods = $payMethods;
@@ -141,21 +109,17 @@ class PaymentMethods extends Template
         $this->availableLocale = $availableLocale;
         $this->userPayMethods = $userPayMethods;
         $this->gatewayConfig = $gatewayConfig;
-        $this->payUConfig = $payUConfig;
         parent::__construct($context, $data);
     }
 
     /**
      * Get config for PayU Payment Gateway
-     *
-     * @return string
      */
-    public function getPaymentGatewayConfig()
+    public function getPaymentGatewayConfig(): string
     {
         $storeId = $this->_storeManager->getStore()->getId();
         $this->gatewayConfig->setMethodCode(ConfigProvider::CODE);
-        if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId) &&
-            !(bool)$this->payUConfig->isCrediCardCurrencyRates()) {
+        if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId)) {
             return "";
         }
 
@@ -168,17 +132,15 @@ class PaymentMethods extends Template
                 static::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
                 static::TRANSFER_KEY => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
                 static::REPAY_URL => static::REPAY_URI,
-                'methods' => $this->payMethods->execute()
+                'methods' => $this->payMethods->execute(ConfigProvider::CODE)
             ]
         );
     }
 
     /**
      * Get config for PayU Card Payment Gateway
-     *
-     * @return string
      */
-    public function getCardPaymentGatewayConfig()
+    public function getCardPaymentGatewayConfig(): string
     {
         $storeId = $this->_storeManager->getStore()->getId();
         $this->gatewayConfig->setMethodCode(CardConfigProvider::CODE);
@@ -202,19 +164,13 @@ class PaymentMethods extends Template
             ]
         );
     }
-    /**
-     *
-     * @return string
-     */
-    public function getCardEnv()
+
+    public function getCardEnv(): string
     {
         return $this->secureFormConfig->execute()[PayUGetCreditCardSecureFormConfigInterface::CONFIG_ENV];
     }
 
-    /**
-     * @return array
-     */
-    private function getUserStoredCards()
+    private function getUserStoredCards(): array
     {
         return $this->userPayMethods->execute(
             $this->getOrder()->getCustomerEmail(),
@@ -222,15 +178,10 @@ class PaymentMethods extends Template
         );
     }
 
-    /**
-     * Get order
-     *
-     * @return OrderInterface
-     */
-    private function getOrder()
+    private function getOrder(): OrderInterface
     {
         $orderId = (int)$this->getRequest()->getParam('order_id');
-        if ($orderId !== null && $this->order === null) {
+        if ($this->order === null) {
             $this->order = $this->orderRepository->get($orderId);
         }
 
