@@ -52,11 +52,6 @@ class Config implements PayUConfigInterface
     private $metadata;
 
     /**
-     * @var string
-     */
-    private $multiCurrencyPartnerId = '';
-
-    /**
      * @var array
      */
     private $environmentTypes = [PayUConfigInterface::ENVIRONMENT_SECURE, PayUConfigInterface::ENVIRONMENT_SANBOX];
@@ -162,16 +157,6 @@ class Config implements PayUConfigInterface
         $this->setGatewayConfigCode($code);
 
         return (bool)$this->gatewayConfig->getValue('repayment', $this->storeId);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isCrediCardCurrencyRates()
-    {
-        $this->setGatewayConfigCode(CardConfigProvider::CODE);
-
-        return (bool)$this->gatewayConfig->getValue('currency_rates', $this->storeId);
     }
 
     /**

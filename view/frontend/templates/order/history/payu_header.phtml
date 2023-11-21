@@ -1,0 +1,7 @@
+<?php
+/** @var \Payu\PaymentGateway\Block\Order\Grid\Action $block */
+?>
+
+<?php if ($block->isPayuCanRepay()): ?>
+    <th scope="col" class="col payu">PayU</th>
+<?php endif; ?>

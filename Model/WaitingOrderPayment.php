@@ -117,6 +117,7 @@ class WaitingOrderPayment implements WaitingOrderPaymentInterface
             } else {
                 $this->updateOrderStatus->update(
                     $payment->getMethod(),
+                    $payment->getOrder()->getStoreId(),
                     $payment->getLastTransId(),
                     \OpenPayuOrderStatus::STATUS_COMPLETED
                 );

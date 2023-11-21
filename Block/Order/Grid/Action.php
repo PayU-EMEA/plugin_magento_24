@@ -2,34 +2,15 @@
 
 namespace PayU\PaymentGateway\Block\Order\Grid;
 
-use PayU\PaymentGateway\Api\RepaymentResolverInterface;
-use Magento\Sales\Model\Order;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
+use PayU\PaymentGateway\Api\RepaymentResolverInterface;
 
-/**
- * Class Action
- * @package PayU\PaymentGateway\Block\Order\Grid
- */
 class Action extends Template
 {
-    /**
-     * Order ID
-     */
     const ORDER_ID = 'order_id';
+    private RepaymentResolverInterface $repaymentResolver;
 
-    /**
-     * @var RepaymentResolverInterface
-     */
-    private $repaymentResolver;
-
-    /**
-     * Action constructor.
-     *
-     * @param Context $context
-     * @param RepaymentResolverInterface $repaymentResolver
-     * @param array $data
-     */
     public function __construct(Context $context, RepaymentResolverInterface $repaymentResolver, array $data = [])
     {
         $this->repaymentResolver = $repaymentResolver;
@@ -37,46 +18,26 @@ class Action extends Template
     }
 
     /**
-     * Is order can repay
-     *
-     * @param int $orderId
-     *
-     * @return bool
+     * Is Any repayment enabled
      */
-    public function isOrderCanRepay($orderId)
+    public function isPayuCanRepay(): bool
+    {
+        return $this->repaymentResolver->isAnyRepaymentEnabled();
+    }
+
+    /**
+     * Is order can repay
+     */
+    public function isOrderCanRepay(int $orderId): bool
     {
         return $this->repaymentResolver->isRepayment($orderId);
     }
 
     /**
      * Return url for repay
-     *
-     * @param Order $order
-     *
-     * @return string
      */
-    public function getOrderRepayUrl(Order $order)
+    public function getOrderRepayUrl(int $orderId): string
     {
-        return $this->getUrl('sales/order/repayview', [static::ORDER_ID => $order->getId()]);
-    }
-
-    /**
-     * @param Order $order
-     *
-     * @return string
-     */
-    public function getViewUrl(Order $order)
-    {
-        return $this->getUrl('sales/order/view', [static::ORDER_ID => $order->getId()]);
-    }
-
-    /**
-     * @param Order $order
-     *
-     * @return string
-     */
-    public function getReorderUrl(Order $order)
-    {
-        return $this->getUrl('sales/order/reorder', [static::ORDER_ID => $order->getId()]);
+        return $this->getUrl('sales/order/repayview', [static::ORDER_ID => $orderId]);
     }
 }

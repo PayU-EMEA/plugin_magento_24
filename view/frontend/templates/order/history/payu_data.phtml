@@ -1,0 +1,15 @@
+<?php
+/** @var \Payu\PaymentGateway\Block\Order\Grid\Action $block */
+?>
+<?php $_orderId = $block->getOrder()->getEntityId() ?>
+<?php if ($block->isPayuCanRepay()): ?>
+    <td class="col payu" data-th="PayU">
+        <?php if ($block->isOrderCanRepay($_orderId)): ?>
+            <a href="<?= $block->getOrderRepayUrl($_orderId); ?>" class="action repay">
+                <span><?= $block->escapeHtml(__('Repay')); ?></span>
+            </a>
+        <?php else: ?>
+            &nbsp;
+        <?php endif; ?>
+</td>
+<?php endif; ?>
