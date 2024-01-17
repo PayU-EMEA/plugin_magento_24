@@ -2,6 +2,9 @@
 
 # Moduł PayU dla Magento 2 w wersji 2.4
 
+## UWAGA
+**W związku ze zmianami opisanymy w [CHANGELOG][ext10] po aktualizacji wtyczki z wersji 1.X na 2.X należy wykonać ponowną konfigurację wtyczki.**
+
 **Jeżeli masz jakiekolwiek pytania lub chcesz zgłosić błąd zapraszamy do kontaktu z naszym wsparciem pod adresem: tech@payu.pl.**
 
 * Jeżeli używasz Magneto w wersji 1.x proszę skorzystać z [pluginu dla wersji 1.x][ext0]
@@ -149,6 +152,7 @@ Zapisana karta będzie pokazywać się po wybraniu płatności kartą przez PayU
 [ext7]: https://github.com/PayU-EMEA/plugin_magento_2
 [ext8]: README.EN.md
 [ext9]: https://github.com/PayU-EMEA/plugin_magento_23
+[ext10]: CHANGELOG.md
 
 <!--images:-->
 [img0]: readme_images/methods.png

@@ -1,6 +1,8 @@
 [**Wersja polska**][ext8]
 
 # PayU module for Magento 2 version 2.4
+## BREAKING CHANGES
+**Due to changes described in [CHANGELOG][ext10] after updating plugin from version 1.X to 2.X, you must reconfigure plugin.**
 
 **If you have any questions or if you want to report an error, please contact our support at the address: tech@payu.pl.**
 
@@ -149,6 +151,7 @@ A saved card will appear after choosing to pay with a card through PayU for the 
 [ext7]: https://github.com/PayU-EMEA/plugin_magento_2
 [ext8]: README.md
 [ext9]: https://github.com/PayU-EMEA/plugin_magento_23
+[ext10]: CHANGELOG.md
 
 <!--images:-->
 [img0]: readme_images/methods.png

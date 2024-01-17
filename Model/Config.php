@@ -19,7 +19,7 @@ class Config implements PayUConfigInterface
     /**
      * Current Plugin Version
      */
-    const PLUGIN_VERSION = '1.99.99';
+    const PLUGIN_VERSION = '2.0.0';
 
     /**
      * @var \OpenPayU_Configuration

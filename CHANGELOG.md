@@ -1,4 +1,4 @@
-## 1.99.99
+## 2.0.0
 ### BREAKING CHANGES
 * **Common configuration for API parameter regardless of method and changed `config_path` - required to re-enter all configurations**
 #### OTHER CHANGES
