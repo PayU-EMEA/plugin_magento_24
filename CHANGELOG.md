@@ -1,6 +1,6 @@
 ## 1.99.99
 ### BREAKING CHANGES
-* **Common configuration for API parameter  regardless of method and chenged `config_path`  - required to re-enter all configurations**
+* **Common configuration for API parameter regardless of method and changed `config_path` - required to re-enter all configurations**
 #### OTHER CHANGES
 * Use of order currency (not base currency) for create order in PayU
 * Updated logotypes and colors
