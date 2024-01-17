@@ -1,6 +1,8 @@
 [**Wersja polska**][ext8]
 
 # PayU module for Magento 2 version 2.4
+## BREAKING CHANGES
+**Due to changes described in [CHANGELOG][ext10] after updating plugin from version 1.X to 2.X, you must reconfigure plugin.**
 
 **If you have any questions or if you want to report an error, please contact our support at the address: tech@payu.pl.**
 
@@ -19,8 +21,6 @@
     * [Order of payment methods](#order-of-payment-methods)
     * [Repeat payment](#repeat-payment)
     * [Saving card](#saving-cards)
-    * [Conversion](#conversion)
-
 
 ## Properties
 PayU payment module adds a PayU payment option to Magento 2. The module works together with Magento 2 version 2.4
@@ -73,15 +73,7 @@ After installation using Composer or copying files from the console's level, run
 1. On the list of available payment methods choose  **PayU** or **PayU - Cards** to configure the plugin's parameters.
 1. After changing the parameters click `Save config`.
 
-### Parameters
-
-#### Main parameters
-
-| Parameter | Description |
-|---------|-----------|
-| Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments. |
-| Sandbox mode | Determines whether payments will be performed in PayU (sandbox) test environment. |
-| Order of payment methods | Determines the order of the payment methods being displayed (available only for `Płatność PayU`) [more information](#order-of-payment-methods). |
+### API Parameters
 
 #### Point of sale (POS) parameters
 
@@ -102,13 +94,23 @@ Available when the parameter `Test Mode (Sandbox)` is set for `Yes`.
 | OAuth - client_id | client_id for OAuth protocol from PayU system |
 | OAuth - client_secret | client_secret for OAuth from PayU system |
 
-#### IOther parameters
+### "PayU Payment" parameters
 
 | Parameter | Description |
 |---------|-----------|
+| Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments. |
+| Sandbox mode | Determines whether payments will be performed in PayU (sandbox) test environment. |
+| Order of payment methods | Determines the order of the payment methods being displayed [more information](#order-of-payment-methods). |
 | Activate repeat payment? | [more information](#repeat-payment) |
-| Activate remembering of cards? | Available only for  `Card payment` [more information](#saving-cards) |
-| Czy uaktywnić moduł przewalutowania? | Available only for `Card payment` [more information](#conversion) |
+
+### "PayU - Cards" parameters
+
+| Parameter | Description |
+|---------|-----------|
+| Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments. |
+| Sandbox mode | Determines whether payments will be performed in PayU (sandbox) test environment. |
+| Activate repeat payment? | [more information](#repeat-payment) |
+| Activate remembering of cards? | [more information](#saving-cards) |
 
 
 ## Information about properties
@@ -138,17 +140,6 @@ The buyer may save the card while making a payment, using the option "Use and sa
 Each card being remembered is subject to strong authentication during first payment (CVV and 3DS). 
 A saved card will appear after choosing to pay with a card through PayU for the order and is visible in the user's account (tab "My saved cards"), where an option to delete it is also available.
 
-### Conversion
-Conversion, in other words Multi-Currency Pricing (MCP), makes it possible to charge the users' cards in a currency other than the currency of reconciliation with PayU. 
-For instance, it is possible to charge the card in EUR but receive PLN from PayU. 
-Conversion is based on Magento's functionality which makes it possible for "store-view" to define "display currency" other than "base currency". 
-This option is more convenient for the buyer than DCC (Dynamic Currency Conversion) because the price in the currency of his card is displayed for each product and makes it easier to take a decision to make the purchase (in case of DCC the amount in the foreign currency is known only after payment is commenced). 
-To activate this service you must:
-* obtain the `mcpPartnerId` parameter PayU (which makes it possible to obtain FX tables from PayU with appropriate currency pairs),
-* configure cyclical downloads of FX tables from PayU in Magento.
-To activate and configure the service please contact PayU's account manager.
-
-
 <!--external links:-->
 [ext0]: https://github.com/PayU-EMEA/plugin_magento
 [ext1]: https://www.payu.pl/en/commercial-offer
@@ -160,6 +151,7 @@ To activate and configure the service please contact PayU's account manager.
 [ext7]: https://github.com/PayU-EMEA/plugin_magento_2
 [ext8]: README.md
 [ext9]: https://github.com/PayU-EMEA/plugin_magento_23
+[ext10]: CHANGELOG.md
 
 <!--images:-->
 [img0]: readme_images/methods.png

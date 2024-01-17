@@ -84,9 +84,7 @@ class ConfigProvider implements ConfigProviderInterface
     public function getConfig()
     {
         $this->gatewayConfig->setMethodCode(self::CODE);
-        $isActive =
-            (bool)$this->gatewayConfig->getValue('main_parameters/active', $this->storeId) &&
-            !(bool)$this->payUConfig->isCrediCardCurrencyRates();
+        $isActive = (bool)$this->gatewayConfig->getValue('active', $this->storeId);
 
         return [
             'payment' => [
@@ -94,7 +92,7 @@ class ConfigProvider implements ConfigProviderInterface
                     'isActive' => $isActive,
                     'logoSrc' => $this->assetRepository->getUrl(PayUConfigInterface::PAYU_BANK_TRANSFER_LOGO_SRC),
                     'termsUrl' => PayUConfigInterface::PAYU_TERMS_URL,
-                    'payByLinks' => $this->payMethods->execute(),
+                    'payByLinks' => $isActive ? $this->payMethods->execute(self::CODE) : [],
                     'transferKey' => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
                     'language' => $this->getLanguage()
                 ]

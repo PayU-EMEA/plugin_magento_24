@@ -2,17 +2,15 @@
 
 namespace PayU\PaymentGateway\Model;
 
-use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Model\Order;
-use PayU\PaymentGateway\Api\PayUConfigInterface;
-use PayU\PaymentGateway\Api\PayURepayOrderInterface;
+use Magento\Sales\Api\Data\OrderPaymentInterface;
+use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Api\Data\TransactionInterfaceFactory;
-use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Sales\Api\OrderPaymentRepositoryInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
-use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Api\Data\OrderPaymentInterface;
+use Magento\Sales\Api\TransactionRepositoryInterface;
+use PayU\PaymentGateway\Api\PayUConfigInterface;
+use PayU\PaymentGateway\Api\PayURepayOrderInterface;
 
 /**
  * Class RepayOrder
@@ -20,52 +18,26 @@ use Magento\Sales\Api\Data\OrderPaymentInterface;
  */
 class RepayOrder implements PayURepayOrderInterface
 {
-    /**
-     * @var TransactionInterfaceFactory
-     */
-    private $transactionFactory;
+    private TransactionInterfaceFactory $transactionFactory;
+    private TransactionRepositoryInterface $transactionRepository;
+    private OrderPaymentRepositoryInterface $paymentRepository;
+    private OrderRepositoryInterface $orderRepository;
 
-    /**
-     * @var TransactionRepositoryInterface
-     */
-    private $transactionRepository;
-
-    /**
-     * @var OrderPaymentRepositoryInterface
-     */
-    private $paymentRepository;
-
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
-
-    /**
-     * Reorder constructor.
-     *
-     * @param TransactionInterfaceFactory $transactionFactory
-     * @param TransactionRepositoryInterface $transactionRepository
-     * @param OrderPaymentRepositoryInterface $paymentRepository
-     * @param OrderRepositoryInterface $orderRepository
-     */
     public function __construct(
-        TransactionInterfaceFactory $transactionFactory,
-        TransactionRepositoryInterface $transactionRepository,
+        TransactionInterfaceFactory     $transactionFactory,
+        TransactionRepositoryInterface  $transactionRepository,
         OrderPaymentRepositoryInterface $paymentRepository,
-        OrderRepositoryInterface $orderRepository
-    ) {
+        OrderRepositoryInterface        $orderRepository
+    )
+    {
         $this->transactionFactory = $transactionFactory;
         $this->transactionRepository = $transactionRepository;
         $this->paymentRepository = $paymentRepository;
         $this->orderRepository = $orderRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function execute(OrderInterface $order, $method, $payUMethodType, $payUMethod, $payuBrowser, $transactionId)
+    public function execute(OrderInterface $order, string $method, string $payUMethodType, string $payUMethod, array $payuBrowser, string $transactionId): void
     {
-        /** @var Payment $payment */
         $payment = $order->getPayment();
         $newPayment = $this->makeNewPayment(
             $payment,
@@ -76,21 +48,14 @@ class RepayOrder implements PayURepayOrderInterface
             $payuBrowser,
             $transactionId
         );
-        $this->addPaymentToOrder($order, $payment, $transactionId);
+        $this->addPaymentToOrder($order, $newPayment, $transactionId);
         $this->addTransactionToPayment($newPayment, $order->getEntityId(), $transactionId);
     }
 
-    /**
-     * @param OrderInterface|Order $order
-     * @param Payment $payment
-     * @param string $transactionId
-     *
-     * @return void
-     */
-    private function addPaymentToOrder(Order $order, Payment $payment, $transactionId)
+    private function addPaymentToOrder(OrderInterface $order, OrderPaymentInterface $payment, string $transactionId): void
     {
         $order->setPayment($payment);
-        $order->addStatusHistoryComment(
+        $order->addCommentToStatusHistory(
             __(
                 'Authorized amount of %1. Transaction ID: "%2"',
                 $payment->formatPrice($payment->getAmountAuthorized()),
@@ -102,14 +67,7 @@ class RepayOrder implements PayURepayOrderInterface
         $this->orderRepository->save($order);
     }
 
-    /**
-     * @param Payment $payment
-     * @param string $orderId
-     * @param string $transactionId
-     *
-     * @return void
-     */
-    private function addTransactionToPayment(Payment $payment, $orderId, $transactionId)
+    private function addTransactionToPayment(OrderPaymentInterface $payment, int $orderId, string $transactionId): void
     {
         $paymentTransaction = $this->transactionFactory->create();
         $paymentTransaction->setOrderId($orderId);
@@ -120,20 +78,8 @@ class RepayOrder implements PayURepayOrderInterface
         $this->transactionRepository->save($paymentTransaction);
     }
 
-    /**
-     * @param Payment $payment
-     * @param string $orderId
-     * @param string $method
-     * @param string $payUMethod
-     * @param string $payUMethodType
-     * @param array $payuBrowser
-     * @param string $transactionId
-     *
-     * @return OrderPaymentInterface|Payment
-     */
-    private function makeNewPayment(Payment $payment, $orderId, $method, $payUMethod, $payUMethodType, $payuBrowser, $transactionId)
+    private function makeNewPayment(OrderPaymentInterface $payment, int $orderId, string $method, string $payUMethodType, string $payUMethod, array $payuBrowser, string $transactionId): OrderPaymentInterface
     {
-        /** @var Payment $newPayment */
         $newPayment = $this->paymentRepository->create();
         $newPayment->setMethod($method);
         $newPayment->setParentId($orderId);

@@ -2,25 +2,13 @@
 
 namespace PayU\PaymentGateway\Model;
 
-use PayU\PaymentGateway\Api\GetAvailableLocaleInterface;
 use Magento\Framework\Locale\ResolverInterface;
+use PayU\PaymentGateway\Api\GetAvailableLocaleInterface;
 
-/**
- * Class GetAvailableLocale
- * @package PayU\PaymentGateway\Model
- */
 class GetAvailableLocale implements GetAvailableLocaleInterface
 {
-    /**
-     * @var ResolverInterface
-     */
-    private $resolver;
+    private ResolverInterface $resolver;
 
-    /**
-     * GetAvailableLocale constructor.
-     *
-     * @param ResolverInterface $resolver
-     */
     public function __construct(ResolverInterface $resolver)
     {
         $this->resolver = $resolver;
@@ -29,7 +17,7 @@ class GetAvailableLocale implements GetAvailableLocaleInterface
     /**
      * {@inheritdoc}
      */
-    public function execute(array $availableLanguages = [])
+    public function execute(array $availableLanguages = []): string
     {
         $currentLocale = current(explode('_', $this->resolver->getLocale()));
         if (empty($availableLanguages) || in_array($currentLocale, $availableLanguages)) {

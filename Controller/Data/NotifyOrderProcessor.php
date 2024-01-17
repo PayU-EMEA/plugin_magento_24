@@ -7,32 +7,12 @@ use PayU\PaymentGateway\Api\CancelOrderPaymentInterface;
 use PayU\PaymentGateway\Api\WaitingOrderPaymentInterface;
 use Magento\Payment\Gateway\Command\CommandException;
 
-/**
- * Class NotifyOrderProcessor
- * @package PayU\PaymentGateway\Controller\Data
- */
 class NotifyOrderProcessor
 {
-    /**
-     * @var AcceptOrderPaymentInterface
-     */
-    private $acceptOrderPayment;
+    private AcceptOrderPaymentInterface $acceptOrderPayment;
+    private CancelOrderPaymentInterface $cancelOrderPayment;
+    private WaitingOrderPaymentInterface $waitingOrderPayment;
 
-    /**
-     * @var CancelOrderPaymentInterface
-     */
-    private $cancelOrderPayment;
-
-    /**
-     * @var WaitingOrderPaymentInterface
-     */
-    private $waitingOrderPayment;
-
-    /**
-     * @param AcceptOrderPaymentInterface $acceptOrderPayment
-     * @param CancelOrderPaymentInterface $cancelOrderPayment
-     * @param WaitingOrderPaymentInterface $waitingOrderPayment
-     */
     public function __construct(
         AcceptOrderPaymentInterface $acceptOrderPayment,
         CancelOrderPaymentInterface $cancelOrderPayment,
@@ -44,17 +24,9 @@ class NotifyOrderProcessor
     }
 
     /**
-     * Process notify request
-     *
-     * @param string $status
-     * @param string $txnId
-     * @param int $totalAmount
-     * @param string|null $paymentId
-     *
-     * @return void
      * @throws CommandException
      */
-    public function process($status, $txnId, $totalAmount, $paymentId = null)
+    public function process(string $status, string $txnId, int $totalAmount, string $paymentId = null): void
     {
         $totalAmount = (float)($totalAmount / 100);
         switch ($status) {

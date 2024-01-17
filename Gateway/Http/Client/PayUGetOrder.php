@@ -2,62 +2,16 @@
 
 namespace PayU\PaymentGateway\Gateway\Http\Client;
 
-use Magento\Payment\Gateway\Http\ClientInterface;
-use Magento\Payment\Gateway\Http\TransferInterface;
-use PayU\PaymentGateway\Api\PayUGetOrderInterfaceFactory;
-use PayU\PaymentGateway\Model\Logger\Logger;
-
-/**
- * Class PayUGetOrder
- * @package PayU\PaymentGateway\Gateway\Http\Client
- */
-class PayUGetOrder implements ClientInterface
+class PayUGetOrder extends PayUAbstractClient
 {
-    /**
-     * @var PayUGetOrderInterfaceFactory
-     */
-    private $getOrderFactory;
-
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @param PayUGetOrderInterfaceFactory $getOrderFactory
-     * @param Logger $logger
-     */
-    public function __construct(PayUGetOrderInterfaceFactory $getOrderFactory, Logger $logger)
+    protected function payuApi(array $data): array
     {
-        $this->getOrderFactory = $getOrderFactory;
-        $this->logger = $logger;
-    }
+        $response = \OpenPayU_Order::retrieve($data[self::ORDER_ID])->getResponse();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function placeRequest(TransferInterface $transferObject)
-    {
-        try {
-            return $this->getApiOrder($transferObject);
-        } catch (\OpenPayU_Exception_Network $exception) {
-            $this->logger->critical($exception->getMessage());
-
-            return [];
+        if (isset($response->orders) && isset($response->orders[0])) {
+            return get_object_vars($response->orders[0]);
         }
-    }
 
-    /**
-     * Get order from PayU REST API
-     *
-     * @param \Magento\Payment\Gateway\Http\TransferInterface $transferObject
-     *
-     * @return array
-     */
-    protected function getApiOrder(TransferInterface $transferObject)
-    {
-        $parameters = $transferObject->getBody();
-
-        return $this->getOrderFactory->create()->execute($parameters['TXN_ID'], $parameters['paymentCode']);
+        return [];
     }
 }

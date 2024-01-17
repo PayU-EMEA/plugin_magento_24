@@ -27,8 +27,8 @@ $cardConfig = $this->getCardPaymentGatewayConfig();
             "Magento_Ui/js/core/app": {
                 "components": {
                     "payu_gateway": {
-                        "component" : "PayU_PaymentGateway/js/view/order/payu_gateway",
-                        "config" : <?php echo $config; ?>
+                        "component": "PayU_PaymentGateway/js/view/order/payu_gateway",
+                        "config": <?= $config; ?>
                     }
                 }
             }
@@ -40,7 +40,7 @@ if (!empty($cardConfig)):
     ?>
     <script type="text/javascript">
         window.payuConfig = {
-            env: "<?php echo $this->getCardEnv(); ?>"
+            env: "<?=  $this->getCardEnv(); ?>"
         }
     </script>
     <script type="text/x-magento-init">
@@ -49,8 +49,8 @@ if (!empty($cardConfig)):
             "Magento_Ui/js/core/app": {
                 "components": {
                     "payu_gateway_card": {
-                        "component" : "PayU_PaymentGateway/js/view/order/payu_gateway_card",
-                        "config" : <?php echo $cardConfig; ?>
+                        "component": "PayU_PaymentGateway/js/view/order/payu_gateway_card",
+                        "config": <?= $cardConfig; ?>
                     }
                 }
             }

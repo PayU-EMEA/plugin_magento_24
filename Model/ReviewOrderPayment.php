@@ -2,20 +2,14 @@
 
 namespace PayU\PaymentGateway\Model;
 
+use Magento\Framework\Event\ManagerInterface as EventManager;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Api\OrderPaymentRepositoryInterface;
 use Magento\Sales\Model\Order\Payment;
 use PayU\PaymentGateway\Api\OrderPaymentResolverInterface;
-use PayU\PaymentGateway\Api\ReviewOrderPaymentInterface;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Sales\Api\OrderRepositoryInterface;
 use PayU\PaymentGateway\Api\PayUUpdateOrderStatusInterface;
-use Magento\Framework\Event\ManagerInterface as EventManager;
+use PayU\PaymentGateway\Api\ReviewOrderPaymentInterface;
 
-/**
- * Class ReviewOrderPayment
- * @package PayU\PaymentGateway\Model
- */
 class ReviewOrderPayment implements ReviewOrderPaymentInterface
 {
     /**
@@ -23,54 +17,17 @@ class ReviewOrderPayment implements ReviewOrderPaymentInterface
      */
     const REVIEW_ERROR = 'We can\'t update the payment right now.';
 
-    /**
-     * @var Payment
-     */
-    private $payment;
+    private Payment $payment;
+    private PayUUpdateOrderStatusInterface $updateOrderStatus;
+    private EventManager $eventManager;
+    private OrderPaymentResolverInterface $paymentResolver;
 
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
-
-    /**
-     * @var OrderPaymentRepositoryInterface
-     */
-    private $orderPaymentRepository;
-
-    /**
-     * @var PayUUpdateOrderStatusInterface
-     */
-    private $updateOrderStatus;
-
-    /**
-     * @var EventManager
-     */
-    private $eventManager;
-
-    /**
-     * @var OrderPaymentResolverInterface
-     */
-    private $paymentResolver;
-
-    /**
-     * ReviewOrderPayment constructor.
-     *
-     * @param OrderRepositoryInterface $orderRepository
-     * @param OrderPaymentRepositoryInterface $paymentRepository
-     * @param PayUUpdateOrderStatusInterface $updateOrderStatus
-     * @param EventManager $eventManager
-     * @param OrderPaymentResolverInterface $paymentResolver
-     */
     public function __construct(
-        OrderRepositoryInterface $orderRepository,
-        OrderPaymentRepositoryInterface $paymentRepository,
         PayUUpdateOrderStatusInterface $updateOrderStatus,
-        EventManager $eventManager,
-        OrderPaymentResolverInterface $paymentResolver
-    ) {
-        $this->orderRepository = $orderRepository;
-        $this->orderPaymentRepository = $paymentRepository;
+        EventManager                   $eventManager,
+        OrderPaymentResolverInterface  $paymentResolver
+    )
+    {
         $this->updateOrderStatus = $updateOrderStatus;
         $this->eventManager = $eventManager;
         $this->paymentResolver = $paymentResolver;
@@ -79,34 +36,33 @@ class ReviewOrderPayment implements ReviewOrderPaymentInterface
     /**
      * {@inheritdoc}
      */
-    public function execute(OrderInterface $order, $action)
+    public function execute(OrderInterface $order, string $action): void
     {
-        $this->payment = $order->getPayment();
         $this->payment = $this->paymentResolver->getLast($order);
         $method = $action . 'Payment';
         if (!method_exists($this, $method)) {
             throw new LocalizedException(__('Action "%1" is not supported.', $action));
         }
 
-        $this->{$method}();
-        $this->orderRepository->save($this->payment->getOrder());
-        $this->orderPaymentRepository->save($this->payment);
+        $this->{$method}($order->getStoreId());
     }
 
     /**
      * Accept Payment Action
      *
-     * @return void
-     * @throws LocalizedException
+     * @throws LocalizedException|\OpenPayU_Exception
      */
-    protected function acceptPayment()
+    protected function acceptPayment(int $storeId): void
     {
         $response = $this->updateOrderStatus->update(
             $this->payment->getMethod(),
+            $storeId,
             $this->payment->getLastTransId(),
             \OpenPayuOrderStatus::STATUS_COMPLETED
         );
-        if ($response->getStatus() !== \OpenPayU_Order::SUCCESS) {
+        if ($response->getStatus() === \OpenPayU_Order::SUCCESS) {
+            $this->eventManager->dispatch('payu_payment_status_assign', ['payment' => $this->payment]);
+        } else {
             throw new LocalizedException(__(static::REVIEW_ERROR));
         }
     }
@@ -114,18 +70,18 @@ class ReviewOrderPayment implements ReviewOrderPaymentInterface
     /**
      * Deny Payment Action
      *
-     * @return void
-     * @throws LocalizedException
+     * @throws LocalizedException|\OpenPayU_Exception
      */
-    protected function denyPayment()
+    protected function denyPayment(int $storeId): void
     {
         $response = $this->updateOrderStatus->cancel(
             $this->payment->getMethod(),
+            $storeId,
             $this->payment->getLastTransId()
 
         );
         if ($response !== null && $response->getStatus() === \OpenPayU_Order::SUCCESS) {
-            $this->eventManager->dispatch('payu_deny_payment', ['payment' => $this->payment]);
+            $this->eventManager->dispatch('payu_payment_status_assign', ['payment' => $this->payment]);
         } else {
             throw new LocalizedException(__(static::REVIEW_ERROR));
         }

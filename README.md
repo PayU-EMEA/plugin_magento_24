@@ -2,6 +2,9 @@
 
 # Moduł PayU dla Magento 2 w wersji 2.4
 
+## UWAGA
+**W związku ze zmianami opisanymy w [CHANGELOG][ext10] po aktualizacji wtyczki z wersji 1.X na 2.X należy wykonać ponowną konfigurację wtyczki.**
+
 **Jeżeli masz jakiekolwiek pytania lub chcesz zgłosić błąd zapraszamy do kontaktu z naszym wsparciem pod adresem: tech@payu.pl.**
 
 * Jeżeli używasz Magneto w wersji 1.x proszę skorzystać z [pluginu dla wersji 1.x][ext0]
@@ -19,8 +22,6 @@
     * [Kolejność metod płatności](#kolejność-metod-płatności)
     * [Ponowienie płatności](#ponowienie-płatności)
     * [Zapisywanie kart](#zapisywanie-kart)
-    * [Przewalutowanie](#przewalutowanie)
-
 
 ## Cechy
 Moduł płatności PayU dodaje do Magento 2 opcję płatności PayU. Moduł współpracuje z Magento 2 w wersji 2.4
@@ -72,15 +73,7 @@ Po instalacji przy użyciu Composer lub kopiując pliki z poziomu konsoli urucho
 1. Na liście dostępnych metod płatności należy wybrać **PayU** lub **PayU - Cards** w celu konfiguracji parametrów wtyczki.
 1. Po zmanie paramettrów naciśnij przycisk `Save config`.
 
-### Parametry
-
-#### Główne parametry
-
-| Parameter | Opis |
-|---------|-----------|
-| Czy włączyć wtyczkę? | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności. |
-| Tryb Sandbox | Określa czy płatności będą realizowane na środowisku testowym (sandbox) PayU. |
-| Kolejność metod płatności | Określa kolejnośc wyświetlanych metod płatności (dostępne tylko dla `Płatność PayU`) [więcej informacji](#kolejność-metod-płatności). |
+### Parametry API
 
 #### Parametry punktu płatności (POS)
 
@@ -101,14 +94,23 @@ Dostępne gdy parametr `Tryb testowy (Sandbox)` jest ustawiony na `Tak`.
 | OAuth - client_id | client_id dla protokołu OAuth z systemu PayU |
 | OAuth - client_secret | client_secret for OAuth z systemu PayU |
 
-#### Inne parametry
+### Parametry płatności
 
 | Parameter | Opis |
 |---------|-----------|
+| Czy włączyć wtyczkę? | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności. |
+| Tryb Sandbox | Określa czy płatności będą realizowane na środowisku testowym (sandbox) PayU. |
+| Kolejność metod płatności | Określa kolejnośc wyświetlanych metod płatności [więcej informacji](#kolejność-metod-płatności). |
 | Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności) |
-| Czy uaktywnić zapisywanie kart? | Dostępne tylko dla `Płatność kartą` [więcej informacji](#zapisywanie-kart) |
-| Czy uaktywnić moduł przewalutowania? | Dostępne tylko dla `Płatność kartą` [więcej informacji](#przewalutowanie) |
 
+### Parametry płatności "PayU - Karty"
+
+| Parameter | Opis |
+|---------|-----------|
+| Czy włączyć wtyczkę? | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności. |
+| Tryb Sandbox | Określa czy płatności będą realizowane na środowisku testowym (sandbox) PayU. |
+| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności) |
+| Czy uaktywnić zapisywanie kart? |  [więcej informacji](#zapisywanie-kart) |
 
 ## Informacje o cechach
 
@@ -139,18 +141,6 @@ Każda zapisywana karta podlega silnemu uwierzytelnieniu przy pierwszej płatno�
 Zapisana karta będzie pokazywać się po wybraniu płatności kartą przez PayU za zamówienie i jest widoczna w koncie użytkownika
 (zakładka "Moje zapisane karty"), gdzie jest również dostępna opcja jej usunięcia.   
 
-### Przewalutowanie
-Przewalutowanie, inaczej Multi-Currency Pricing (MCP), daje możliwość obciążania kart użytkowników w walucie innej niż waluta rozliczeniowa z PayU. Przykładowo, można obciażyć kartę w EUR,
-ale otrzymać PLN od PayU.
-Przewalutowanie opiera się o funkcjonalność Magento, która dla sklepu pozwala dla "store-view" zdefiniować "display currency" różną od "base currency".
-Ta opcja jest wygodniejsza dla kupującego niż DCC (Dynamic Currency Conversion), gdyż cena w walucie jego karty pokazana jest na poszczególnych produktach
-i pozwala łatwiej podjąć decyzję o zakupie (w przypadku DCC kwota w walucie znana jest dopiero po rozpoczęciu płatności).
-W celu uruchomienia tej usługi należy:
-* uzyskać parametr mcpPartnerId z PayU (pozwala pobierać tabele kursowe z PayU z odpowiednimi parami walutowymi),
-* skonfigurować cykliczne pobieranie tabel kursowych z PayU w Magento.
-W celu uruchomienia i konfiguracji usługi należy skontaktować się z opiekunem handlowym w PayU.
-
-
 <!--external links:-->
 [ext0]: https://github.com/PayU-EMEA/plugin_magento
 [ext1]: https://www.payu.pl/oferta-handlowa
@@ -162,6 +152,7 @@ W celu uruchomienia i konfiguracji usługi należy skontaktować się z opiekune
 [ext7]: https://github.com/PayU-EMEA/plugin_magento_2
 [ext8]: README.EN.md
 [ext9]: https://github.com/PayU-EMEA/plugin_magento_23
+[ext10]: CHANGELOG.md
 
 <!--images:-->
 [img0]: readme_images/methods.png

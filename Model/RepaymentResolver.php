@@ -9,28 +9,11 @@ use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
 use PayU\PaymentGateway\Model\Ui\ConfigProvider;
 use PayU\PaymentGateway\Observer\AfterPlaceOrderObserver;
 
-/**
- * Class RepaymentResolver
- * @package PayU\PaymentGateway\Model
- */
 class RepaymentResolver implements RepaymentResolverInterface
 {
-    /**
-     * @var PayUConfigInterface
-     */
-    private $payUConfig;
+    private PayUConfigInterface $payUConfig;
+    private OrderRepositoryInterface $orderRepository;
 
-    /**
-     * @var OrderRepositoryInterface
-     */
-    private $orderRepository;
-
-    /**
-     * RepaymentResolver constructor.
-     *
-     * @param PayUConfigInterface $payUConfig
-     * @param OrderRepositoryInterface $orderRepository ;
-     */
     public function __construct(PayUConfigInterface $payUConfig, OrderRepositoryInterface $orderRepository)
     {
         $this->payUConfig = $payUConfig;
@@ -40,7 +23,7 @@ class RepaymentResolver implements RepaymentResolverInterface
     /**
      * {@inheritdoc}
      */
-    public function isRepayment($orderId)
+    public function isRepayment(int $orderId): bool
     {
         $order = $this->orderRepository->get($orderId);
         $payment = $order->getPayment();
@@ -50,4 +33,12 @@ class RepaymentResolver implements RepaymentResolverInterface
             $this->payUConfig->isRepaymentActive($payment->getMethod());
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function isAnyRepaymentEnabled(): bool
+    {
+        return $this->payUConfig->isRepaymentActive(ConfigProvider::CODE)
+            || $this->payUConfig->isRepaymentActive(CardConfigProvider::CODE);
+    }
 }

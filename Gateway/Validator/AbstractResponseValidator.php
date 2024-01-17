@@ -19,6 +19,16 @@ abstract class AbstractResponseValidator extends AbstractValidator
      * Validation status subject code
      */
     const VALIDATION_SUBJECT_STATUS = 'status';
+    /**
+     * Warning continue cvv code
+     */
+
+    const WARNING_CONTINUE_CVV = 'WARNING_CONTINUE_CVV';
+
+    /**
+     * Warning continue 3DS code
+     */
+    const WARNING_CONTINUE_3_DS = 'WARNING_CONTINUE_3DS';
 
     /**
      * @var array

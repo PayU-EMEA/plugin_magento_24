@@ -7,10 +7,6 @@
     <preference for="PayU\PaymentGateway\Api\PayUGetCreditCardSecureFormConfigInterface" type="PayU\PaymentGateway\Model\GetCreditCardSecureFormConfig" />
     <preference for="PayU\PaymentGateway\Api\PayUGetCreditCardCVVWidgetConfigInterface" type="PayU\PaymentGateway\Model\GetCreditCardCVVWidgetConfig" />
     <preference for="PayU\PaymentGateway\Api\GetAvailableLocaleInterface" type="PayU\PaymentGateway\Model\GetAvailableLocale" />
-    <preference for="PayU\PaymentGateway\Api\PayUCreateOrderInterface" type="PayU\PaymentGateway\Model\CreateOrder" />
-    <preference for="PayU\PaymentGateway\Api\PayUGetOrderInterface" type="PayU\PaymentGateway\Model\GetOrder" />
-    <preference for="PayU\PaymentGateway\Api\PayUGetMultiCurrencyPricingInterface" type="PayU\PaymentGateway\Model\GetMultiCurrencyPricing" />
-    <preference for="PayU\PaymentGateway\Api\PayURefundOrderInterface" type="PayU\PaymentGateway\Model\RefundOrder" />
     <preference for="PayU\PaymentGateway\Api\PayURepayOrderInterface" type="PayU\PaymentGateway\Model\RepayOrder" />
     <preference for="PayU\PaymentGateway\Api\AcceptOrderPaymentInterface" type="PayU\PaymentGateway\Model\AcceptOrderPayment" />
     <preference for="PayU\PaymentGateway\Api\CancelOrderPaymentInterface" type="PayU\PaymentGateway\Model\CancelOrderPayment" />
@@ -20,122 +16,38 @@
     <preference for="PayU\PaymentGateway\Api\PayUUpdateRefundStatusInterface" type="PayU\PaymentGateway\Model\UpdateRefundStatus" />
     <preference for="PayU\PaymentGateway\Api\PayUDeleteUserTokenInterface" type="PayU\PaymentGateway\Model\DeleteUserToken" />
     <preference for="PayU\PaymentGateway\Api\RepaymentResolverInterface" type="PayU\PaymentGateway\Model\RepaymentResolver" />
-    <preference for="PayU\PaymentGateway\Api\CreateOrderResolverInterface" type="PayU\PaymentGateway\Model\CreateOrderResolver" />
     <preference for="PayU\PaymentGateway\Api\OrderByExtOrderIdResolverInterface" type="PayU\PaymentGateway\Model\OrderByExtOrderIdResolver" />
-    <preference for="PayU\PaymentGateway\Api\PayUMcpExchangeRateResolverInterface" type="PayU\PaymentGateway\Model\McpEchangeRateResolver" />
     <preference for="PayU\PaymentGateway\Api\OrderPaymentResolverInterface" type="PayU\PaymentGateway\Model\OrderPaymentResolver" />
+
+    <virtualType name="PayUPaymentGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayCardConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\Ui\CardConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- PBL -->
     <virtualType name="PayUPaymentGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
-            <argument name="code" xsi:type="const">\PayU\PaymentGateway\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\Ui\ConfigProvider::CODE</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
-            <argument name="infoBlockType" xsi:type="string">PayU\PaymentGateway\Block\Info</argument>
+            <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayValueHandlerPool</argument>
             <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCommandPool</argument>
         </arguments>
     </virtualType>
-    <virtualType name="PayUPaymentGatewayCardFacade" type="Magento\Payment\Model\Method\Adapter">
+
+    <virtualType name="PayUPaymentGatewayInfoBlock" type="Magento\Payment\Block\ConfigurableInfo">
         <arguments>
-            <argument name="code" xsi:type="const">\PayU\PaymentGateway\Model\Ui\CardConfigProvider::CODE</argument>
-            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
-            <argument name="infoBlockType" xsi:type="string">PayU\PaymentGateway\Block\Info</argument>
-            <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayValueHandlerPool</argument>
-            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCardCommandPool</argument>
+            <argument name="config" xsi:type="object">PayUPaymentGatewayConfig</argument>
         </arguments>
     </virtualType>
-    <virtualType name="PayUPaymentGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
-        <arguments>
-            <argument name="methodCode" xsi:type="const">\PayU\PaymentGateway\Model\Ui\ConfigProvider::CODE</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="PayUPaymentGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
-        <arguments>
-            <argument name="commands" xsi:type="array">
-                <item name="authorize" xsi:type="string">PayUPaymentGatewayAuthorizeCommand</item>
-                <item name="capture" xsi:type="string">PayUPaymentGatewayCaptureCommand</item>
-                <item name="void" xsi:type="string">PayUPaymentGatewayVoidCommand</item>
-                <item name="refund" xsi:type="string">PayUPaymentGatewayRefundCommand</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="PayUPaymentGatewayCardCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
-        <arguments>
-            <argument name="commands" xsi:type="array">
-                <item name="authorize" xsi:type="string">PayUPaymentGatewayCardAuthorizeCommand</item>
-                <item name="capture" xsi:type="string">PayUPaymentGatewayCaptureCommand</item>
-                <item name="void" xsi:type="string">PayUPaymentGatewayVoidCommand</item>
-                <item name="refund" xsi:type="string">PayUPaymentGatewayRefundCommand</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="PayUPaymentGatewayAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">PayUPaymentGatewayAuthorizationRequest</argument>
-            <argument name="handler" xsi:type="object">PayUPaymentGatewayResponseHandlerComposite</argument>
-            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
-            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseCreatePblValidator</argument>
-            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayUCreateOrder</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="PayUPaymentGatewayCardAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">PayUPaymentGatewayAuthorizationRequest</argument>
-            <argument name="handler" xsi:type="object">PayUPaymentGatewayCardResponseHandlerComposite</argument>
-            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
-            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseCreateCardValidator</argument>
-            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayUCreateOrder</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="PayUPaymentGatewayAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
-        <arguments>
-            <argument name="builders" xsi:type="array">
-                <item name="transaction" xsi:type="string">PayU\PaymentGateway\Gateway\Request\AuthorizationRequest</item>
-                <item name="payUData" xsi:type="string">PayU\PaymentGateway\Gateway\Request\PayUDataRequest</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="PayUPaymentGatewayCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">PayU\PaymentGateway\Gateway\Request\CaptureRequest</argument>
-            <argument name="handler" xsi:type="object">PayU\PaymentGateway\Gateway\Response\Order\TxnIdGetHandler</argument>
-            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
-            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseGetValidator</argument>
-            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayUGetOrder</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="PayUPaymentGatewayVoidCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="requestBuilder" xsi:type="object">PayU\PaymentGateway\Gateway\Request\VoidRequest</argument>
-            <argument name="handler" xsi:type="object">PayU\PaymentGateway\Gateway\Response\Order\TxnIdGetHandler</argument>
-            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
-            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseGetValidator</argument>
-            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayUCreateOrder</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="PayUPaymentGatewayRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
-        <arguments>
-            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayURefundOrder</argument>
-            <argument name="requestBuilder" xsi:type="object">PayU\PaymentGateway\Gateway\Request\RefundRequest</argument>
-            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseRefundValidator</argument>
-            <argument name="handler" xsi:type="object">PayU\PaymentGateway\Gateway\Response\Order\TxnIdRefundHandler</argument>
-            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="PayUPaymentGatewayResponseHandlerComposite" type="Magento\Payment\Gateway\Response\HandlerChain">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="txnid" xsi:type="string">PayU\PaymentGateway\Gateway\Response\Order\TxnIdCreateHandler</item>
-                <item name="fraud" xsi:type="string">PayU\PaymentGateway\Gateway\Response\FraudHandler</item>
-            </argument>
-        </arguments>
-    </virtualType>
-    <virtualType name="PayUPaymentGatewayCardResponseHandlerComposite" type="Magento\Payment\Gateway\Response\HandlerChain">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="txnid" xsi:type="string">PayU\PaymentGateway\Gateway\Response\Order\TxnIdCreateCardHandler</item>
-                <item name="fraud" xsi:type="string">PayU\PaymentGateway\Gateway\Response\FraudHandler</item>
-            </argument>
-        </arguments>
-    </virtualType>
+
     <virtualType name="PayUPaymentGatewayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
         <arguments>
             <argument name="handlers" xsi:type="array">
@@ -143,26 +55,176 @@
             </argument>
         </arguments>
     </virtualType>
+
     <virtualType name="PayUPaymentGatewayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
         <arguments>
             <argument name="configInterface" xsi:type="object">PayUPaymentGatewayConfig</argument>
         </arguments>
     </virtualType>
-    <type name="PayU\PaymentGateway\Block\Info">
+
+    <!-- PBL Command pools -->
+    <virtualType name="PayUPaymentGatewayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
-            <argument name="config" xsi:type="object">PayUPaymentGatewayConfig</argument>
-        </arguments>
-    </type>
-    <type name="Magento\Directory\Model\Currency\Import\Config">
-        <arguments>
-            <argument name="servicesConfig" xsi:type="array">
-                <item name="payumcp" xsi:type="array">
-                    <item name="label" xsi:type="string">PayU Multi Currency Pricing</item>
-                    <item name="class" xsi:type="string">PayU\PaymentGateway\Model\Currency\Import\MultiCurrencyPricing</item>
-                </item>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">PayUPaymentGatewayAuthorizeCommand</item>
+                <item name="capture" xsi:type="string">PayUPaymentGatewayCaptureCommand</item>
+                <item name="refund" xsi:type="string">PayUPaymentGatewayRefundCommand</item>
+                <item name="repay" xsi:type="string">PayUPaymentGatewayRepayCommand</item>
             </argument>
         </arguments>
-    </type>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PayUPaymentGatewayAuthorizationRequest</argument>
+            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayUCreateOrder</argument>
+            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseCreatePblValidator</argument>
+            <argument name="handler" xsi:type="object">PayU\PaymentGateway\Gateway\Response\OrderCreateResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayRepayCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PayUPaymentGatewayRepayRequest</argument>
+            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayUCreateOrder</argument>
+            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseCreatePblValidator</argument>
+            <argument name="handler" xsi:type="object">PayU\PaymentGateway\Gateway\Response\RepayOrderCreateResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- CARD -->
+    <virtualType name="PayUPaymentGatewayCardFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\PayU\PaymentGateway\Model\Ui\CardConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayCardInfoBlock</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayCardValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCardCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayCardInfoBlock" type="Magento\Payment\Block\ConfigurableInfo">
+        <arguments>
+            <argument name="config" xsi:type="object">PayUPaymentGatewayCardConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayCardValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayUPaymentGatewayCardConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayCardConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayUPaymentGatewayCardConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Card Command pools -->
+    <virtualType name="PayUPaymentGatewayCardCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="authorize" xsi:type="string">PayUPaymentGatewayCardAuthorizeCommand</item>
+                <item name="capture" xsi:type="string">PayUPaymentGatewayCaptureCommand</item>
+                <item name="refund" xsi:type="string">PayUPaymentGatewayRefundCommand</item>
+                <item name="repay" xsi:type="string">PayUPaymentGatewayCardRepayCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayCardAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PayUPaymentGatewayAuthorizationRequest</argument>
+            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayUCreateOrder</argument>
+            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseCreateCardValidator</argument>
+            <argument name="handler" xsi:type="object">PayU\PaymentGateway\Gateway\Response\OrderCreateResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayCardRepayCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PayUPaymentGatewayRepayRequest</argument>
+            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayUCreateOrder</argument>
+            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseCreateCardValidator</argument>
+            <argument name="handler" xsi:type="object">PayU\PaymentGateway\Gateway\Response\RepayOrderCreateResponseHandler</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Common  -->
+    <virtualType name="PayUPaymentGatewayCaptureCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PayUPaymentGatewayCaptureRequest</argument>
+            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayUGetOrder</argument>
+            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseGetValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayCaptureRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="capture" xsi:type="string">PayU\PaymentGateway\Gateway\Request\CaptureRequestBuilder</item>
+                <item name="clientConfig" xsi:type="string">PayU\PaymentGateway\Gateway\Request\ClientConfigDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayRefundCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">PayUPaymentGatewayRefundRequest</argument>
+            <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
+            <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayURefundOrder</argument>
+            <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseRefundValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayRefundRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="capture" xsi:type="string">PayU\PaymentGateway\Gateway\Request\RefundRequestBuilder</item>
+                <item name="clientConfig" xsi:type="string">PayU\PaymentGateway\Gateway\Request\ClientConfigDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+
+    <virtualType name="PayUPaymentGatewayAuthorizationRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="order" xsi:type="string">PayU\PaymentGateway\Gateway\Request\OrderDataBuilder</item>
+                <item name="amountCurrency" xsi:type="string">PayU\PaymentGateway\Gateway\Request\AmountCurrencyDataBuilder</item>
+                <item name="merchantId" xsi:type="string">PayU\PaymentGateway\Gateway\Request\MerchantIdDataBuilder</item>
+                <item name="payMethods" xsi:type="string">PayU\PaymentGateway\Gateway\Request\PayMethodsDataBuilder</item>
+                <item name="buyer" xsi:type="string">PayU\PaymentGateway\Gateway\Request\BuyerDataBuilder</item>
+                <item name="products" xsi:type="string">PayU\PaymentGateway\Gateway\Request\ProductsDataBuilder</item>
+                <item name="threeDsAuthentication" xsi:type="string">PayU\PaymentGateway\Gateway\Request\ThreeDsAuthenticationDataBuilder</item>
+                <item name="clientConfig" xsi:type="string">PayU\PaymentGateway\Gateway\Request\ClientConfigDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayRepayRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="order" xsi:type="string">PayU\PaymentGateway\Gateway\Request\RepayOrderDataBuilder</item>
+                <item name="amountCurrency" xsi:type="string">PayU\PaymentGateway\Gateway\Request\RepayAmountCurrencyDataBuilder</item>
+                <item name="merchantId" xsi:type="string">PayU\PaymentGateway\Gateway\Request\RepayMerchantIdDataBuilder</item>
+                <item name="payMethods" xsi:type="string">PayU\PaymentGateway\Gateway\Request\RepayPayMethodsDataBuilder</item>
+                <item name="buyer" xsi:type="string">PayU\PaymentGateway\Gateway\Request\RepayBuyerDataBuilder</item>
+                <item name="products" xsi:type="string">PayU\PaymentGateway\Gateway\Request\RepayProductsDataBuilder</item>
+                <item name="threeDsAuthentication" xsi:type="string">PayU\PaymentGateway\Gateway\Request\RepayThreeDsAuthenticationDataBuilder</item>
+                <item name="clientConfig" xsi:type="string">PayU\PaymentGateway\Gateway\Request\RepayClientConfigDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
     <type name="PayU\PaymentGateway\Model\Logger\Handler">
         <arguments>
             <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
@@ -176,4 +238,17 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="PayU\PaymentGateway\Model\RepayOrderResolver">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCommandPool</argument>
+        </arguments>
+    </type>
+
+    <type name="PayU\PaymentGateway\Model\RepayOrderCardResolver">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCardCommandPool</argument>
+        </arguments>
+    </type>
+
 </config>

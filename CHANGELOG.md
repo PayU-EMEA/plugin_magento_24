@@ -1,3 +1,12 @@
+## 2.0.0
+### BREAKING CHANGES
+* **Common configuration for API parameter regardless of method and changed `config_path` - required to re-enter all configurations**
+#### OTHER CHANGES
+* Use of order currency (not base currency) for create order in PayU
+* Updated logotypes and colors
+* Removed MCP
+* Refactored, cleanup and removal deprecations
+
 ## 1.0.12
 * Sends more data for better detected frauds
 

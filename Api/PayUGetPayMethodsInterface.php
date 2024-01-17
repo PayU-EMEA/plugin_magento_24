@@ -29,7 +29,7 @@ interface PayUGetPayMethodsInterface
      * @return array
      * @throws \OpenPayU_Exception
      */
-    public function execute();
+    public function execute(string $code): array;
 
     /**
      * Convert execute method to Json

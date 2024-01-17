@@ -4,7 +4,7 @@
         <referenceBlock name="customer_account_navigation">
             <block class="Magento\Framework\View\Element\Html\Link\Current"
                    name="customer-account-navigation-stored-cards-link"
-                   ifconfig="payment/payu_gateway_card/main_parameters/active"
+                   ifconfig="payment/payu_gateway_card/active"
             >
                 <arguments>
                     <argument name="label" xsi:type="string" translate="true">My Stored Cards</argument>
