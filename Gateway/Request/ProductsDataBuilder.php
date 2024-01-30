@@ -47,9 +47,8 @@ class ProductsDataBuilder implements BuilderInterface
                         $quantity = 1;
                     }
 
-
                     $products[$i] = [
-                        'quantity' => $quantity,
+                        'quantity' => (int)$quantity,
                         'name' => mb_substr($name, 0, 255),
                         'unitPrice' => $this->payuRequests->formatAmount($product->getPriceInclTax())
                     ];
@@ -57,8 +56,8 @@ class ProductsDataBuilder implements BuilderInterface
                     if ($product->getIsVirtual()) {
                         $products[$i]['virtual'] = true;
                     }
+                    $i++;
                 }
-                $i++;
             }
         }
 
