@@ -24,7 +24,7 @@ abstract class RepayOrderResolverAbstract implements RepayOrderResolverInterface
     private CommandPoolInterface $commandPool;
 
     public function __construct(
-        CommandPoolInterface $commandPool,
+        CommandPoolInterface $commandPool
     )
     {
         $this->commandPool = $commandPool;

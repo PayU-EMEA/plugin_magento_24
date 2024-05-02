@@ -1,3 +1,7 @@
+## 2.0.2
+* Updated php required version to 7.4
+* Fixed typo for php version 7.4
+
 ## 2.0.1
 * Fixed #27 - build product data
 
