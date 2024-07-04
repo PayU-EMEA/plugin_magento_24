@@ -29,7 +29,7 @@ class UpdateOrderStatus implements PayUUpdateOrderStatusInterface
     /**
      * {@inheritdoc}
      */
-    public function cancel(string $type, int $storeId, string $orderId): \OpenPayU_Result|null
+    public function cancel(string $type, int $storeId, string $orderId)
     {
         $this->payUConfig->setDefaultConfig($type, $storeId);
 

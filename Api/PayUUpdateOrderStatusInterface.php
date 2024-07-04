@@ -16,7 +16,8 @@ interface PayUUpdateOrderStatusInterface
 
     /**
      * Cancel order action
+     * @return \OpenPayU_Result|null
      * @throws \OpenPayU_Exception
      */
-    public function cancel(string $type, int $storeId, string $orderId): \OpenPayU_Result|null;
+    public function cancel(string $type, int $storeId, string $orderId);
 }
