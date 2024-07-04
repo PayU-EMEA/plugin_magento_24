@@ -87,7 +87,8 @@ class GetPayMethods implements PayUGetPayMethodsInterface
             $this->payUConfig->setDefaultConfig($code);
             $payURetrive = $this->openPayURetrieve;
             $response = $payURetrive::payMethods($this->availableLocale->execute())->getResponse();
-            if (isset($response->payByLinks)) {
+
+            if (is_array($response->payByLinks)) {
                 $this->result =
                     $this->sortPaymentMethods($response->payByLinks, $this->payUConfig->getPaymentMethodsOrder());
                 $this->gatewayConfig->setMethodCode(CardConfigProvider::CODE);
@@ -95,6 +96,8 @@ class GetPayMethods implements PayUGetPayMethodsInterface
                     $this->removeCreditCard();
                 }
                 $this->removeTestPayment();
+            } else {
+                $this->result = [];
             }
         } catch (\OpenPayU_Exception $exception) {
             $this->logger->critical($exception->getMessage());
