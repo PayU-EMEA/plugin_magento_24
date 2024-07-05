@@ -7,7 +7,6 @@ use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
-use PayU\PaymentGateway\Api\PayUCreateOrderInterface;
 
 
 class GetPostPlaceOrderData implements HttpGetActionInterface

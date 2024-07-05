@@ -4,7 +4,6 @@ namespace PayU\PaymentGateway\Gateway\Response;
 
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
-use PayU\PaymentGateway\Api\PayUCreateOrderInterface;
 use PayU\PaymentGateway\Api\PayURepayOrderInterface;
 use PayU\PaymentGateway\Gateway\Helper\RepaySubjectReader;
 use PayU\PaymentGateway\Gateway\Validator\AbstractResponseValidator;

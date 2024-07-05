@@ -5,7 +5,6 @@ namespace PayU\PaymentGateway\Model;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
-use PayU\PaymentGateway\Api\PayUCreateOrderInterface;
 use PayU\PaymentGateway\Api\RepayOrderResolverInterface;
 use PayU\PaymentGateway\Gateway\Validator\AbstractResponseValidator;
 
