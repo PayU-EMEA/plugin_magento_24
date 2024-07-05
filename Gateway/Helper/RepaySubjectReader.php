@@ -35,17 +35,17 @@ class RepaySubjectReader
     /**
      * Reads payu method from subject
      */
-    public static function readPayuMethod(array $subject): ?string
+    public static function readPayuMethod(array $subject): string
     {
-        return $subject['payu_method'] ?? null;
+        return $subject['payu_method'] ?? '';
     }
 
     /**
      * Reads payu method from subject
      */
-    public static function readPayuMethodType(array $subject): ?string
+    public static function readPayuMethodType(array $subject): string
     {
-        return $subject['payu_method_type'] ?? null;
+        return $subject['payu_method_type'] ?? '';
     }
 
     /**
