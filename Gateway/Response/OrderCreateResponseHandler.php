@@ -15,11 +15,16 @@ class OrderCreateResponseHandler implements HandlerInterface
     {
         $paymentDataObject = SubjectReader::readPayment($handlingSubject);
         $payment = $paymentDataObject->getPayment();
+        $order = $payment->getOrder();
 
         $payment
             ->setTransactionId($response['orderId'])
             ->setIsTransactionPending(true)
             ->setIsTransactionClosed(false);
+
+        // No not send order confirmation mail
+        $order
+            ->setCanSendNewEmailFlag(false);
 
         if (array_key_exists(PayUConfigInterface::REDIRECT_URI_FIELD, $response)) {
             $payment->setAdditionalInformation(
