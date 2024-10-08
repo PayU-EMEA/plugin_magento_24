@@ -1,3 +1,6 @@
+## 2.0.4
+* Fixed #33 - translate
+
 ## 2.0.3
 * Fixed #30 - RepayOrderCreateResponseHandler without PayU method
 * Fixed #24 and #29 - empty response for payByLinks
