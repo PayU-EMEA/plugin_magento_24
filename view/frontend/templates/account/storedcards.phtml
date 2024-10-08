@@ -57,7 +57,7 @@ $storedCards = $this->getStoredCards();
             </div>
         <?php else: ?>
             <div class="message info empty">
-                <span>->escapeHtml(__('You don’t have any stored card.')); ?></span>
+                <span><?= $escaper->escapeHtml(__('You don’t have any stored card.')); ?></span>
             </div>
         <?php endif; ?>
     </div>
