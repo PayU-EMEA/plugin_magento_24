@@ -204,26 +204,22 @@ interface PayUConfigInterface
     public function setSender($sender);
 
     /**
-     * Check if credit card store per user is enable
-     *
-     * @return bool
+     * Check if credit card store per user is enabled
      */
-    public function isStoreCardEnable();
+    public function isStoreCardEnable(): bool;
 
     /**
-     * Check if repayment is enable
-     *
-     * @param string $code
-     *
-     * @return bool
+     * Check if repayment is enabled
      */
-    public function isRepaymentActive($code);
+    public function isRepaymentActive(string $code): bool;
 
     /**
      * Get payment methods order
-     *
-     * @return array
      */
-    public function getPaymentMethodsOrder();
+    public function getPaymentMethodsOrder(): array;
 
+    /**
+     * Check if cancel order in PayU is enabled
+     */
+    public function isCancelOrder(string $code): bool;
 }

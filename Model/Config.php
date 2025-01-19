@@ -4,11 +4,10 @@ namespace PayU\PaymentGateway\Model;
 
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
-use PayU\PaymentGateway\Api\PayUConfigInterface;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
+use Magento\Store\Model\StoreManagerInterface;
 use PayU\PaymentGateway\Api\PayUCacheConfigInterface;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
+use PayU\PaymentGateway\Api\PayUConfigInterface;
 
 /**
  * Class Config
@@ -75,11 +74,11 @@ class Config implements PayUConfigInterface
         ProductMetadataInterface $metadata
     ) {
         $this->openPayUConfig = $openPayUConfig;
-        $this->gatewayConfig = $gatewayConfig;
-        $this->cacheConfig = $cacheConfig;
-        $this->storeId = $storeManager->getStore()->getId();
-        $this->encryptor = $encryptor;
-        $this->metadata = $metadata;
+        $this->gatewayConfig  = $gatewayConfig;
+        $this->cacheConfig    = $cacheConfig;
+        $this->storeId        = $storeManager->getStore()->getId();
+        $this->encryptor      = $encryptor;
+        $this->metadata       = $metadata;
     }
 
     /**
@@ -91,7 +90,7 @@ class Config implements PayUConfigInterface
             $this->storeId = $storeId;
         }
         $this->setGatewayConfigCode($code);
-        if (!$this->isActive()) {
+        if ( ! $this->isActive()) {
             $this->setMerchantPosId('');
 
             return $this;
@@ -104,9 +103,9 @@ class Config implements PayUConfigInterface
         $envPrefix = $isSandboxEnvironment ? 'sandbox_' : '';
         $this->setGatewayConfigCode('payu');
         $this->gatewayConfig->setMethodCode('payu');
-        $posId = $this->gatewayConfig->getValue($envPrefix . 'pos_id', $storeId);
+        $posId        = $this->gatewayConfig->getValue($envPrefix . 'pos_id', $storeId);
         $signatureKey = $this->gatewayConfig->getValue($envPrefix . 'second_key', $storeId);
-        $clientId = $this->gatewayConfig->getValue($envPrefix . 'client_id', $storeId);
+        $clientId     = $this->gatewayConfig->getValue($envPrefix . 'client_id', $storeId);
         $clientSecret = $this->gatewayConfig->getValue($envPrefix . 'client_secret', $storeId);
         $this->setGatewayConfigCode($code);
 
@@ -129,7 +128,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function isStoreCardEnable()
+    public function isStoreCardEnable(): bool
     {
         return (bool)$this->gatewayConfig->getValue('store_card', $this->storeId);
     }
@@ -137,7 +136,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getPaymentMethodsOrder()
+    public function getPaymentMethodsOrder(): array
     {
         return explode(
             ',',
@@ -152,7 +151,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function isRepaymentActive($code)
+    public function isRepaymentActive(string $code): bool
     {
         $this->setGatewayConfigCode($code);
 
@@ -165,6 +164,16 @@ class Config implements PayUConfigInterface
     private function isActive(): bool
     {
         return (bool)$this->gatewayConfig->getValue('active', $this->storeId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isCancelOrder(string $code): bool
+    {
+        $this->setGatewayConfigCode($code);
+
+        return (bool)$this->gatewayConfig->getValue('is_cancel_order', $this->storeId);
     }
 
     /**

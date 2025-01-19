@@ -17,6 +17,7 @@
                 <can_refund>1</can_refund>
                 <can_use_checkout>1</can_use_checkout>
                 <is_gateway>1</is_gateway>
+                <is_cancel_order>0</is_cancel_order>
             </payu_gateway>
             <payu_gateway_card>
                 <active>0</active>
@@ -34,6 +35,7 @@
                 <can_refund>1</can_refund>
                 <can_use_checkout>1</can_use_checkout>
                 <is_gateway>1</is_gateway>
+                <is_cancel_order>0</is_cancel_order>
             </payu_gateway_card>
         </payment>
     </default>
