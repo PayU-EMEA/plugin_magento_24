@@ -11,5 +11,5 @@ interface AcceptOrderPaymentInterface
      *
      * @throws CommandException
      */
-    public function execute(string $txnId, float $amount, string $paymentId = null): void;
+    public function execute(string $txnId, float $amount, ?string $paymentId = null): void;
 }

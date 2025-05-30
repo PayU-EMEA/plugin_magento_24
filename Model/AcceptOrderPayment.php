@@ -32,7 +32,7 @@ class AcceptOrderPayment implements AcceptOrderPaymentInterface
     /**
      * {@inheritdoc}
      */
-    public function execute(string $txnId, float $amount, string $paymentId = null): void
+    public function execute(string $txnId, float $amount, ?string $paymentId = null): void
     {
         $payment = $this->paymentResolver->getByTransactionTxnId($txnId);
         if ($payment === null) {

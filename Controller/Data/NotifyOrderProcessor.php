@@ -26,7 +26,7 @@ class NotifyOrderProcessor
     /**
      * @throws CommandException
      */
-    public function process(string $status, string $txnId, int $totalAmount, string $paymentId = null): void
+    public function process(string $status, string $txnId, int $totalAmount, ?string $paymentId = null): void
     {
         $totalAmount = (float)($totalAmount / 100);
         switch ($status) {

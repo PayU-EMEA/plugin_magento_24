@@ -183,7 +183,7 @@ interface PayUConfigInterface
      *
      * @return $this
      */
-    public function setDefaultConfig(string $code, int $storeId = null): self;
+    public function setDefaultConfig(string $code, ?int $storeId = null): self;
 
     /**
      * Set gateway config code
