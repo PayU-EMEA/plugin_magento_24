@@ -1,3 +1,6 @@
+## 2.0.5
+* Fixed #38 - `di:compile` returned error in PHP 8.4
+
 ## 2.0.4
 * Fixed #33 - translate
 
