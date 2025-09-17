@@ -77,6 +77,7 @@ class PaymentMethods extends Template
     const ACTIVE = 'active';
 
     private PayUGetPayMethodsInterface $payMethods;
+    private PayUGetCreditCardSecureFormConfigInterface $secureFormConfig;
     private OrderRepositoryInterface $orderRepository;
     private GetAvailableLocaleInterface $availableLocale;
     private PayUGetUserPayMethodsInterface $userPayMethods;
