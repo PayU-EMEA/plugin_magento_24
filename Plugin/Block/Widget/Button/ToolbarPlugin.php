@@ -29,7 +29,7 @@ class ToolbarPlugin
     /**
      * Before Push Button Plugin change url for accept payment and deny payment for PayU payment methods
      *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     public function beforePushButtons(ToolbarInterface $subject, AbstractBlock $context, ButtonList $buttonList): void
     {
