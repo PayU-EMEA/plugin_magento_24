@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="head.additional">
+            <block template="PayU_PaymentGateway::credit_widget/head_script.phtml"
+                    before="-">
+                <arguments>
+                    <argument name="configKey" xsi:type="string">enable_for_product</argument>
+                    <argument name="creditWidgetViewModel" xsi:type="object">PayU\PaymentGateway\ViewModel\CreditWidgetViewModel</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+        <referenceBlock name="product.info.price">
+            <block class="Magento\Catalog\Block\Product\View"
+                    name="payu.credit.widget.simulation"
+                    after="product.price.final"
+                    template="PayU_PaymentGateway::product/credit_widget.phtml"
+                    ifconfig="payment/payu_credit_widget/enable_for_product"
+            >
+                <arguments>
+                    <argument name="creditWidgetViewModel" xsi:type="object">PayU\PaymentGateway\ViewModel\CreditWidgetViewModel</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+    </body>
+</page>
+

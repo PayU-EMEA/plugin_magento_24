@@ -9,8 +9,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Webapi\Exception;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
-use PayU\PaymentGateway\Model\Ui\ConfigProvider;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 class GetNotify implements HttpPostActionInterface, CsrfAwareActionInterface
 {
@@ -91,7 +90,7 @@ class GetNotify implements HttpPostActionInterface, CsrfAwareActionInterface
         $type = trim(strip_tags($this->request->getParam('type', '')));
         $store = (int)trim(strip_tags($this->request->getParam('store', '')));
 
-        if ($type !== ConfigProvider::CODE && $type !== CardConfigProvider::CODE) {
+        if (!PayUSupportedMethods::isSupported($type)) {
             throw new \Exception('Unknown type [' . $type . '].');
         }
 

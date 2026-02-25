@@ -5,7 +5,6 @@ namespace PayU\PaymentGateway\Model;
 use Magento\Framework\Exception\LocalizedException;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Api\PayUDeleteUserTokenInterface;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
 use Magento\Customer\Model\Session as CustomerSession;
 
 /**
@@ -52,7 +51,7 @@ class DeleteUserToken implements PayUDeleteUserTokenInterface
     public function execute($userToken)
     {
         try {
-            $this->payUConfig->setDefaultConfig(CardConfigProvider::CODE);
+            $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_CARD);
             $this->payUConfig->setOauthGrantType(PayUConfigInterface::GRANT_TYPE_TRUSTED_MERCHANT);
             $this->payUConfig->setOauthEmail($this->customerSession->getCustomer()->getEmail());
             $this->payUConfig->setCustomerExtId($this->customerSession->getCustomerId());

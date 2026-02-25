@@ -6,8 +6,7 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
-use PayU\PaymentGateway\Model\Ui\ConfigProvider;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 use Magento\Sales\Model\Order\Payment;
 
 /**
@@ -45,7 +44,7 @@ class AfterPlaceOrderObserver implements ObserverInterface
         /** @var Payment $payment */
         $payment = $observer->getData('payment');
         $method = $payment->getMethod();
-        if ($method !== CardConfigProvider::CODE && $method !== ConfigProvider::CODE) {
+        if (!PayUSupportedMethods::isSupported($method)) {
             return;
         }
         $this->assignStatus($payment);

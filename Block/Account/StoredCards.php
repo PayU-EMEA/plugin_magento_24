@@ -6,7 +6,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use PayU\PaymentGateway\Api\PayUGetUserPayMethodsInterface;
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 /**
  * Customer account stored cards
@@ -53,7 +53,7 @@ class StoredCards extends Template
     public function getStoredCards()
     {
         try {
-            $this->gatewayConfig->setMethodCode(CardConfigProvider::CODE);
+            $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_CARD);
             $result = $this->userPayMethods->execute();
             if (array_key_exists(PayUGetUserPayMethodsInterface::CARD_TOKENS, $result)) {
                 if (!$result[PayUGetUserPayMethodsInterface::CARD_TOKENS]) {

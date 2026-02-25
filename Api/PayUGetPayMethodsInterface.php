@@ -9,32 +9,17 @@ namespace PayU\PaymentGateway\Api;
 interface PayUGetPayMethodsInterface
 {
     /**
-     * Credit card code
-     */
-    const CREDIT_CARD_CODE = 'c';
-
-    /**
-     * Test Payment code
-     */
-    const TEST_PAYMENT_CODE = 't';
-
-    /**
      * Paymethod status ENABLED
      */
-    const PAYMETHOD_STATUS_ENABLED = 'ENABLED';
+    public const PAYMETHOD_STATUS_ENABLED = 'ENABLED';
 
     /**
      * Get all pay methods for selected POS from PayU REST API
-     *
-     * @return array
-     * @throws \OpenPayU_Exception
      */
-    public function execute(string $code): array;
+    public function getAllAvailablePayMethods(?float $totalAmount = null): array;
 
     /**
-     * Convert execute method to Json
-     *
-     * @return string
+     * Get pay methods for PBL
      */
-    public function toJson();
+    public function getAllPayMethodsForPbl(bool $filterCreditMethods, ?float $totalAmount = null): array;
 }

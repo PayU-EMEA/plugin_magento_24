@@ -1,0 +1,11 @@
+<?php /** @var \Magento\Framework\View\Element\Template $block */ ?>
+<?php /** @var \PayU\PaymentGateway\ViewModel\CreditWidgetViewModel $viewModel */ ?>
+<?php /** @var \Magento\Framework\Escaper $escaper */ ?>
+<?php
+$viewModel = $block->getData('creditWidgetViewModel');
+$configKey = $block->getData('configKey');
+?>
+<?php if ($viewModel->isWidgetEnabled($configKey)): ?>
+<script src="<?= $escaper->escapeUrl($viewModel->getScriptUrl()) ?>" type="text/javascript"></script>
+<?php endif; ?>
+
