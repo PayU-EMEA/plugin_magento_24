@@ -2,17 +2,15 @@
 
 namespace PayU\PaymentGateway\Model;
 
-use Magento\Framework\Locale\ResolverInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Api\PayUGetCreditCardSecureFormConfigInterface;
 use Magento\Customer\Model\Session as CustomerSession;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
 
 /**
  * Class GetCreditCardSecureFormConfig
  * @package PayU\PaymentGateway\Model
  */
-    class GetCreditCardSecureFormConfig implements PayUGetCreditCardSecureFormConfigInterface
+class GetCreditCardSecureFormConfig implements PayUGetCreditCardSecureFormConfigInterface
 {
     /**
      * @var \OpenPayU_Configuration
@@ -51,7 +49,7 @@ use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
      */
     public function execute()
     {
-        $this->payUConfig->setDefaultConfig(CardConfigProvider::CODE);
+        $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_CARD);
         $config = $this->openPayUConfig;
 
         $storeCard = $this->payUConfig->isStoreCardEnable() && $this->customerSession->isLoggedIn();

@@ -58,7 +58,7 @@
 
 .payu-payment-logo {
     height: 23px;
-    margin: 0 10px;
+    margin: 0 10px 0 0;
 }
 
 .payu-payment-logo-pbl {
@@ -265,6 +265,15 @@
 .payu-read-more {
     cursor: pointer;
     text-decoration: underline;
+}
+.payu-installments-block {
+    padding-bottom: 10px;
+}
+.product-items .product-item-details:has(.payu-installments-block) .price-box {
+    margin-bottom: 5px;
+}
+*:has(+ #installment-mini-totals) .grand.totals *, #installment-mini-totals {
+    padding-bottom: 5px;
 }
 
 @media all and (min-width: 450px), print {

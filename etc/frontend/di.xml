@@ -9,4 +9,14 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Magento\Catalog\Block\Product\ListProduct">
+        <plugin name="payu_credit_widget_append_product_details"
+                type="PayU\PaymentGateway\Plugin\Catalog\Block\Product\ListProductPlugin" />
+    </type>
+
+    <type name="Magento\CatalogWidget\Block\Product\ProductsList">
+        <plugin name="payu_credit_widget_below_widget_price"
+                type="PayU\PaymentGateway\Plugin\CatalogWidget\Block\Product\ProductsListPlugin" />
+    </type>
 </config>

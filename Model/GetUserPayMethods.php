@@ -6,7 +6,6 @@ use PayU\PaymentGateway\Api\PayUGetUserPayMethodsInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Api\GetAvailableLocaleInterface;
 use PayU\PaymentGateway\Model\Logger\Logger;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
 
@@ -93,7 +92,7 @@ class GetUserPayMethods implements PayUGetUserPayMethodsInterface
             return [];
         }
         try {
-            $this->payUConfig->setDefaultConfig(CardConfigProvider::CODE);
+            $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_CARD);
             $this->payUConfig->setOauthGrantType(PayUConfigInterface::GRANT_TYPE_TRUSTED_MERCHANT);
             $this->payUConfig->setOauthEmail($customerEmail);
             $this->payUConfig->setCustomerExtId(

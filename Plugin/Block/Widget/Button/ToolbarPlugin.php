@@ -6,8 +6,7 @@ use Magento\Backend\Block\Widget\Button\ButtonList;
 use Magento\Backend\Block\Widget\Button\ToolbarInterface;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Sales\Block\Adminhtml\Order\View as OrderView;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
-use PayU\PaymentGateway\Model\Ui\ConfigProvider;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 class ToolbarPlugin
 {
@@ -35,7 +34,7 @@ class ToolbarPlugin
     {
         if ($context instanceof OrderView) {
             $paymentMethod = $context->getOrder()->getPayment()->getMethod();
-            if ($paymentMethod === CardConfigProvider::CODE || $paymentMethod === ConfigProvider::CODE) {
+            if (PayUSupportedMethods::isSupported($paymentMethod)) {
                 $acceptMessage = __('Are you sure you want to accept this payment?');
                 $denyMessage = __('Are you sure you want to deny this payment?');
                 $denyUrl = $context->getUrl(static::REVIEW_PAYMENT_URL, [static::URL_ACTION_KEY => 'deny']);

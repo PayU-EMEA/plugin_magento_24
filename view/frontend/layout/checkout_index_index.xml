@@ -1,8 +1,18 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="checkout" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
+        <referenceContainer name="head.additional">
+            <block template="PayU_PaymentGateway::credit_widget/head_script.phtml"
+                    before="-">
+                <arguments>
+                    <argument name="configKey" xsi:type="string">enable_for_checkout</argument>
+                    <argument name="creditWidgetViewModel" xsi:type="object">PayU\PaymentGateway\ViewModel\CreditWidgetViewModel</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
         <referenceBlock name="checkout.root">
             <arguments>
+                <argument name="creditWidgetViewModel" xsi:type="object">PayU\PaymentGateway\ViewModel\CreditWidgetViewModel</argument>
                 <argument name="jsLayout" xsi:type="array">
                     <item name="components" xsi:type="array">
                         <item name="checkout" xsi:type="array">
@@ -24,6 +34,24 @@
                                                                         <item name="payu_gateway_card" xsi:type="array">
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
                                                                         </item>
+                                                                        <item name="payu_gateway_installments" xsi:type="array">
+                                                                            <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
+                                                                        </item>
+                                                                        <item name="payu_gateway_klarna" xsi:type="array">
+                                                                            <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
+                                                                        </item>
+                                                                        <item name="payu_gateway_paypo" xsi:type="array">
+                                                                            <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
+                                                                        </item>
+                                                                        <item name="payu_gateway_pragma" xsi:type="array">
+                                                                            <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
+                                                                        </item>
+                                                                        <item name="payu_gateway_twisto" xsi:type="array">
+                                                                            <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
+                                                                        </item>
+                                                                        <item name="payu_gateway_twisto_slice" xsi:type="array">
+                                                                            <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
+                                                                        </item>
                                                                     </item>
                                                                 </item>
                                                             </item>
@@ -38,12 +66,10 @@
                                     <item name="children" xsi:type="array">
                                         <item name="summary" xsi:type="array">
                                             <item name="children" xsi:type="array">
-                                                <item name="totals" xsi:type="array">
+                                                <item name="itemsBefore" xsi:type="array">
                                                     <item name="children" xsi:type="array">
-                                                        <item name="grand-total" xsi:type="array">
-                                                            <item name="config" xsi:type="array">
-                                                                 <item name="template" xsi:type="string">PayU_PaymentGateway/cart/totals/grand-total</item>
-                                                            </item>
+                                                        <item name="credit-widget" xsi:type="array">
+                                                            <item name="component" xsi:type="string">PayU_PaymentGateway/js/view/cart/credit_widget</item>
                                                         </item>
                                                     </item>
                                                 </item>

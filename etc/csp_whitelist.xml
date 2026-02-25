@@ -5,23 +5,35 @@
             <values>
                 <value id="payu" type="host">secure.payu.com</value>
                 <value id="payu-sandbox" type="host">merch-prod.snd.payu.com</value>
+                <value id="payu-static" type="host">static.payu.com</value>
+                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
             </values>
         </policy>
         <policy id="script-src">
             <values>
                 <value id="payu" type="host">secure.payu.com</value>
                 <value id="payu-sandbox" type="host">secure.snd.payu.com</value>
+                <value id="payu-static" type="host">static.payu.com</value>
+                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
             </values>
         </policy>
         <policy id="img-src">
             <values>
                 <value id="payu-static" type="host">static.payu.com</value>
+                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
             </values>
         </policy>
         <policy id="frame-src">
             <values>
                 <value id="payu" type="host">secure.payu.com</value>
                 <value id="payu-sandbox" type="host">merch-prod.snd.payu.com</value>
+                <value id="payu-static" type="host">static.payu.com</value>
+                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
+            </values>
+        </policy>
+        <policy id="font-src">
+            <values>
+                <value id="payu-static-font" type="host">static.payu.com</value>
             </values>
         </policy>
     </policies>

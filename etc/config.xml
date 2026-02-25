@@ -2,6 +2,14 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <payment>
+            <payu_credit_widget>
+                <enable_for_product>0</enable_for_product>
+                <enable_for_catalog>0</enable_for_catalog>
+                <enable_for_catalog_widgets>0</enable_for_catalog_widgets>
+                <enable_for_checkout>0</enable_for_checkout>
+                <enable_for_cart>0</enable_for_cart>
+                <enable_for_minicart>0</enable_for_minicart>
+            </payu_credit_widget>
             <payu_gateway>
                 <active>0</active>
                 <repayment>0</repayment>
@@ -35,6 +43,102 @@
                 <can_use_checkout>1</can_use_checkout>
                 <is_gateway>1</is_gateway>
             </payu_gateway_card>
+            <payu_gateway_installments>
+                <active>0</active>
+                <repayment>0</repayment>
+                <sort_order>3</sort_order>
+                <model>PayUPaymentGatewayInstallmentsFacade</model>
+                <payment_action>authorize</payment_action>
+                <title>PayU - Installments</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>0</can_void>
+                <can_review_payment>1</can_review_payment>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+            </payu_gateway_installments>
+            <payu_gateway_klarna>
+                <active>0</active>
+                <repayment>0</repayment>
+                <sort_order>4</sort_order>
+                <model>PayUPaymentGatewayKlarnaFacade</model>
+                <payment_action>authorize</payment_action>
+                <title>PayU - Klarna</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>0</can_void>
+                <can_review_payment>1</can_review_payment>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+            </payu_gateway_klarna>
+            <payu_gateway_paypo>
+                <active>0</active>
+                <repayment>0</repayment>
+                <sort_order>5</sort_order>
+                <model>PayUPaymentGatewayPayPoFacade</model>
+                <payment_action>authorize</payment_action>
+                <title>PayU - PayPo</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>0</can_void>
+                <can_review_payment>1</can_review_payment>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+            </payu_gateway_paypo>
+            <payu_gateway_pragma>
+                <active>0</active>
+                <repayment>0</repayment>
+                <sort_order>6</sort_order>
+                <model>PayUPaymentGatewayPragmaFacade</model>
+                <payment_action>authorize</payment_action>
+                <title>PayU - PragmaPay</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>0</can_void>
+                <can_review_payment>1</can_review_payment>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+            </payu_gateway_pragma>
+            <payu_gateway_twisto>
+                <active>0</active>
+                <repayment>0</repayment>
+                <sort_order>7</sort_order>
+                <model>PayUPaymentGatewayTwistoFacade</model>
+                <payment_action>authorize</payment_action>
+                <title>PayU - Twisto</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>0</can_void>
+                <can_review_payment>1</can_review_payment>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+            </payu_gateway_twisto>
+            <payu_gateway_twisto_slice>
+                <active>0</active>
+                <repayment>0</repayment>
+                <sort_order>8</sort_order>
+                <model>PayUPaymentGatewayTwistoSliceFacade</model>
+                <payment_action>authorize</payment_action>
+                <title>PayU - Twisto Pay in 3</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>0</can_void>
+                <can_review_payment>1</can_review_payment>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+            </payu_gateway_twisto_slice>
         </payment>
     </default>
 </config>

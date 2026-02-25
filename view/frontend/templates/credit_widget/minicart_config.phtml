@@ -1,0 +1,17 @@
+<?php /** @var \Magento\Framework\View\Element\Template $block */ ?>
+<?php /** @var \PayU\PaymentGateway\ViewModel\CreditWidgetViewModel $viewModel */ ?>
+<?php
+$viewModel = $block->getData('creditWidgetViewModel');
+?>
+<?php if ($viewModel->isWidgetEnabled('enable_for_minicart')): ?>
+    <script>
+        window.payuMinicartCreditWidgetConfig = <?= /* @noEscape */ json_encode([
+            'isActive' => true,
+            'posId' => $viewModel->getPosId(),
+            'key' => $viewModel->getKey(),
+            'excludedPaytypes' => $viewModel->getExcludedPaytypes(),
+            'lang' => $viewModel->getLanguageCode(),
+            'currencyCode' => $viewModel->getCurrencyCode()
+        ]); ?>;
+    </script>
+<?php endif; ?>

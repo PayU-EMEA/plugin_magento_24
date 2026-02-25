@@ -5,8 +5,7 @@ namespace PayU\PaymentGateway\Observer;
 use Magento\Framework\Event\Observer;
 use Magento\Payment\Observer\AbstractDataAssignObserver;
 use Magento\Sales\Model\Order\Payment\Transaction;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
-use PayU\PaymentGateway\Model\Ui\ConfigProvider;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 /**
  * Class PaymentTransactionTxnIdHtml
@@ -23,7 +22,7 @@ class PaymentTransactionTxnIdHtml extends AbstractDataAssignObserver
         $transaction = $observer->getData('data_object');
         $paymentMethod = $transaction->getOrder()->getPayment()->getMethod();
         $paymentId = $transaction->getAdditionalInformation('payment_id');
-        if (in_array($paymentMethod, [ConfigProvider::CODE, CardConfigProvider::CODE]) &&
+        if (PayUSupportedMethods::isSupported($paymentMethod) &&
             $transaction->getTxnType() === 'capture' &&
             $paymentId !== null) {
             $transaction->setData('html_txn_id', $paymentId);

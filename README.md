@@ -7,9 +7,9 @@
 
 **Jeżeli masz jakiekolwiek pytania lub chcesz zgłosić błąd zapraszamy do kontaktu z naszym wsparciem pod adresem: tech@payu.pl.**
 
-* Jeżeli używasz Magneto w wersji 1.x proszę skorzystać z [pluginu dla wersji 1.x][ext0]
-* Jeżeli używasz Magneto w wersji >2.0.6, 2.1, 2.2 proszę skorzystać z [pluginu dla wersji >2.0.6, 2.1, 2.2][ext7]
-* Jeżeli używasz Magneto w wersji 2.3 proszę skorzystać z [pluginu dla wersji 2.3][ext9]
+* Jeżeli używasz Magento w wersji 1.x proszę skorzystać z [pluginu dla wersji 1.x][ext0]
+* Jeżeli używasz Magento w wersji >2.0.6, 2.1, 2.2 proszę skorzystać z [pluginu dla wersji >2.0.6, 2.1, 2.2][ext7]
+* Jeżeli używasz Magento w wersji 2.3 proszę skorzystać z [pluginu dla wersji 2.3][ext9]
 
 ## Spis treści
 
@@ -35,12 +35,19 @@ Możliwe są następujące operacje:
   * Zapisanie karty i płatność zapisaną kartą
   * Ponowienie płatności
   * Utworzenie zwrotu online (pełnego lub częściowego)
+  * Promowanie płatności kredytowych wykorzystując [widget kredytowy](#widget-kredytowy) w różnych podstronach sklepu (np. na stronie produktu, w koszyku)
 
-Moduł dodaje dwie metody płatności:
-
-![methods][img0]
+Moduł dodaje następujące metody płatności:
   * **Płatność PayU** - wybór metody płatności i przekierowanie do banku lub formatkę kartową
   * **Płatność kartą** - wpisanie numeru karty bezpośrednio na stronie sklepu i płatność kartą
+  * **PayU Raty** - płatności ratalne z przekierowaniem do formatki ratalnej PayU
+  * **PayU Klarna** - odroczone płatności Klarna z przekierowaniem do formatki Klarna w PayU
+  * **PayU PayPo** - odroczone płatności PayPo z przekierowaniem do formatki PayPo w PayU
+  * **PayU PragmaPay** - odroczone płatności PragmaPay z przekierowaniem do formatki PragmaPay w PayU
+  * **PayU Twisto** - odroczone płatności Twisto z przekierowaniem do formatki Twisto w PayU
+  * **PayU Twisto podziel na 3** - odroczone płatności Twisto podziel na 3 z przekierowaniem do formatki Twisto podziel na 3 w PayU
+
+![methods][img0]
 
 ## Wymagania
 
@@ -70,10 +77,14 @@ Po instalacji przy użyciu Composer lub kopiując pliki z poziomu konsoli urucho
 1. Przejdź do strony administracyjnej swojego sklepu Magento 2 [http://adres-sklepu/admin_xxx].
 1. Przejdź do  **Stores** > **Configuration**.
 1. Na stronie **Configuration** w menu po lewej stronie w sekcji **Sales** wybierz **Payment Methods**.
-1. Na liście dostępnych metod płatności należy wybrać **PayU** lub **PayU - Cards** w celu konfiguracji parametrów wtyczki.
+1. Na liście dostępnych metod płatności należy wybrać właściwą sekcję z listy metod **PayU** w celu konfiguracji parametrów wtyczki.
 1. Po zmanie paramettrów naciśnij przycisk `Save config`.
 
 ### Parametry API
+
+| Parameter              | Opis                                                                                                                                    |
+|------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| Tryb testowy (Sandbox) | `Tak` - transakcje będą procesowane przez system Sandbox PayU. <br/> `Nie` - transakcje będą procesowane przez system produkcyjny PayU. |
 
 #### Parametry punktu płatności (POS)
 
@@ -94,23 +105,43 @@ Dostępne gdy parametr `Tryb testowy (Sandbox)` jest ustawiony na `Tak`.
 | OAuth - client_id | client_id dla protokołu OAuth z systemu PayU |
 | OAuth - client_secret | client_secret for OAuth z systemu PayU |
 
+### Parametry wtyczki "PayU - widget kredytowy"
+
+| Parameter                                                                       | Opis                                                                                                                                                                                                                                                                                    |
+|---------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Wyświetl widget kredytowy przy produktach                                       | Wartość `Tak`\|`Nie`. Wyświetla widget na stronach produktu                                                                                                                                                                                                                             |
+| Wyświetl widget kredytowy w katalogu produktów                                  | Wartość `Tak`\|`Nie`. Wyświetla widget na stronach z listą produktów (np. kategorie)                                                                                                                                                                                                    |
+| Wyświetl widget kredytowy w widgetach katalogu produktu np. bestseller, nowości | Wartość `Tak`\|`Nie`. Wyświetla widget na stronach z widgetami listami produktów (np. bestseller, nowości)<br>**Funkcja eksperymentalna**                                                                                                                                               |
+| Wyświetl widget kredytowy w koszyku                                             | Wartość `Tak`\|`Nie`. Wyświetla widget na stronie koszyka                                                                                                                                                                                                                               |
+| Wyświetl widget kredytowy w mini koszyku                                        | Wartość `Tak`\|`Nie`. Wyświetla widget na rozwijanej liście podsumowania koszyka                                                                                                                                                                                                        |
+| Wyświetl widget kredytowy w podsumowaniu koszyka                                | Wartość `Tak`\|`Nie`. Wyświetla widget na stronie podsumowania koszyka z wyborem metod płatności                                                                                                                                                                                        |
+| Wyklucz metody płatności kredytowych z widgetu                                  | Lista oddzielona przecinkami z [metodami płatności](https://developers.payu.com/europe/pl/docs/get-started/integration-overview/references/#installments-and-pay-later), które mają zostać pominięte w trakcie prezentacji widgetu. <br> **Rekomenduje się pozostawienie pustej listy** |
+
 ### Parametry płatności
 
-| Parameter | Opis |
-|---------|-----------|
-| Czy włączyć wtyczkę? | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności. |
-| Tryb Sandbox | Określa czy płatności będą realizowane na środowisku testowym (sandbox) PayU. |
-| Kolejność metod płatności | Określa kolejnośc wyświetlanych metod płatności [więcej informacji](#kolejność-metod-płatności). |
-| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności) |
+| Parameter                           | Opis                                                                                             |
+|-------------------------------------|--------------------------------------------------------------------------------------------------|
+| Czy włączyć wtyczkę?                | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności.                      |
+| Kolejność metod płatności           | Określa kolejnośc wyświetlanych metod płatności [więcej informacji](#kolejność-metod-płatności). |
+| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności)                                                       |
+| Pozycja na liście                   | Pozycja metody płatności na liście metod płatności                                               |
 
 ### Parametry płatności "PayU - Karty"
 
-| Parameter | Opis |
-|---------|-----------|
-| Czy włączyć wtyczkę? | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności. |
-| Tryb Sandbox | Określa czy płatności będą realizowane na środowisku testowym (sandbox) PayU. |
-| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności) |
-| Czy uaktywnić zapisywanie kart? |  [więcej informacji](#zapisywanie-kart) |
+| Parameter                           | Opis                                                                        |
+|-------------------------------------|-----------------------------------------------------------------------------|
+| Czy włączyć wtyczkę?                | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności. |
+| Czy uaktywnić zapisywanie kart?     | [więcej informacji](#zapisywanie-kart)                                      |
+| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności)                                  |
+| Pozycja na liście                   | Pozycja metody płatności na liście metod płatności                          |
+
+### Parametry płatności "PayU - Raty",  "PayU - Klarna", "PayU - PayPo", "PayU - PragmaPay", "PayU - Twisto", "PayU - Twisto podziel na 3"
+
+| Parameter                           | Opis                                                                        |
+|-------------------------------------|-----------------------------------------------------------------------------|
+| Czy włączyć wtyczkę?                | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności. |
+| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności)                                  |
+| Pozycja na liście                   | Pozycja metody płatności na liście metod płatności                          |
 
 ## Informacje o cechach
 
@@ -139,7 +170,16 @@ uwierzytelnieniu przez 3DS, ale można np. ustalić próg kwoty transakcji dla j
 Kupujący może zapisać kartę podczas płatności, korzystając z opcji "Użyj i zapisz" na widgecie PayU podczas podawania danych karty.
 Każda zapisywana karta podlega silnemu uwierzytelnieniu przy pierwszej płatności (CVV i 3DS).
 Zapisana karta będzie pokazywać się po wybraniu płatności kartą przez PayU za zamówienie i jest widoczna w koncie użytkownika
-(zakładka "Moje zapisane karty"), gdzie jest również dostępna opcja jej usunięcia.   
+(zakładka "Moje zapisane karty"), gdzie jest również dostępna opcja jej usunięcia. 
+
+### Widget kredytowy
+
+W celu poinformowania klienta o możliwościach płatności kredytowej dla konkretnego produktu, zalecamy umieszczenie widgetu kredytowego przy produktach w listach produktów, opisie (szczegółach) wybranego produktu, koszyku i przy finalizacji zamówienia (przed płatnością).
+Parametry konfiguracji opisane w sekcji [Parametry wtyczki "PayU - widget kredytowy"](#parametry-wtyczki-payu-widget-kredytowy) pozwalają na elastyczne zarządzanie miejscami wyświetlania widgetu kredytowego.
+
+Przykładowa prezentacja widgetu kredytowego
+
+![widget][img1]
 
 <!--external links:-->
 [ext0]: https://github.com/PayU-EMEA/plugin_magento
@@ -155,4 +195,5 @@ Zapisana karta będzie pokazywać się po wybraniu płatności kartą przez PayU
 [ext10]: CHANGELOG.md
 
 <!--images:-->
-[img0]: readme_images/methods.png
+[img0]: readme_images/methods_pl.png
+[img1]: readme_images/widget_pl.png
