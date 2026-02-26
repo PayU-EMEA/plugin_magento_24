@@ -18,23 +18,24 @@
     <preference for="PayU\PaymentGateway\Api\RepaymentResolverInterface" type="PayU\PaymentGateway\Model\RepaymentResolver" />
     <preference for="PayU\PaymentGateway\Api\OrderByExtOrderIdResolverInterface" type="PayU\PaymentGateway\Model\OrderByExtOrderIdResolver" />
     <preference for="PayU\PaymentGateway\Api\OrderPaymentResolverInterface" type="PayU\PaymentGateway\Model\OrderPaymentResolver" />
+    <type name="PayU\PaymentGateway\ViewModel\CreditWidgetViewModel" />
 
     <virtualType name="PayUPaymentGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
-            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_GATEWAY</argument>
         </arguments>
     </virtualType>
 
     <virtualType name="PayUPaymentGatewayCardConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
-            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\Ui\CardConfigProvider::CODE</argument>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_CARD</argument>
         </arguments>
     </virtualType>
 
     <!-- PBL -->
     <virtualType name="PayUPaymentGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
-            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_GATEWAY</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayValueHandlerPool</argument>
@@ -97,7 +98,7 @@
     <!-- CARD -->
     <virtualType name="PayUPaymentGatewayCardFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
-            <argument name="code" xsi:type="const">\PayU\PaymentGateway\Model\Ui\CardConfigProvider::CODE</argument>
+            <argument name="code" xsi:type="const">\PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_CARD</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayCardInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayCardValueHandlerPool</argument>
@@ -250,5 +251,185 @@
             <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCardCommandPool</argument>
         </arguments>
     </type>
+
+    <virtualType name="PayUPaymentGatewayInstallmentsConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_INSTALLMENTS</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayInstallmentsConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayUPaymentGatewayInstallmentsConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayInstallmentsValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayUPaymentGatewayInstallmentsConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayInstallmentsFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_INSTALLMENTS</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayInstallmentsValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayKlarnaConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_KLARNA</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayKlarnaConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayUPaymentGatewayKlarnaConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayKlarnaValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayUPaymentGatewayKlarnaConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayKlarnaFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_KLARNA</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayKlarnaValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayPayPoConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_PAYPO</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayPayPoConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayUPaymentGatewayPayPoConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayPayPoValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayUPaymentGatewayPayPoConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayPayPoFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_PAYPO</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayPayPoValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayPragmaConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_PRAGMA</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayPragmaConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayUPaymentGatewayPragmaConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayPragmaValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayUPaymentGatewayPragmaConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayPragmaFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_PRAGMA</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayPragmaValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayTwistoConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_TWISTO</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayTwistoConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayUPaymentGatewayTwistoConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayTwistoValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayUPaymentGatewayTwistoConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayTwistoFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_TWISTO</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayTwistoValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayTwistoSliceConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_TWISTO_SLICE</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayTwistoSliceConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayUPaymentGatewayTwistoSliceConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayTwistoSliceValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayUPaymentGatewayTwistoSliceConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayTwistoSliceFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_TWISTO_SLICE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayTwistoSliceValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
 
 </config>

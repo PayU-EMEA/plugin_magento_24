@@ -6,9 +6,7 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
-use PayU\PaymentGateway\Model\Ui\ConfigProvider;
-use Magento\Sales\Model\Order\Payment;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 /**
  * Class RepaymentEmailObserver
@@ -48,7 +46,7 @@ class RepaymentEmailObserver implements ObserverInterface
         /** @var Order $order */
         $order = $observer->getData('order');
         $method = $order->getPayment()->getMethod();
-        if ($method !== CardConfigProvider::CODE && $method !== ConfigProvider::CODE) {
+        if (!PayUSupportedMethods::isSupported($method)) {
             return;
         }
         if ($this->payUConfig->isRepaymentActive($method)) {

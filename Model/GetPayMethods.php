@@ -6,8 +6,6 @@ use PayU\PaymentGateway\Api\PayUGetPayMethodsInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Api\GetAvailableLocaleInterface;
 use PayU\PaymentGateway\Model\Logger\Logger;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
-use PayU\PaymentGateway\Model\Ui\ConfigProvider;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
 
@@ -18,50 +16,28 @@ use Magento\Payment\Gateway\Config\Config as GatewayConfig;
 class GetPayMethods implements PayUGetPayMethodsInterface
 {
     /**
-     * @var \OpenPayU_Retrieve
+     * Test Payment payType
      */
-    private $openPayURetrieve;
+    private const TEST_PAYMENT_CODE = 't';
 
-    /**
-     * @var PayUConfigInterface
-     */
-    private $payUConfig;
+    private const METHODS_TO_REMOVE_WHEN_ENABLED = [
+        PayUSupportedMethods::CODE_INSTALLMENTS => ['ai'],
+        PayUSupportedMethods::CODE_KLARNA => ['dpkl', 'dpkleur', 'dpklron', 'dpklhuf'],
+        PayUSupportedMethods::CODE_PAYPO => ['dpp', 'dppron'],
+        PayUSupportedMethods::CODE_PRAGMA => ['ppf'],
+        PayUSupportedMethods::CODE_TWISTO => ['dpt', 'dpcz'],
+        PayUSupportedMethods::CODE_TWISTO_SLICE => ['dpts']
+    ];
 
-    /**
-     * @var GetAvailableLocaleInterface
-     */
-    private $availableLocale;
+    private \OpenPayU_Retrieve $openPayURetrieve;
+    private PayUConfigInterface $payUConfig;
+    private GetAvailableLocaleInterface $availableLocale;
+    private GatewayConfig $gatewayConfig;
+    private int $storeId;
+    private Logger $logger;
 
-    /**
-     * @var GatewayConfig
-     */
-    private $gatewayConfig;
+    private static ?array $result = null;
 
-    /**
-     * @var int
-     */
-    private $storeId;
-
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @var array
-     */
-    private $result = [];
-
-    /**
-     * GetPayMethods constructor.
-     *
-     * @param \OpenPayU_Retrieve $openPayURetrieve
-     * @param PayUConfigInterface $payUConfig
-     * @param GetAvailableLocaleInterface $availableLocale
-     * @param GatewayConfig $gatewayConfig
-     * @param StoreManagerInterface $storeManager
-     * @param Logger $logger
-     */
     public function __construct(
         \OpenPayU_Retrieve $openPayURetrieve,
         PayUConfigInterface $payUConfig,
@@ -81,47 +57,68 @@ class GetPayMethods implements PayUGetPayMethodsInterface
     /**
      * {@inheritdoc}
      */
-    public function execute(string $code): array
-    {
+    public function getAllAvailablePayMethods(?float $totalAmount = null): array {
+        $result = [];
         try {
-            $this->payUConfig->setDefaultConfig($code);
-            $payURetrive = $this->openPayURetrieve;
-            $response = $payURetrive::payMethods($this->availableLocale->execute())->getResponse();
+            if (self::$result === null) {
+                $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_GATEWAY);
+                $response = $this->openPayURetrieve::payMethods($this->availableLocale->execute())->getResponse();
 
-            if (is_array($response->payByLinks)) {
-                $this->result =
-                    $this->sortPaymentMethods($response->payByLinks, $this->payUConfig->getPaymentMethodsOrder());
-                $this->gatewayConfig->setMethodCode(CardConfigProvider::CODE);
-                if ((bool)$this->gatewayConfig->getValue('active', $this->storeId)) {
-                    $this->removeCreditCard();
+                if (is_array($response->payByLinks)) {
+                    $result = $this->sortPaymentMethods($response->payByLinks, $this->payUConfig->getPaymentMethodsOrder());
                 }
-                $this->removeTestPayment();
+
+                self::$result = $result;
             } else {
-                $this->result = [];
+                $result = self::$result;
             }
         } catch (\OpenPayU_Exception $exception) {
             $this->logger->critical($exception->getMessage());
-            $this->result = [];
         }
 
-        $paymethods = [];
-
-        foreach ($this->result as $paymethod) {
-            $paymethods[] = $paymethod;
+        if ($totalAmount !== null) {
+            $result = $this->filterPayMethodsByAmountAndEnabled($result, $totalAmount);
         }
 
-        return $paymethods;
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAllPayMethodsForPbl(bool $filterCreditMethods, ?float $totalAmount = null): array {
+        if (!$this->isPayMethodActive(PayUSupportedMethods::CODE_GATEWAY)) {
+            return [];
+        }
+
+        $result = $this->getAllAvailablePayMethods($totalAmount);
+        $result = $this->removeTestPayment($result);
+
+        if ($this->isPayMethodActive(PayUSupportedMethods::CODE_CARD)) {
+            $result = $this->removePayMethod($result, ['c']);
+        }
+
+        if($filterCreditMethods) {
+            foreach (self::METHODS_TO_REMOVE_WHEN_ENABLED as $methodCode => $payTypesToRemove) {
+                if ($this->isPayMethodActive($methodCode)) {
+                    $result = $this->removePayMethod($result, $payTypesToRemove);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    private function isPayMethodActive(string $methodCode): bool
+    {
+        $this->gatewayConfig->setMethodCode($methodCode);
+        return (bool) $this->gatewayConfig->getValue('active', $this->storeId);
     }
 
     /**
      * Sort Payment Methods
-     *
-     * @param array $paymentMethods
-     * @param array $paymentMethodsOrder
-     *
-     * @return array
      */
-    private function sortPaymentMethods($paymentMethods, $paymentMethodsOrder)
+    private function sortPaymentMethods(array $paymentMethods, array $paymentMethodsOrder): array
     {
         if (count($paymentMethodsOrder) < 1) {
             return $paymentMethods;
@@ -148,40 +145,54 @@ class GetPayMethods implements PayUGetPayMethodsInterface
     }
 
     /**
-     * Remove credit card from pay by links response
-     *
-     * @return void
-     */
-    private function removeCreditCard()
-    {
-        $this->result = array_filter(
-            $this->result,
-            function ($payByLink) {
-                return $payByLink->value !== PayUGetPayMethodsInterface::CREDIT_CARD_CODE;
-            }
-        );
-    }
-
-    /**
      * Remove test payment when disabled
-     *
-     * @return void
      */
-    private function removeTestPayment()
+    private function removeTestPayment(array $paymethods): array
     {
-        $this->result = array_filter(
-            $this->result,
+        return array_filter(
+            $paymethods,
             function ($payByLink) {
-                return !($payByLink->value === PayUGetPayMethodsInterface::TEST_PAYMENT_CODE && $payByLink->status !== PayUGetPayMethodsInterface::PAYMETHOD_STATUS_ENABLED);
+                return !($payByLink->value === self::TEST_PAYMENT_CODE && $payByLink->status !== self::PAYMETHOD_STATUS_ENABLED);
             }
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function toJson()
+    private function removePayMethod(array $paymethods, array $payTypesToRemove): array
     {
-        return json_encode($this->result);
+        return array_filter(
+            $paymethods,
+            function ($payByLink) use($payTypesToRemove) {
+                return !in_array($payByLink->value, $payTypesToRemove);
+            }
+        );
+    }
+
+    private function filterPayMethodsByAmountAndEnabled(array $paymentMethods, float $totalAmount): array
+    {
+        return array_filter(
+            $paymentMethods,
+            function ($paymentMethod) use ($totalAmount) {
+                $minAmount = property_exists($paymentMethod, 'minAmount') ? $paymentMethod->minAmount : null;
+                $maxAmount = property_exists($paymentMethod, 'maxAmount') ? $paymentMethod->maxAmount : null;
+
+                if($paymentMethod->status !== self::PAYMETHOD_STATUS_ENABLED) {
+                    return false;
+                }
+
+                if ($minAmount === null && $maxAmount === null) {
+                    return true;
+                }
+
+                if ($minAmount !== null && ($totalAmount * 100) < (float) $minAmount) {
+                    return false;
+                }
+
+                if ($maxAmount !== null && ($totalAmount * 100) > (float) $maxAmount) {
+                    return false;
+                }
+
+                return true;
+            }
+        );
     }
 }

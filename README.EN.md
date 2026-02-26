@@ -34,13 +34,20 @@ The following operations are possible:
 * Remembering of cards and payment with the remembered card
 * Repeat payment
 * Creation of online refund (full or partial)
+* Promoting credit payments using [credit widget](#credit-widget)  on different subpages of the store (e.g. on the product page, in the cart)
 
 
-The module adds two payment methods:
-
-![methods][img0]
+The module adds these payment methods:
   * **PayU payment** - selection of payment method and redirection a bank or card form
   * **Card payment** - entry of the card number directly on the store's website and payment by card
+  * **PayU Installments** - installment payments with a redirect to the PayU installment form.
+  * **PayU Klarna** - deferred Klarna payments with a redirect to the Klarna form in PayU.
+  * **PayU PayPo** - deferred PayPo payments with a redirect to the PayPo form in PayU.
+  * **PayU PragmaPay** - deferred PragmaPay payments with a redirect to the PragmaPay form in PayU.
+  * **PayU Twisto** - deferred Twisto payments with a redirect to the Twisto form in PayU.
+  * **PayU Twisto Pay in 3** - deferred Twisto Pay in 3 payments with a redirect to the Twisto Pay in 3 form in PayU
+
+![methods][img0]
 
 ## Requirements
 
@@ -70,10 +77,15 @@ After installation using Composer or copying files from the console's level, run
 1. Go to the administration page of your Magento 2 store [http://adres-sklepu/admin_xxx].
 1. Go to **Stores** > **Configuration**.
 1. On the **Configuration** page in the menu on the left-hand side, in the section **Sales** choose **Payment Methods**.
-1. On the list of available payment methods choose  **PayU** or **PayU - Cards** to configure the plugin's parameters.
+1. On the list of available payment methods choose one of the **PayU** methods to configure the plugin's parameters.
 1. After changing the parameters click `Save config`.
 
 ### API Parameters
+
+| Parameter              | Description                                                                                                                              |
+|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| Test mode (Sandbox)    | `Yes` - transactions are processed by the PayU Sandbox system. <br/> `No` - transactions are processed by the PayU production system.   |
+
 
 #### Point of sale (POS) parameters
 
@@ -94,23 +106,43 @@ Available when the parameter `Test Mode (Sandbox)` is set for `Yes`.
 | OAuth - client_id | client_id for OAuth protocol from PayU system |
 | OAuth - client_secret | client_secret for OAuth from PayU system |
 
+### "PayU Credit widget" plugin parameters
+
+| Parameter                                      | Description                                                                                                                                                                                                                                   |
+|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Enable widget for product view                 | Value `Yes`\|`No`. Displays the widget on product pages.                                                                                                                                                                                      |
+| Enable widget for catalog view                 | Value `Yes`\|`No`. Displays the widget on pages with product lists (e.g., categories).                                                                                                                                                        |
+| Enable widget for catalog widgets eg. hot, new | Value `Yes`\|`No`. Displays the widget on pages with product list widgets (e.g., bestseller, new).<br>**Experimental feature**                                                                                                                |
+| Enable widget for checkout                     | Value `Yes`\|`No`. Displays the widget on the cart page.                                                                                                                                                                                      |
+| Enable widget for minicart                     | Value `Yes`\|`No`. Displays the widget in the cart summary dropdown.                                                                                                                                                                          |
+| Enable widget for cart summary                 | Value `Yes`\|`No`. Displays the widget on the cart summary page with the payment method selection.                                                                                                                                            |
+| Excluded payTypes                              | Comma-separated list of [payment methods](https://developers.payu.com/europe/docs/get-started/integration-overview/references/#installments-and-pay-later) to omit during widget display. <br> **It is recommended to leave this list empty** |
+
 ### "PayU Payment" parameters
 
 | Parameter | Description |
 |---------|-----------|
 | Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments. |
-| Sandbox mode | Determines whether payments will be performed in PayU (sandbox) test environment. |
 | Order of payment methods | Determines the order of the payment methods being displayed [more information](#order-of-payment-methods). |
 | Activate repeat payment? | [more information](#repeat-payment) |
+| Sort Order | Position of the payment method in the list of payment methods. |
 
 ### "PayU - Cards" parameters
 
 | Parameter | Description |
 |---------|-----------|
 | Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments. |
-| Sandbox mode | Determines whether payments will be performed in PayU (sandbox) test environment. |
 | Activate repeat payment? | [more information](#repeat-payment) |
 | Activate remembering of cards? | [more information](#saving-cards) |
+| Sort Order | Position of the payment method in the list of payment methods. |
+
+### "PayU - Installments", "PayU - Klarna", "PayU - PayPo", "PayU - PragmaPay", "PayU - Twisto", "PayU - Twisto Pay in 3" payment parameters
+
+| Parameter                           | Description                                                                                 |
+|-------------------------------------|---------------------------------------------------------------------------------------------|
+| Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments. |
+| Activate repeat payment? | [more information](#repeat-payment) |
+| Sort Order                          | Position of the payment method in the list of payment methods.                              |
 
 
 ## Information about properties
@@ -140,6 +172,15 @@ The buyer may save the card while making a payment, using the option "Use and sa
 Each card being remembered is subject to strong authentication during first payment (CVV and 3DS). 
 A saved card will appear after choosing to pay with a card through PayU for the order and is visible in the user's account (tab "My saved cards"), where an option to delete it is also available.
 
+### Credit widget
+
+To inform customers about credit payment options for a specific product, we recommend placing the credit widget next to products in product lists, in the description (details) of the selected product, in the cart, and at checkout (before payment).
+The configuration parameters described in the section ["PayU Credit widget" plugin parameters](#payu-credit-widget-plugin-parameters) allow flexible management of where the credit widget is displayed.
+
+Example presentation of the credit widget
+
+![widget][img1]
+
 <!--external links:-->
 [ext0]: https://github.com/PayU-EMEA/plugin_magento
 [ext1]: https://www.payu.pl/en/commercial-offer
@@ -154,4 +195,6 @@ A saved card will appear after choosing to pay with a card through PayU for the 
 [ext10]: CHANGELOG.md
 
 <!--images:-->
-[img0]: readme_images/methods.png
+[img0]: readme_images/methods_en.png
+[img1]: readme_images/widget_en.png
+
