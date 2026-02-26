@@ -3,7 +3,7 @@
     * [PayU | Installments](https://developers.payu.com/europe/docs/payment-solutions/credit/installments/)
     * [PayU Pay Later](https://developers.payu.com/europe/docs/payment-solutions/credit/paylater/)
 * add support for the [credit widget](https://developers.payu.com/europe/docs/payment-solutions/credit/widget/)
-* change the sandbox flag to support all payment methods with one configuration
+* IMPORTANT: the sandbox flag was changed to support all payment methods with one configuration - please review sandbox flag configuration after update
 
 ## 2.0.5
 * Fixed #38 - `di:compile` returned error in PHP 8.4
