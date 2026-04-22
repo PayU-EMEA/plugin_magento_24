@@ -149,27 +149,27 @@ class GetPayMethods implements PayUGetPayMethodsInterface
      */
     private function removeTestPayment(array $paymethods): array
     {
-        return array_filter(
+        return array_values(array_filter(
             $paymethods,
             function ($payByLink) {
                 return !($payByLink->value === self::TEST_PAYMENT_CODE && $payByLink->status !== self::PAYMETHOD_STATUS_ENABLED);
             }
-        );
+        ));
     }
 
     private function removePayMethod(array $paymethods, array $payTypesToRemove): array
     {
-        return array_filter(
+        return array_values(array_filter(
             $paymethods,
             function ($payByLink) use($payTypesToRemove) {
                 return !in_array($payByLink->value, $payTypesToRemove);
             }
-        );
+        ));
     }
 
     private function filterPayMethodsByAmountAndEnabled(array $paymentMethods, float $totalAmount): array
     {
-        return array_filter(
+        return array_values(array_filter(
             $paymentMethods,
             function ($paymentMethod) use ($totalAmount) {
                 $minAmount = property_exists($paymentMethod, 'minAmount') ? $paymentMethod->minAmount : null;
@@ -193,6 +193,6 @@ class GetPayMethods implements PayUGetPayMethodsInterface
 
                 return true;
             }
-        );
+        ));
     }
 }
