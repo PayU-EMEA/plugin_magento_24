@@ -1,3 +1,6 @@
+## 2.0.7
+* Fixed #49 - filtered payment methods (thanks @Tomasz-Silpion)
+
 ## 2.0.6
 * add support for credit payment methods:
     * [PayU | Installments](https://developers.payu.com/europe/docs/payment-solutions/credit/installments/)
