@@ -5,6 +5,7 @@ namespace PayU\PaymentGateway\Model;
 use Magento\Framework\DB\Transaction;
 use Magento\Framework\Event\ManagerInterface as EventManager;
 use Magento\Payment\Gateway\Command\CommandException;
+use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use PayU\PaymentGateway\Api\AcceptOrderPaymentInterface;
 use PayU\PaymentGateway\Api\OrderPaymentResolverInterface;
 
@@ -17,16 +18,19 @@ class AcceptOrderPayment implements AcceptOrderPaymentInterface
     private EventManager $eventManager;
     private Transaction $transaction;
     private OrderPaymentResolverInterface $paymentResolver;
+    private OrderSender $orderSender;
 
     public function __construct(
         EventManager                  $eventManager,
         Transaction                   $transaction,
-        OrderPaymentResolverInterface $paymentResolver
+        OrderPaymentResolverInterface $paymentResolver,
+        OrderSender $orderSender
     )
     {
         $this->eventManager = $eventManager;
         $this->transaction = $transaction;
         $this->paymentResolver = $paymentResolver;
+        $this->orderSender = $orderSender;
     }
 
     /**
@@ -46,6 +50,9 @@ class AcceptOrderPayment implements AcceptOrderPaymentInterface
         }
         $payment->capture();
         $order = $payment->getOrder();
+
+        $this->orderSender->send($order);
+
         $eventData = ['order' => $order, 'payment' => $payment];
         $this->eventManager->dispatch('payu_accept_order_payment', $eventData);
         $this->eventManager->dispatch('payu_close_repayment_transaction', $eventData);
