@@ -2,12 +2,12 @@
 /**
  * View for stored cards in my account
  *
- * @var \Payu\PaymentGateway\Block\Account\StoredCards $this
+ * @var \PayU\PaymentGateway\Block\Account\StoredCards $block
  * @var \Magento\Framework\Escaper $escaper
  */
 ?>
 <?php
-$storedCards = $this->getStoredCards();
+$storedCards = $block->getStoredCards();
 ?>
 <div class="block block-payu-cards payu__cards">
     <div class="block-content payu-cards__wrapper">
@@ -41,7 +41,7 @@ $storedCards = $this->getStoredCards();
                             </td>
                             <td class="col card__action">
                                 <form action="<?= $escaper->escapeHtml(
-                                    $this->getUrl('customer/account/deletestoredcard/')
+                                    $block->getUrl('customer/account/deletestoredcard/')
                                 );
                                 ?>" method="post">
                                     <?php echo $block->getBlockHtml('formkey') ?>

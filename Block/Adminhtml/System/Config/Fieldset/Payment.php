@@ -38,7 +38,7 @@ class Payment extends Fieldset
     /**
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return string
-     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings("PHPMD.NPathComplexity")
      */
     protected function _getHeaderTitleHtml($element)
     {
@@ -77,7 +77,7 @@ class Payment extends Fieldset
     /**
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     protected function _getHeaderCommentHtml($element)
     {
@@ -87,7 +87,7 @@ class Payment extends Fieldset
     /**
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return false
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     protected function _isCollapseState($element)
     {
@@ -97,7 +97,7 @@ class Payment extends Fieldset
     /**
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     protected function _getExtraJs($element)
     {
