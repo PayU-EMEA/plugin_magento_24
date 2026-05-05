@@ -19,6 +19,7 @@
                     ifconfig="payment/payu_credit_widget/enable_for_product"
             >
                 <arguments>
+                    <argument name="configKey" xsi:type="string">enable_for_product</argument>
                     <argument name="creditWidgetViewModel" xsi:type="object">PayU\PaymentGateway\ViewModel\CreditWidgetViewModel</argument>
                 </arguments>
             </block>

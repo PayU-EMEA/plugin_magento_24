@@ -19,6 +19,7 @@
         >
             <arguments>
                 <argument name="creditWidgetViewModel" xsi:type="object">PayU\PaymentGateway\ViewModel\CreditWidgetViewModel</argument>
+                <argument name="configKey" xsi:type="string">enable_for_catalog</argument>
             </arguments>
         </block>
     </body>

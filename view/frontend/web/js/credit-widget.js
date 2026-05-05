@@ -34,6 +34,10 @@ define(['jquery'], function ($) {
                 return;
             }
 
+            if (!window.OpenPayU || !window.OpenPayU.Installments || !window.OpenPayU.Installments.miniInstallment) {
+                return;
+            }
+
             window.OpenPayU.Installments.miniInstallment(config.selector, {
                 creditAmount: amount,
                 currencySign: config.currencySign,

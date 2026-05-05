@@ -52,6 +52,7 @@ class ProductsListPlugin
         $widgetBlock = $subject->getLayout()->createBlock(Block::class);
         $widgetBlock = $widgetBlock->setTemplate('PayU_PaymentGateway::product/credit_widget.phtml');
         $widgetBlock->setData('creditWidgetViewModel', $this->creditWidgetViewModel);
+        $widgetBlock->setData('configKey', 'enable_for_catalog_widgets');
         $widgetBlock->setProduct($product);
 
         $resultHtml .= $widgetBlock->toHtml();
