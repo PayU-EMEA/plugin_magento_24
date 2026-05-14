@@ -3,19 +3,26 @@
 namespace PayU\PaymentGateway\Model;
 
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Controller\AbstractController\OrderViewAuthorizationInterface;
+use Magento\Sales\Model\Order;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Api\RepaymentResolverInterface;
 use PayU\PaymentGateway\Observer\AfterPlaceOrderObserver;
 
 class RepaymentResolver implements RepaymentResolverInterface
 {
+    private OrderViewAuthorizationInterface $orderAuthorization;
     private PayUConfigInterface $payUConfig;
     private OrderRepositoryInterface $orderRepository;
 
-    public function __construct(PayUConfigInterface $payUConfig, OrderRepositoryInterface $orderRepository)
-    {
+    public function __construct(
+        PayUConfigInterface $payUConfig,
+        OrderRepositoryInterface $orderRepository,
+        OrderViewAuthorizationInterface $orderAuthorization
+    ) {
         $this->payUConfig = $payUConfig;
         $this->orderRepository = $orderRepository;
+        $this->orderAuthorization = $orderAuthorization;
     }
 
     /**
@@ -23,7 +30,16 @@ class RepaymentResolver implements RepaymentResolverInterface
      */
     public function isRepayment(int $orderId): bool
     {
-        $order = $this->orderRepository->get($orderId);
+        try {
+            $order = $this->orderRepository->get($orderId);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        if (!$order instanceof Order || !$this->orderAuthorization->canView($order)) {
+            return false;
+        }
+
         $payment = $order->getPayment();
         $paymentMethod = $payment->getMethod();
 
