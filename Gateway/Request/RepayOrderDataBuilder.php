@@ -3,10 +3,9 @@
 namespace PayU\PaymentGateway\Gateway\Request;
 
 use Magento\Framework\UrlInterface;
-use Magento\Payment\Gateway\Data\OrderAdapterInterface;
-use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Sales\Model\Order;
+use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Gateway\Helper\RepaySubjectReader;
 use PayU\PaymentGateway\Gateway\Helper\Requests;
 
@@ -14,15 +13,17 @@ class RepayOrderDataBuilder implements BuilderInterface
 {
     private UrlInterface $urlBuilder;
     private Requests $payuRequests;
+    private PayUConfigInterface $payUConfig;
 
     public function __construct(
         UrlInterface $urlBuilder,
-        Requests     $payuRequests
-
+        Requests $payuRequests,
+        PayUConfigInterface $payUConfig
     )
     {
         $this->urlBuilder = $urlBuilder;
         $this->payuRequests = $payuRequests;
+        $this->payUConfig = $payUConfig;
     }
 
     /**
@@ -33,7 +34,7 @@ class RepayOrderDataBuilder implements BuilderInterface
         $order = RepaySubjectReader::readOrder($buildSubject);
         $method = RepaySubjectReader::readMethod($buildSubject);
 
-        return [
+        $body = [
             'body' => [
                 'description' => $this->getOrderDescription($order),
                 'customerIp' => $this->payuRequests->getIp(),
@@ -45,6 +46,12 @@ class RepayOrderDataBuilder implements BuilderInterface
                 'continueUrl' => $this->urlBuilder->getUrl('sales/order/history'),
             ]
         ];
+        if ($this->payUConfig->canCancelOrderOnPaymentWall($method)) {
+            $body['body']['settings']['allowOrderCancellationByPayer'] = true;
+            $body['body']['cancelUrl'] = $this->urlBuilder->getUrl('payu/order/cancel');
+        }
+
+        return $body;
     }
 
     private function getOrderDescription(Order $order): string
