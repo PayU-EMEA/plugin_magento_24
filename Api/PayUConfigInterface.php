@@ -231,4 +231,8 @@ interface PayUConfigInterface
      */
     public function getPaymentMethodsOrder();
 
+    /**
+     * Check if cancel order on PayU Payment Wall is enabled
+     */
+    public function canCancelOrderOnPaymentWall(string $code): bool;
 }

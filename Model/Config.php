@@ -288,4 +288,15 @@ class Config implements PayUConfigInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function canCancelOrderOnPaymentWall(string $code): bool
+    {
+        $this->setGatewayConfigCode($code);
+
+        return (bool)$this->gatewayConfig->getValue('can_cancel_order_on_payment_wall', $this->storeId);
+    }
+
+
 }
