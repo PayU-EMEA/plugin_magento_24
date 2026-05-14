@@ -1,10 +1,10 @@
 <?php
 /**
- * @var \Payu\PaymentGateway\Block\Onepage\ContinueCvv|\Payu\PaymentGateway\Block\Order\Repay\ContinueCvv $this
+ * @var \PayU\PaymentGateway\Block\Onepage\ContinueCvv|\PayU\PaymentGateway\Block\Order\Repay\ContinueCvv $block
  */
 ?>
 <?php
-$widgetConfig = $this->getWidgetCvvConfig();
+$widgetConfig = $block->getWidgetCvvConfig();
 if ($widgetConfig): ?>
     <div class="payu-block">
         <div class="payu-block__wrapper">
@@ -20,7 +20,7 @@ if ($widgetConfig): ?>
     </div>
     <script type="text/javascript">
         window.payuConfig = {
-            env: "<?php echo $this->getEnv(); ?>"
+            env: "<?php echo $block->getEnv(); ?>"
         }
     </script>
     <script type="text/x-magento-init">

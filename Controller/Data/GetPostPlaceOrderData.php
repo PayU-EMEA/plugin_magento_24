@@ -35,7 +35,7 @@ class GetPostPlaceOrderData implements HttpGetActionInterface
         $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
 
         try {
-            /** @var $payment \Magento\Sales\Model\Order\Payment */
+            /** @var \Magento\Sales\Model\Order\Payment $payment */
             $payment = $this->checkoutSession->getLastRealOrder()->getPayment();
             $paymentInformation = $payment->getAdditionalInformation();
             if (is_array($paymentInformation) &&
