@@ -52,6 +52,10 @@ class CreditWidgetViewModel implements ArgumentInterface
      */
     public function isWidgetEnabled(string $configKey): bool
     {
+        if (empty($this->getPosId()) || empty($this->getKey())) {
+            return false;
+        }
+
         $this->gatewayConfig->setMethodCode('payu_credit_widget');
         return (bool)$this->gatewayConfig->getValue($configKey, $this->storeId);
     }

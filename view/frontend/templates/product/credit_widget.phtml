@@ -3,27 +3,30 @@
 <?php /** @var \Magento\Catalog\Model\Product $product */ ?>
 <?php
 $viewModel = $block->getData('creditWidgetViewModel');
+$configKey = $block->getData('configKey');
 $product = $block->getProduct();
 $productId = $product->getId();
 $finalPrice = (float) $product->getFinalPrice();
 ?>
-<div class="payu-installments-block">
-    <div id="payu-credit-widget-mini-<?=$productId?>" class="payu-credit-widget-mini"></div>
-</div>
-<script type="text/x-magento-init">
-    {
-        ".payu-installments-block #payu-credit-widget-mini-<?= $productId ?>": {
-        "creditWidget": {
-            "selector": "#payu-credit-widget-mini-<?= $productId ?>",
-            "productId": <?= json_encode($productId); ?>,
-            "creditAmount": <?= json_encode($finalPrice); ?>,
-            "currencySign": <?= json_encode($viewModel->getCurrencyCode()); ?>,
-            "lang": <?= json_encode($viewModel->getLanguageCode()); ?>,
-            "posId": <?= json_encode($viewModel->getPosId()); ?>,
-            "key": <?= json_encode($viewModel->getKey()); ?>,
-            "showLongDescription": true,
-            "excludedPaytypes": <?= json_encode($viewModel->getExcludedPaytypes()); ?>
+<?php if ($viewModel->isWidgetEnabled($configKey)): ?>
+    <div class="payu-installments-block">
+        <div id="payu-credit-widget-mini-<?=$productId?>" class="payu-credit-widget-mini"></div>
+    </div>
+    <script type="text/x-magento-init">
+        {
+            ".payu-installments-block #payu-credit-widget-mini-<?= $productId ?>": {
+            "creditWidget": {
+                "selector": "#payu-credit-widget-mini-<?= $productId ?>",
+                "productId": <?= json_encode($productId); ?>,
+                "creditAmount": <?= json_encode($finalPrice); ?>,
+                "currencySign": <?= json_encode($viewModel->getCurrencyCode()); ?>,
+                "lang": <?= json_encode($viewModel->getLanguageCode()); ?>,
+                "posId": <?= json_encode($viewModel->getPosId()); ?>,
+                "key": <?= json_encode($viewModel->getKey()); ?>,
+                "showLongDescription": true,
+                "excludedPaytypes": <?= json_encode($viewModel->getExcludedPaytypes()); ?>
+            }
         }
     }
-}
-</script>
+    </script>
+<?php endif; ?>
