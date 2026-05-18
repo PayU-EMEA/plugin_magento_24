@@ -66,15 +66,14 @@ class Repay implements HttpPostActionInterface
      */
     public function execute()
     {
-        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
-        $isRepayment = $this->repaymentResolver->isRepayment((int)$this->request->getParam(static::ORDER_ID));
-        if (!$isRepayment) {
-            return $resultRedirect->setPath('sales/order/history');
+        $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
+        $returnData = [static::SUCCESS_FIELD => false];
+
+        if (!$this->repaymentResolver->isRepayment((int)$this->request->getParam(static::ORDER_ID))) {
+            $returnData[static::ERROR_FIELD] = __('Wrong Request');
+            return $result->setData($returnData);
         }
 
-        $result = $this->resultFactory->create(ResultFactory::TYPE_JSON);
-
-        $returnData = [static::SUCCESS_FIELD => false];
         $orderId = (int)$this->request->getParam(static::ORDER_ID);
         if ($orderId === 0) {
             $returnData[static::ERROR_FIELD] = __('Wrong Request');
