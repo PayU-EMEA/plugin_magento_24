@@ -97,7 +97,7 @@ class OpenPayU_Configuration
     }
 
     /**
-     * @param string $value
+     * @param string
      * @throws OpenPayU_Exception_Configuration
      */
     public static function setHashAlgorithm($value)
@@ -172,7 +172,7 @@ class OpenPayU_Configuration
     }
 
     /**
-     * @param string $value
+     * @param string
      */
     public static function setMerchantPosId($value)
     {
@@ -188,7 +188,7 @@ class OpenPayU_Configuration
     }
 
     /**
-     * @param string $value
+     * @param string
      */
     public static function setSignatureKey($value)
     {
