@@ -11,8 +11,7 @@ use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Api\PayUGetCreditCardSecureFormConfigInterface;
 use PayU\PaymentGateway\Api\PayUGetPayMethodsInterface;
 use PayU\PaymentGateway\Api\PayUGetUserPayMethodsInterface;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
-use PayU\PaymentGateway\Model\Ui\ConfigProvider;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
 
 /**
@@ -118,21 +117,21 @@ class PaymentMethods extends Template
     public function getPaymentGatewayConfig(): string
     {
         $storeId = $this->_storeManager->getStore()->getId();
-        $this->gatewayConfig->setMethodCode(ConfigProvider::CODE);
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GATEWAY);
         if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId)) {
             return "";
         }
 
         return json_encode(
             [
-                static::CODE => ConfigProvider::CODE,
+                static::CODE => PayUSupportedMethods::CODE_GATEWAY,
                 static::LOGO_SRC => $this->getViewFileUrl(PayUConfigInterface::PAYU_BANK_TRANSFER_LOGO_SRC),
                 static::ORDER_ID => $this->getOrder()->getEntityId(),
                 static::LANGUAGE => $this->availableLocale->execute(),
                 static::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
                 static::TRANSFER_KEY => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
                 static::REPAY_URL => static::REPAY_URI,
-                'methods' => $this->payMethods->execute(ConfigProvider::CODE)
+                'methods' => $this->payMethods->getAllPayMethodsForPbl(false, $this->getOrder()->getGrandTotal())
             ]
         );
     }
@@ -143,7 +142,7 @@ class PaymentMethods extends Template
     public function getCardPaymentGatewayConfig(): string
     {
         $storeId = $this->_storeManager->getStore()->getId();
-        $this->gatewayConfig->setMethodCode(CardConfigProvider::CODE);
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_CARD);
         if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId)) {
             return "";
         }
@@ -152,7 +151,7 @@ class PaymentMethods extends Template
 
         return json_encode(
             [
-                static::CODE => CardConfigProvider::CODE,
+                static::CODE => PayUSupportedMethods::CODE_CARD,
                 static::LOGO_SRC => $this->getViewFileUrl(PayUConfigInterface::PAYU_CC_TRANSFER_LOGO_SRC),
                 static::ORDER_ID => $this->getOrder()->getEntityId(),
                 static::LANGUAGE => $this->availableLocale->execute(),

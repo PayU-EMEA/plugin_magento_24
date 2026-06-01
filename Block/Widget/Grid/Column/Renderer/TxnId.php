@@ -5,8 +5,7 @@ namespace PayU\PaymentGateway\Block\Widget\Grid\Column\Renderer;
 use Magento\Backend\Block\Widget\Grid\Column\Renderer\AbstractRenderer;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Framework\DataObject;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
-use PayU\PaymentGateway\Model\Ui\ConfigProvider;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 /**
  * Class TxnId
@@ -23,7 +22,7 @@ class TxnId extends AbstractRenderer
         $transaction = $row;
         $paymentMethod = $transaction->getOrder()->getPayment()->getMethod();
         $paymentId = $transaction->getAdditionalInformation('payment_id');
-        if (in_array($paymentMethod, [ConfigProvider::CODE, CardConfigProvider::CODE]) &&
+        if (PayUSupportedMethods::isSupported($paymentMethod) &&
             $transaction->getTxnType() === 'capture' &&
             $paymentId !== null) {
             return $paymentId;

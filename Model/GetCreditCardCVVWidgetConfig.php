@@ -6,7 +6,6 @@ use PayU\PaymentGateway\Api\GetAvailableLocaleInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Api\PayUGetCreditCardCVVWidgetConfigInterface;
 use Magento\Checkout\Model\Session as CheckoutSession;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
 
 /**
  * Class GetCreditCardCVVWidgetConfig
@@ -59,7 +58,7 @@ class GetCreditCardCVVWidgetConfig implements PayUGetCreditCardCVVWidgetConfigIn
      */
     public function execute($cvvUrl)
     {
-        $this->payUConfig->setDefaultConfig(CardConfigProvider::CODE);
+        $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_CARD);
         $config = $this->openPayUConfig;
 
         return [
