@@ -11,6 +11,7 @@ use PayU\PaymentGateway\Api\PayUGetCreditCardSecureFormConfigInterface;
 use Magento\Framework\View\Asset\Repository as AssetRepository;
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
 use PayU\PaymentGateway\Api\PayUGetUserPayMethodsInterface;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 /**
  * Class ConfigProvider
@@ -19,11 +20,6 @@ use PayU\PaymentGateway\Api\PayUGetUserPayMethodsInterface;
  */
 class CardConfigProvider implements ConfigProviderInterface
 {
-    /**
-     * Pay with PayU Credit Card code
-     */
-    const CODE = 'payu_gateway_card';
-
     /**
      * @var PayUGetCreditCardSecureFormConfigInterface
      */
@@ -93,7 +89,7 @@ class CardConfigProvider implements ConfigProviderInterface
      */
     public function getConfig()
     {
-        $this->gatewayConfig->setMethodCode(self::CODE);
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_CARD);
         $isActive = (bool)$this->gatewayConfig->getValue('active', $this->storeId);
 
         $userPayMethods = $isActive ? $this->userPayMethods->execute() : [];

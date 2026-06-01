@@ -204,6 +204,11 @@ interface PayUConfigInterface
     public function setSender($sender);
 
     /**
+     * Check if environment is sandbox
+     */
+    public function isSandboxEnv(?int $storeId): bool;
+
+    /**
      * Check if credit card store per user is enable
      *
      * @return bool
@@ -226,4 +231,8 @@ interface PayUConfigInterface
      */
     public function getPaymentMethodsOrder();
 
+    /**
+     * Check if cancel order on PayU Payment Wall is enabled
+     */
+    public function canCancelOrderOnPaymentWall(string $code): bool;
 }

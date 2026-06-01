@@ -3,18 +3,22 @@
 namespace PayU\PaymentGateway\Gateway\Request;
 
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
-use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use PayU\PaymentGateway\Gateway\Helper\RepaySubjectReader;
+use PayU\PaymentGateway\Model\Config;
 
 class RepayMerchantIdDataBuilder implements BuilderInterface
 {
     private GatewayConfig $gatewayConfig;
+    private Config $config;
 
-
-    public function __construct(GatewayConfig $gatewayConfig)
+    public function __construct(
+        GatewayConfig $gatewayConfig,
+        Config $config
+    )
     {
         $this->gatewayConfig = $gatewayConfig;
+        $this->config = $config;
     }
 
     /**
@@ -23,13 +27,13 @@ class RepayMerchantIdDataBuilder implements BuilderInterface
     public function build(array $buildSubject): array
     {
         $order = RepaySubjectReader::readOrder($buildSubject);
-        $method = RepaySubjectReader::readMethod($buildSubject);
+        $storeId = $order->getStoreId();
 
-        $this->gatewayConfig->setMethodCode($method);
-        $envPrefix = (bool)$this->gatewayConfig->getValue('environment', $order->getStoreId()) ? 'sandbox_' : '';
+        $isSandboxEnvironment = $this->config->isSandboxEnv($storeId);
+        $envPrefix = $isSandboxEnvironment ? 'sandbox_' : '';
 
         $this->gatewayConfig->setMethodCode('payu');
-        $merchantPosId = $this->gatewayConfig->getValue($envPrefix . 'pos_id', $order->getStoreId());
+        $merchantPosId = $this->gatewayConfig->getValue($envPrefix . 'pos_id', $storeId);
 
         return [
             'body' => [

@@ -8,7 +8,6 @@ use PayU\PaymentGateway\Api\PayUConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
 use PayU\PaymentGateway\Api\PayUCacheConfigInterface;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
 
 /**
  * Class Config
@@ -19,7 +18,7 @@ class Config implements PayUConfigInterface
     /**
      * Current Plugin Version
      */
-    const PLUGIN_VERSION = '2.0.5';
+    const PLUGIN_VERSION = '2.0.7';
 
     /**
      * @var \OpenPayU_Configuration
@@ -97,13 +96,10 @@ class Config implements PayUConfigInterface
             return $this;
         }
 
-        // gateway config
-        $isSandboxEnvironment = $this->gatewayConfig->getValue('environment', $storeId) === '1';
-
         // common config
-        $envPrefix = $isSandboxEnvironment ? 'sandbox_' : '';
+        $isSandboxEnvironment = $this->isSandboxEnv($storeId);
         $this->setGatewayConfigCode('payu');
-        $this->gatewayConfig->setMethodCode('payu');
+        $envPrefix = $isSandboxEnvironment ? 'sandbox_' : '';
         $posId = $this->gatewayConfig->getValue($envPrefix . 'pos_id', $storeId);
         $signatureKey = $this->gatewayConfig->getValue($envPrefix . 'second_key', $storeId);
         $clientId = $this->gatewayConfig->getValue($envPrefix . 'client_id', $storeId);
@@ -124,6 +120,22 @@ class Config implements PayUConfigInterface
         }
 
         return $this;
+    }
+
+    public function isSandboxEnv(?int $storeId): bool {
+        $this->gatewayConfig->setMethodCode('payu');
+        $flag = $this->gatewayConfig->getValue('environment', $storeId);
+
+        if ($flag === null) {
+            $this->gatewayConfig->setMethodCode('payu_gateway');
+            $flag = $this->gatewayConfig->getValue('environment', $storeId);
+        }
+        if ($flag === null) {
+            $this->gatewayConfig->setMethodCode('payu_gateway_card');
+            $flag = $this->gatewayConfig->getValue('environment', $storeId);
+        }
+
+        return $flag === '1';
     }
 
     /**
@@ -275,5 +287,16 @@ class Config implements PayUConfigInterface
 
         return $this;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function canCancelOrderOnPaymentWall(string $code): bool
+    {
+        $this->setGatewayConfigCode($code);
+
+        return (bool)$this->gatewayConfig->getValue('can_cancel_order_on_payment_wall', $this->storeId);
+    }
+
 
 }

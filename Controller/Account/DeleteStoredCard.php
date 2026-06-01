@@ -7,7 +7,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Exception\LocalizedException;
 use PayU\PaymentGateway\Api\PayUDeleteUserTokenInterface;
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
-use PayU\PaymentGateway\Model\Ui\CardConfigProvider;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 /**
  * Class DeleteStoredCard
@@ -51,7 +51,7 @@ class DeleteStoredCard extends AbstractAccount
             $this->messageManager->addErrorMessage(__('Wrong request.'));
         }
         try {
-            $this->gatewayConfig->setMethodCode(CardConfigProvider::CODE);
+            $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_CARD);
             $this->deleteUserToken->execute($cardToken);
             $this->messageManager->addSuccessMessage(__('Card token was successfully deleted.'));
         } catch (LocalizedException $exception) {
