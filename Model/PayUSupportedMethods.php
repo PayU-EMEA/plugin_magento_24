@@ -12,6 +12,7 @@ class PayUSupportedMethods
     const CODE_PRAGMA = 'payu_gateway_pragma';
     const CODE_TWISTO = 'payu_gateway_twisto';
     const CODE_TWISTO_SLICE = 'payu_gateway_twisto_slice';
+    const CODE_GOOGLE_PAY = 'payu_gateway_google_pay';
 
     public static function isSupported(string $methodCode): bool {
         return in_array($methodCode, [
@@ -22,7 +23,8 @@ class PayUSupportedMethods
             self::CODE_PAYPO,
             self::CODE_PRAGMA,
             self::CODE_TWISTO,
-            self::CODE_TWISTO_SLICE
+            self::CODE_TWISTO_SLICE,
+            self::CODE_GOOGLE_PAY,
         ], true);
     }
 }
