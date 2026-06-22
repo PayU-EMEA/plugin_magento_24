@@ -28,7 +28,7 @@ class ContinueCvv extends Template
     private $checkoutSession;
 
     /**
-     * @var CustomerSession\
+     * @var CustomerSession
      */
     private $customerSession;
 

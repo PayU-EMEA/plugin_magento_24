@@ -1,11 +1,11 @@
 <?php
 /**
- * @var \Payu\PaymentGateway\Block\Order\Repay\PaymentMethods $this
+ * @var \PayU\PaymentGateway\Block\Order\Repay\PaymentMethods $block
  */
 ?>
 <?php
-$config = $this->getPaymentGatewayConfig();
-$cardConfig = $this->getCardPaymentGatewayConfig();
+$config = $block->getPaymentGatewayConfig();
+$cardConfig = $block->getCardPaymentGatewayConfig();
 ?>
     <div class="payu-repay repay">
         <div class="repay__header">
@@ -40,7 +40,7 @@ if (!empty($cardConfig)):
     ?>
     <script type="text/javascript">
         window.payuConfig = {
-            env: "<?=  $this->getCardEnv(); ?>"
+            env: "<?=  $block->getCardEnv(); ?>"
         }
     </script>
     <script type="text/x-magento-init">
