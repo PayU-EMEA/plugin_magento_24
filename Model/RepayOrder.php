@@ -39,22 +39,22 @@ class RepayOrder implements PayURepayOrderInterface
     public function execute(OrderInterface $order, string $method, string $payUMethodType, string $payUMethod, array $payuBrowser, string $transactionId): void
     {
         $payment = $order->getPayment();
-        $newPayment = $this->makeNewPayment(
+
+        $this->updatePayment(
             $payment,
-            $order->getEntityId(),
             $method,
             $payUMethod,
             $payUMethodType,
             $payuBrowser,
             $transactionId
         );
-        $this->addPaymentToOrder($order, $newPayment, $transactionId);
-        $this->addTransactionToPayment($newPayment, $order->getEntityId(), $transactionId);
+
+        $this->updateOrder($order, $payment, $transactionId);
+        $this->addTransactionToPayment($payment, $order->getEntityId(), $transactionId);
     }
 
-    private function addPaymentToOrder(OrderInterface $order, OrderPaymentInterface $payment, string $transactionId): void
+    private function updateOrder(OrderInterface $order, OrderPaymentInterface $payment, string $transactionId): void
     {
-        $order->setPayment($payment);
         $order->addCommentToStatusHistory(
             __(
                 'Authorized amount of %1. Transaction ID: "%2"',
@@ -78,23 +78,15 @@ class RepayOrder implements PayURepayOrderInterface
         $this->transactionRepository->save($paymentTransaction);
     }
 
-    private function makeNewPayment(OrderPaymentInterface $payment, int $orderId, string $method, string $payUMethodType, string $payUMethod, array $payuBrowser, string $transactionId): OrderPaymentInterface
+    private function updatePayment(OrderPaymentInterface $payment, string $method, string $payUMethodType, string $payUMethod, array $payuBrowser, string $transactionId): void
     {
-        $newPayment = $this->paymentRepository->create();
-        $newPayment->setMethod($method);
-        $newPayment->setParentId($orderId);
-        $newPayment->setBaseAmountAuthorized($payment->getBaseAmountAuthorized());
-        $newPayment->setBaseShippingAmount($payment->getBaseShippingAmount());
-        $newPayment->setShippingAmount($payment->getShippingAmount());
-        $newPayment->setAmountAuthorized($payment->getAmountAuthorized());
-        $newPayment->setBaseAmountOrdered($payment->getBaseAmountOrdered());
-        $newPayment->setAmountOrdered($payment->getAmountOrdered());
-        $newPayment->setAdditionalInformation(PayUConfigInterface::PAYU_METHOD_CODE, $payUMethod);
-        $newPayment->setAdditionalInformation(PayUConfigInterface::PAYU_METHOD_TYPE_CODE, $payUMethodType);
-        $newPayment->setAdditionalInformation('method_title', 'PayU');
-        $newPayment->setAdditionalInformation('payu_browser', $payuBrowser);
-        $newPayment->setLastTransId($transactionId);
+        $payment->setMethod($method);
+        $payment->setAdditionalInformation(PayUConfigInterface::PAYU_METHOD_CODE, $payUMethod);
+        $payment->setAdditionalInformation(PayUConfigInterface::PAYU_METHOD_TYPE_CODE, $payUMethodType);
+        $payment->setAdditionalInformation('method_title', 'PayU');
+        $payment->setAdditionalInformation('payu_browser', $payuBrowser);
+        $payment->setLastTransId($transactionId);
 
-        return $this->paymentRepository->save($newPayment);
+        $this->paymentRepository->save($payment);
     }
 }

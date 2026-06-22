@@ -2,6 +2,7 @@
 
 namespace PayU\PaymentGateway\Block\Order\Repay;
 
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Sales\Api\OrderRepositoryInterface;
@@ -20,61 +21,19 @@ use Magento\Payment\Gateway\Config\Config as GatewayConfig;
  */
 class PaymentMethods extends Template
 {
-    /**
-     * Code
-     */
-    const CODE = 'code';
+    private const CODE = 'code';
+    private const LOGO_SRC = 'logoSrc';
+    private const ORDER_ID = 'orderId';
+    private const LANGUAGE = 'language';
+    private const TERMS_URL = 'termsUrl';
+    private const TRANSFER_KEY = 'transferKey';
+    private const REPAY_URL = 'repayUrl';
+    private const STORED_CARDS = 'storedCards';
+    private const SECURE_FORM = 'secureForm';
+    private const ACTIVE = 'active';
+    private const METHODS = 'methods';
 
-    /**
-     * Logo url
-     */
-    const LOGO_SRC = 'logoSrc';
-
-    /**
-     * Order ID
-     */
-    const ORDER_ID = 'orderId';
-
-    /**
-     * Locale
-     */
-    const LANGUAGE = 'language';
-
-    /**
-     * Terms URL
-     */
-    const TERMS_URL = 'termsUrl';
-
-    /**
-     * Transfer Key
-     */
-    const TRANSFER_KEY = 'transferKey';
-
-    /**
-     * Repay URL
-     */
-    const REPAY_URL = 'repayUrl';
-
-    /**
-     * Stored Cards List
-     */
-    const STORED_CARDS = 'storedCards';
-
-    /**
-     * Secure Form Config
-     */
-    const SECURE_FORM = 'secureForm';
-
-    /**
-     * Repay address URL
-     */
-    const REPAY_URI = 'sales/order/repay';
-
-    /**
-     * Active gateway code
-     */
-    const ACTIVE = 'active';
-
+    private RequestInterface $request;
     private PayUGetPayMethodsInterface $payMethods;
     private PayUGetCreditCardSecureFormConfigInterface $secureFormConfig;
     private OrderRepositoryInterface $orderRepository;
@@ -83,18 +42,9 @@ class PaymentMethods extends Template
     private ?OrderInterface $order = null;
     private GatewayConfig $gatewayConfig;
 
-    /**
-     * @param Context $context
-     * @param PayUGetPayMethodsInterface $payMethods
-     * @param PayUGetCreditCardSecureFormConfigInterface $secureFormConfig
-     * @param OrderRepositoryInterface $orderRepository
-     * @param GetAvailableLocaleInterface $availableLocale
-     * @param PayUGetUserPayMethodsInterface $userPayMethods
-     * @param GatewayConfig $gatewayConfig
-     * @param array $data
-     */
     public function __construct(
         Context $context,
+        RequestInterface $request,
         PayUGetPayMethodsInterface $payMethods,
         PayUGetCreditCardSecureFormConfigInterface $secureFormConfig,
         OrderRepositoryInterface $orderRepository,
@@ -104,6 +54,7 @@ class PaymentMethods extends Template
         array $data = []
     ) {
         $this->payMethods = $payMethods;
+        $this->request = $request;
         $this->secureFormConfig = $secureFormConfig;
         $this->orderRepository = $orderRepository;
         $this->availableLocale = $availableLocale;
@@ -131,9 +82,9 @@ class PaymentMethods extends Template
                 static::LANGUAGE => $this->availableLocale->execute(),
                 static::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
                 static::TRANSFER_KEY => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
-                static::REPAY_URL => static::REPAY_URI,
-                'methods' => $this->payMethods->getAllPayMethodsForPbl(false, $this->getOrder()->getGrandTotal())
-            ]
+                static::REPAY_URL => $this->getRepaymentUrl(),
+                static::METHODS => $this->payMethods->getAllPayMethodsForPbl(false, $this->getOrder()->getGrandTotal()),
+            ],
         );
     }
 
@@ -158,10 +109,10 @@ class PaymentMethods extends Template
                 static::LANGUAGE => $this->availableLocale->execute(),
                 static::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
                 static::TRANSFER_KEY => PayUConfigInterface::PAYU_CC_TRANSFER_KEY,
-                static::REPAY_URL => static::REPAY_URI,
+                static::REPAY_URL => $this->getRepaymentUrl(),
                 static::STORED_CARDS => array_key_exists(PayUGetUserPayMethodsInterface::CARD_TOKENS, $userPayMethods) && $userPayMethods[PayUGetUserPayMethodsInterface::CARD_TOKENS] ? $userPayMethods[PayUGetUserPayMethodsInterface::CARD_TOKENS] : [],
-                static::SECURE_FORM => $this->secureFormConfig->execute()
-            ]
+                static::SECURE_FORM => $this->secureFormConfig->execute(),
+            ],
         );
     }
 
@@ -174,7 +125,7 @@ class PaymentMethods extends Template
     {
         return $this->userPayMethods->execute(
             $this->getOrder()->getCustomerEmail(),
-            $this->getOrder()->getCustomerId()
+            $this->getOrder()->getCustomerId(),
         );
     }
 
@@ -186,5 +137,12 @@ class PaymentMethods extends Template
         }
 
         return $this->order;
+    }
+
+    private function getRepaymentUrl(): string
+    {
+        $requestHash = $this->request->getParam('hash');
+
+        return 'sales/order/repay' . ($requestHash ? '/hash/' . $requestHash : '');
     }
 }

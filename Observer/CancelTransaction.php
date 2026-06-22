@@ -18,28 +18,10 @@ use Magento\Sales\Api\Data\TransactionInterface;
  */
 class CancelTransaction implements ObserverInterface
 {
-    /**
-     * @var TransactionRepositoryInterface
-     */
-    private $transactionRepository;
+    private TransactionRepositoryInterface $transactionRepository;
+    private SearchCriteriaBuilder $searchCriteriaBuilder;
+    private Transaction $transaction;
 
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    private $searchCriteriaBuilder;
-
-    /**
-     * @var Transaction
-     */
-    private $transaction;
-
-    /**
-     * CancelTransaction constructor.
-     *
-     * @param TransactionRepositoryInterface $transactionRepository
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param Transaction $transaction
-     */
     public function __construct(
         TransactionRepositoryInterface $transactionRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
@@ -59,7 +41,8 @@ class CancelTransaction implements ObserverInterface
         $order = $observer->getData('order');
         /** @var Payment $payment */
         $payment = $observer->getData('payment');
-        $transactions = $this->getOldTransactions($order->getEntityId(), $payment->getEntityId());
+
+        $transactions = $this->getTransactions($order->getEntityId(), $payment->getEntityId());
         if ($transactions) {
             foreach ($transactions as $transaction) {
                 $transaction->setIsClosed(1);
@@ -70,20 +53,17 @@ class CancelTransaction implements ObserverInterface
     }
 
     /**
-     * Get all transaction for payment that not belong to current payment ID
-     *
-     * @param string $orderId
-     * @param string $paymentId
+     * Get all transaction not closed
      *
      * @return TransactionModel[]|TransactionInterface[]
      */
-    private function getOldTransactions($orderId, $paymentId)
+    private function getTransactions(string $orderId, string $paymentId): array
     {
-        $searchCriteria = $this->searchCriteriaBuilder->addFilter('order_id', $orderId, 'eq')->addFilter(
-            'payment_id',
-            $paymentId,
-            'neq'
-        )->create();
+        $searchCriteria = $this->searchCriteriaBuilder
+            ->addFilter('order_id', $orderId, )
+            ->addFilter('payment_id', $paymentId)
+            ->addFilter('is_closed', 0)
+            ->create();
 
         return $this->transactionRepository->getList($searchCriteria)->getItems();
     }
