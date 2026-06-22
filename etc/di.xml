@@ -432,4 +432,34 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="PayUPaymentGatewayGooglePayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_GOOGLE_PAY</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayGooglePayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayUPaymentGatewayGooglePayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayGooglePayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayUPaymentGatewayGooglePayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayGooglePayFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_GOOGLE_PAY</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayGooglePayValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
 </config>
