@@ -54,6 +54,7 @@ class ConfigProvider implements ConfigProviderInterface
         $quote = $this->checkoutSession->getQuote();
         $totalAmount = $quote ? (float) $quote->getGrandTotal() : null;
         $allMethods = $this->payMethods->getAllAvailablePayMethods($totalAmount);
+        $gatewayMerchantId = $this->resolveGooglePayGatewayMerchantId();
 
         return [
             'payment' => [
@@ -113,8 +114,21 @@ class ConfigProvider implements ConfigProviderInterface
                                 && $this->isAnyAvailable($allMethods, ['dpts']),
                             'title' => (string) __('Pay with Twisto Pay in 3'),
                             'logoSrc' => $this->assetRepository->getUrl('PayU_PaymentGateway::images/payu_twisto_pay_in_3.svg'),
-                        ]
+                        ],
+
                     ]
+                ],
+                'payuGooglePay' => [
+                    'isActive' => $this->isPayMethodActive(PayUSupportedMethods::CODE_GOOGLE_PAY),
+                    'title' => (string) __('Google Pay'),
+                    'logoSrc' => $this->assetRepository->getUrl('PayU_PaymentGateway::images/payu_google_pay_logo.svg'),
+                    'termsUrl' => PayUConfigInterface::PAYU_TERMS_URL,
+                    'language' => $this->getLanguage(),
+                    'environment' => $this->resolveGooglePayEnvironment(),
+                    'merchantId' => $this->resolveGooglePayMerchantId(),
+                    'gatewayMerchantId' => $gatewayMerchantId,
+                    'allowedCardNetworks' => ['VISA', 'MASTERCARD'],
+                    'allowedAuthMethods' => ['PAN_ONLY', 'CRYPTOGRAM_3DS']
                 ]
             ]
         ];
@@ -140,5 +154,36 @@ class ConfigProvider implements ConfigProviderInterface
     private function getLanguage()
     {
         return current(explode('_', $this->resolver->getLocale()));
+    }
+
+    private function resolveGooglePayEnvironment(): string
+    {
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
+        $sandboxMode = $this->gatewayConfig->getValue('sandbox_mode', $this->storeId);
+
+        return $sandboxMode === '1' ? 'TEST' : 'PRODUCTION';
+    }
+
+    private function resolveGooglePayGatewayMerchantId(): string
+    {
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
+        $gatewayMerchantId = $this->gatewayConfig->getValue('gateway_merchant_id', $this->storeId);
+
+        return trim($gatewayMerchantId);
+    }
+
+
+    private function resolveGooglePayMerchantId(): string
+    {
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
+        $sandboxMode = $this->gatewayConfig->getValue('sandbox_mode', $this->storeId);
+
+        if ($sandboxMode === '1') {
+            return '';
+        }
+
+        $merchantId = $this->gatewayConfig->getValue('merchant_id', $this->storeId);
+
+        return is_string($merchantId) ? trim($merchantId) : '';
     }
 }
