@@ -2,7 +2,7 @@
 
 namespace PayU\PaymentGateway\Model\Logger;
 
-use Monolog\Logger as MonologLogger;
+use Magento\Framework\Logger\Monolog as MonologLogger;
 
 /**
  * Class Logger

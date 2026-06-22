@@ -6,8 +6,8 @@ use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\UrlInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
-
 
 class GetPostPlaceOrderData implements HttpGetActionInterface
 {
@@ -15,16 +15,19 @@ class GetPostPlaceOrderData implements HttpGetActionInterface
     private Session $checkoutSession;
     private CustomerSession $customerSession;
     private ResultFactory $resultFactory;
+    private UrlInterface $url;
 
     public function __construct(
         ResultFactory   $resultFactory,
         Session         $checkoutSession,
-        CustomerSession $customerSession
+        CustomerSession $customerSession,
+        UrlInterface    $url
     )
     {
         $this->resultFactory = $resultFactory;
         $this->checkoutSession = $checkoutSession;
         $this->customerSession = $customerSession;
+        $this->url = $url;
     }
 
     /**
@@ -49,12 +52,12 @@ class GetPostPlaceOrderData implements HttpGetActionInterface
                 $this->customerSession->setCvvUrl(true);
                 $returnData = [
                     static::SUCCESS_FIELD => true,
-                    PayUConfigInterface::REDIRECT_URI_FIELD => $this->_url->getUrl('checkout/onepage/continueCvv')
+                    PayUConfigInterface::REDIRECT_URI_FIELD => $this->url->getUrl('checkout/onepage/continueCvv')
                 ];
             } else {
                 $returnData = [
                     static::SUCCESS_FIELD => true,
-                    PayUConfigInterface::REDIRECT_URI_FIELD => $this->_url->getUrl('checkout/onepage/success')
+                    PayUConfigInterface::REDIRECT_URI_FIELD => $this->url->getUrl('checkout/onepage/success')
                 ];
             }
         } catch (\Exception $exception) {
