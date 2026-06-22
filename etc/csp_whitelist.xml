@@ -7,6 +7,8 @@
                 <value id="payu-sandbox" type="host">merch-prod.snd.payu.com</value>
                 <value id="payu-static" type="host">static.payu.com</value>
                 <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
+                <value id="google-pay-connect" type="host">pay.google.com</value>
+                <value id="google-api-connect" type="host">*.googleapis.com</value>
             </values>
         </policy>
         <policy id="script-src">
@@ -15,6 +17,10 @@
                 <value id="payu-sandbox" type="host">secure.snd.payu.com</value>
                 <value id="payu-static" type="host">static.payu.com</value>
                 <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
+                <value id="google-pay-script" type="host">*.google.com</value>
+                <value id="google-pay-pay" type="host">pay.google.com</value>
+                <value id="google-gstatic" type="host">*.gstatic.com</value>
+                <value id="google-apis" type="host">*.googleapis.com</value>
             </values>
         </policy>
         <policy id="img-src">
@@ -29,6 +35,7 @@
                 <value id="payu-sandbox" type="host">merch-prod.snd.payu.com</value>
                 <value id="payu-static" type="host">static.payu.com</value>
                 <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
+                <value id="google-pay-frame" type="host">pay.google.com</value>
             </values>
         </policy>
         <policy id="font-src">

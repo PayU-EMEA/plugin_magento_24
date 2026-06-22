@@ -9,7 +9,6 @@ use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 class PayMethodsDataBuilder implements BuilderInterface
 {
-
     private const PAY_METHOD_CONFIGURATION = [
         'PLN' => [
             PayUSupportedMethods::CODE_INSTALLMENTS => 'ai',
@@ -43,6 +42,12 @@ class PayMethodsDataBuilder implements BuilderInterface
         $paymentDataObject = SubjectReader::readPayment($buildSubject);
         $payment = $paymentDataObject->getPayment();
         $methodCode = $payment->getMethodInstance()->getCode();
+
+        if ($methodCode === PayUSupportedMethods::CODE_GOOGLE_PAY) {
+            return $this->buildGooglePayData(
+                $payment->getAdditionalInformation(PayUConfigInterface::PAYU_AUTHORIZATION_CODE)
+            );
+        }
 
         $payMethodType = null;
         $payMethodValue = null;
@@ -79,5 +84,42 @@ class PayMethodsDataBuilder implements BuilderInterface
                 ]
             ]
         ];
+    }
+
+    private function buildGooglePayData($authorizationCode): array
+    {
+        if (!is_string($authorizationCode) || trim($authorizationCode) === '') {
+            return [];
+        }
+
+        $normalizedAuthorizationCode = $this->normalizeGooglePayAuthorizationCode($authorizationCode);
+
+        $payMethod = [
+            'type' => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
+            'value' => PayUConfigInterface::PAYU_GOOGLE_PAY_METHOD_VALUE,
+            'authorizationCode' => $normalizedAuthorizationCode,
+        ];
+
+        return [
+            'body' => [
+                'payMethods' => [
+                    'payMethod' => $payMethod
+                ]
+            ]
+        ];
+    }
+
+    private function normalizeGooglePayAuthorizationCode(string $authorizationCode): string
+    {
+        if (empty($authorizationCode)) {
+            return '';
+        }
+        $trimmedCode = trim($authorizationCode);
+
+        if ($trimmedCode !== '' && $trimmedCode[0] === '{') {
+            return base64_encode($trimmedCode);
+        }
+
+        return $trimmedCode;
     }
 }
