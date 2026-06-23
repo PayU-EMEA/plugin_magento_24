@@ -51,14 +51,15 @@ class DeleteUserToken implements PayUDeleteUserTokenInterface
     public function execute($userToken)
     {
         try {
-            $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_CARD);
-            $this->payUConfig->setOauthGrantType(PayUConfigInterface::GRANT_TYPE_TRUSTED_MERCHANT);
-            $this->payUConfig->setOauthEmail($this->customerSession->getCustomer()->getEmail());
-            $this->payUConfig->setCustomerExtId($this->customerSession->getCustomerId());
+            $this->payUConfig
+                ->setDefaultConfig(PayUSupportedMethods::CODE_CARD)
+                ->setOauthGrantType(PayUConfigInterface::GRANT_TYPE_TRUSTED_MERCHANT)
+                ->setOauthEmail($this->customerSession->getCustomer()->getEmail())
+                ->setCustomerExtId($this->customerSession->getCustomerId());
             $token = $this->payUToken;
 
             return $token::delete($userToken);
-        } catch (\OpenPayU_Exception $exception) {
+        } catch (\Exception $exception) {
             throw new LocalizedException(__($exception->getMessage()));
         }
     }

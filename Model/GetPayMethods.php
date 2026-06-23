@@ -59,9 +59,15 @@ class GetPayMethods implements PayUGetPayMethodsInterface
      */
     public function getAllAvailablePayMethods(?float $totalAmount = null): array {
         $result = [];
+
+        try {
+            $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_GATEWAY);
+        } catch (\Exception $e) {
+            return $result;
+        }
+
         try {
             if (self::$result === null) {
-                $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_GATEWAY);
                 $response = $this->openPayURetrieve::payMethods($this->availableLocale->execute())->getResponse();
 
                 if (is_array($response->payByLinks)) {
@@ -72,7 +78,7 @@ class GetPayMethods implements PayUGetPayMethodsInterface
             } else {
                 $result = self::$result;
             }
-        } catch (\OpenPayU_Exception $exception) {
+        } catch (\Exception $exception) {
             $this->logger->critical($exception->getMessage());
         }
 

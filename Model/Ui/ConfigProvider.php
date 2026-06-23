@@ -58,7 +58,7 @@ class ConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 'payuGateway' => [
-                    'isActive' => $this->isPayMethodActive(PayUSupportedMethods::CODE_GATEWAY),
+                    'isActive' => !empty($allMethods) && $this->isPayMethodActive(PayUSupportedMethods::CODE_GATEWAY),
                     'logoSrc' => $this->assetRepository->getUrl(PayUConfigInterface::PAYU_BANK_TRANSFER_LOGO_SRC),
                     'termsUrl' => PayUConfigInterface::PAYU_TERMS_URL,
                     'payByLinks' => $this->payMethods->getAllPayMethodsForPbl(true, $totalAmount),

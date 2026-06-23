@@ -58,7 +58,12 @@ class GetCreditCardCVVWidgetConfig implements PayUGetCreditCardCVVWidgetConfigIn
      */
     public function execute($cvvUrl)
     {
-        $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_CARD);
+        try {
+            $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_CARD);
+        } catch (\Exception $e) {
+            return [];
+        }
+
         $config = $this->openPayUConfig;
 
         return [
@@ -66,7 +71,6 @@ class GetCreditCardCVVWidgetConfig implements PayUGetCreditCardCVVWidgetConfigIn
             static::CONFIG_POS_ID => $config::getMerchantPosId(),
             static::CONFIG_CVV_URL => $this->getCvvUrl($cvvUrl),
             static::CONFIG_LANGUAGE => $this->availableLocale->execute()
-
         ];
     }
 

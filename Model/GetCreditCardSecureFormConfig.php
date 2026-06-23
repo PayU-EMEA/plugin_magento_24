@@ -49,7 +49,12 @@ class GetCreditCardSecureFormConfig implements PayUGetCreditCardSecureFormConfig
      */
     public function execute()
     {
-        $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_CARD);
+        try {
+            $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_CARD);
+        } catch (\Exception $e) {
+            return [];
+        }
+
         $config = $this->openPayUConfig;
 
         $storeCard = $this->payUConfig->isStoreCardEnable() && $this->customerSession->isLoggedIn();
