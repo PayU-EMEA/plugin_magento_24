@@ -43,7 +43,7 @@ class RepayOrderDataBuilder implements BuilderInterface
                     'type' => $method,
                     'store' => $order->getStoreId()
                 ]),
-                'continueUrl' => $this->urlBuilder->getUrl('sales/order/history'),
+                'continueUrl' => $this->urlBuilder->getUrl($order->getCustomerIsGuest() ? 'sales/guest/form' : 'sales/order/history'),
             ]
         ];
         if ($this->payUConfig->canCancelOrderOnPaymentWall($method)) {
