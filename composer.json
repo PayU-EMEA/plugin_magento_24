@@ -10,11 +10,12 @@
         "payu magento 2.4"
     ],
     "type": "magento2-module",
-    "version": "2.0.7",
+    "version": "2.0.8",
     "license": "apache-2.0",
     "require": {
         "php": ">=7.4",
         "ext-json": "*",
+        "ext-curl": "*",
         "magento/module-sales": "103.0.*"
     },
     "autoload": {
