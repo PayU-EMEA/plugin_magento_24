@@ -108,100 +108,59 @@ interface PayUConfigInterface
 
     /**
      * Set Environment SECURE|SANDBOX
-     *
-     * @param string|null $environment
-     *
-     * @return $this
      */
-    public function setEnvironment($environment);
+    public function setEnvironment(string $environment): PayUConfigInterface;
 
     /**
      * Set merchant POS ID
-     *
-     * @param string $merchantPosId
-     *
-     * @return $this
      */
-    public function setMerchantPosId($merchantPosId);
+    public function setMerchantPosId(string $merchantPosId): PayUConfigInterface;
 
     /**
      * Set signature key
-     *
-     * @param string $signatureKey
-     *
-     * @return $this
      */
-    public function setSignatureKey($signatureKey);
+    public function setSignatureKey(string $signatureKey): PayUConfigInterface;
 
     /**
      * Set OAuth client ID
-     *
-     * @param string $oAuthClientId
-     *
-     * @return $this
      */
-    public function setOauthClientId($oAuthClientId);
+    public function setOauthClientId(string $oAuthClientId): PayUConfigInterface;
 
     /**
      * Set OAuth client secret
-     *
-     * @param string $oAuthClientSecret
-     *
-     * @return $this
      */
-    public function setOauthClientSecret($oAuthClientSecret);
+    public function setOauthClientSecret(string $oAuthClientSecret): PayUConfigInterface;
 
     /**
      * Set OAuth grant type
-     *
-     * @param string $oAuthGrantType
-     *
-     * @return $this
      */
-    public function setOauthGrantType($oAuthGrantType);
+    public function setOauthGrantType(string $oAuthGrantType): PayUConfigInterface;
 
     /**
      * Set OAuth email
-     *
-     * @param string $email
-     *
-     * @return $this
      */
-    public function setOauthEmail($email);
+    public function setOauthEmail(string $email): PayUConfigInterface;
 
     /**
      * Set customer external ID
-     *
-     * @param int $customerId
-     *
-     * @return $this
      */
-    public function setCustomerExtId($customerId);
+    public function setCustomerExtId(int $customerId): PayUConfigInterface;
 
     /**
      * Set default config
-     *
-     * @return $this
+     * @throws \Exception
      */
-    public function setDefaultConfig(string $code, ?int $storeId = null): self;
+    public function setDefaultConfig(string $code, ?int $storeId = null): PayUConfigInterface;
 
     /**
      * Set gateway config code
-     *
-     * @param string $code
-     *
-     * @return $this
      */
-    public function setGatewayConfigCode($code);
+    public function setGatewayConfigCode(string $code): PayUConfigInterface;
 
     /**
      * Set sender
-     *
-     * @param string $sender
-     *
-     * @return $this
      */
-    public function setSender($sender);
+    public function setSender(string $sender): PayUConfigInterface;
 
     /**
      * Check if environment is sandbox
@@ -209,27 +168,19 @@ interface PayUConfigInterface
     public function isSandboxEnv(?int $storeId): bool;
 
     /**
-     * Check if credit card store per user is enable
-     *
-     * @return bool
+     * Check if credit card store per user is enabled
      */
-    public function isStoreCardEnable();
+    public function isStoreCardEnable(): bool;
 
     /**
-     * Check if repayment is enable
-     *
-     * @param string $code
-     *
-     * @return bool
+     * Check if repayment is enabled
      */
-    public function isRepaymentActive($code);
+    public function isRepaymentActive(string $code): bool;
 
     /**
      * Get payment methods order
-     *
-     * @return array
      */
-    public function getPaymentMethodsOrder();
+    public function getPaymentMethodsOrder(): array;
 
     /**
      * Check if cancel order on PayU Payment Wall is enabled

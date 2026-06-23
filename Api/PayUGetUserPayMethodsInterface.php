@@ -17,10 +17,9 @@ interface PayUGetUserPayMethodsInterface
      * Get user payment methods from PayU REST API
      *
      * @param string|null $email
-     * @param string|null $customerId
+     * @param int|null $customerId
      *
      * @return array
-     * @throws \OpenPayU_Exception
      */
     public function execute($email = null, $customerId = null);
 

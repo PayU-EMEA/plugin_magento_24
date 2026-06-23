@@ -2,12 +2,13 @@
 
 namespace PayU\PaymentGateway\Model;
 
+use _PHPStan_bc6352b8e\Nette\Neon\Exception;
 use Magento\Framework\App\ProductMetadataInterface;
-use Magento\Framework\Encryption\EncryptorInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
-use PayU\PaymentGateway\Api\PayUCacheConfigInterface;
+use PayU\PaymentGateway\Model\Logger\Logger;
 
 /**
  * Class Config
@@ -18,66 +19,35 @@ class Config implements PayUConfigInterface
     /**
      * Current Plugin Version
      */
-    const PLUGIN_VERSION = '2.0.7';
+    private const PLUGIN_VERSION = '2.0.7';
 
-    /**
-     * @var \OpenPayU_Configuration
-     */
-    private $openPayUConfig;
+    private \OpenPayU_Configuration $openPayUConfig;
 
-    /**
-     * @var GatewayConfig
-     */
-    private $gatewayConfig;
+    private GatewayConfig $gatewayConfig;
 
-    /**
-     * @var PayUCacheConfigInterface
-     */
-    private $cacheConfig;
+    private int $storeId;
 
-    /**
-     * @var int
-     */
-    private $storeId;
+    private ProductMetadataInterface $metadata;
 
-    /**
-     * @var EncryptorInterface
-     */
-    private $encryptor;
+    private Logger $logger;
 
-    /**
-     * @var ProductMetadataInterface
-     */
-    private $metadata;
-
-    /**
-     * @var array
-     */
-    private $environmentTypes = [PayUConfigInterface::ENVIRONMENT_SECURE, PayUConfigInterface::ENVIRONMENT_SANBOX];
 
     /**
      * Config constructor.
      *
-     * @param \OpenPayU_Configuration $openPayUConfig
-     * @param GatewayConfig $gatewayConfig
-     * @param PayUCacheConfigInterface $cacheConfig
-     * @param StoreManagerInterface $storeManager
-     * @param EncryptorInterface $encryptor
-     * @param ProductMetadataInterface $metadata
+     * @throws NoSuchEntityException
      */
     public function __construct(
         \OpenPayU_Configuration $openPayUConfig,
         GatewayConfig $gatewayConfig,
-        PayUCacheConfigInterface $cacheConfig,
         StoreManagerInterface $storeManager,
-        EncryptorInterface $encryptor,
+        Logger $logger,
         ProductMetadataInterface $metadata
     ) {
         $this->openPayUConfig = $openPayUConfig;
         $this->gatewayConfig = $gatewayConfig;
-        $this->cacheConfig = $cacheConfig;
         $this->storeId = $storeManager->getStore()->getId();
-        $this->encryptor = $encryptor;
+        $this->logger = $logger;
         $this->metadata = $metadata;
     }
 
@@ -104,19 +74,26 @@ class Config implements PayUConfigInterface
         $signatureKey = $this->gatewayConfig->getValue($envPrefix . 'second_key', $storeId);
         $clientId = $this->gatewayConfig->getValue($envPrefix . 'client_id', $storeId);
         $clientSecret = $this->gatewayConfig->getValue($envPrefix . 'client_secret', $storeId);
+
+        if (empty($posId) || empty($signatureKey) || empty($clientId) || empty($clientSecret)) {
+            throw new \Exception('Empty PayU Configuration');
+        }
+
         $this->setGatewayConfigCode($code);
 
         try {
             $environment = $isSandboxEnvironment ? PayUConfigInterface::ENVIRONMENT_SANBOX : PayUConfigInterface::ENVIRONMENT_SECURE;
-            $this->setEnvironment($environment);
-            $this->setMerchantPosId($posId);
-            $this->setSignatureKey($signatureKey);
-            $this->setOauthClientId($clientId);
-            $this->setOauthClientSecret($clientSecret);
-            $this->setOauthGrantType(PayUConfigInterface::GRANT_TYPE_CLIENT_CREDENTIALS);
-            $this->setSender('Magento 2 ver ' . $this->metadata->getVersion() . '/Plugin ver ' . static::PLUGIN_VERSION);
+            $this
+                ->setEnvironment($environment)
+                ->setMerchantPosId($posId)
+                ->setSignatureKey($signatureKey)
+                ->setOauthClientId($clientId)
+                ->setOauthClientSecret($clientSecret)
+                ->setOauthGrantType(PayUConfigInterface::GRANT_TYPE_CLIENT_CREDENTIALS)
+                ->setSender('Magento 2 ver ' . $this->metadata->getVersion() . '/Plugin ver ' . static::PLUGIN_VERSION);
         } catch (\OpenPayU_Exception_Configuration $exception) {
-            return $this;
+            $this->logger->critical('Problem with set PayU Configuration', [$exception->getMessage()]);
+            throw new \Exception('Problem with PayU Configuration');
         }
 
         return $this;
@@ -141,7 +118,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function isStoreCardEnable()
+    public function isStoreCardEnable(): bool
     {
         return (bool)$this->gatewayConfig->getValue('store_card', $this->storeId);
     }
@@ -149,7 +126,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function getPaymentMethodsOrder()
+    public function getPaymentMethodsOrder(): array
     {
         return explode(
             ',',
@@ -164,7 +141,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function isRepaymentActive($code)
+    public function isRepaymentActive($code): bool
     {
         $this->setGatewayConfigCode($code);
 
@@ -182,7 +159,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setEnvironment($environment)
+    public function setEnvironment(string $environment): PayUConfigInterface
     {
         $config = $this->openPayUConfig;
         $config::setEnvironment($environment);
@@ -193,7 +170,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setMerchantPosId($merchantPosId)
+    public function setMerchantPosId(string $merchantPosId): PayUConfigInterface
     {
         $config = $this->openPayUConfig;
         $config::setMerchantPosId($merchantPosId);
@@ -204,7 +181,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setSignatureKey($signatureKey)
+    public function setSignatureKey(string $signatureKey): PayUConfigInterface
     {
         $config = $this->openPayUConfig;
         $config::setSignatureKey($signatureKey);
@@ -215,7 +192,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setOauthClientId($oAuthClientId)
+    public function setOauthClientId(string $oAuthClientId): PayUConfigInterface
     {
         $config = $this->openPayUConfig;
         $config::setOauthClientId($oAuthClientId);
@@ -226,7 +203,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setOauthClientSecret($oAuthClientSecret)
+    public function setOauthClientSecret(string $oAuthClientSecret): PayUConfigInterface
     {
         $config = $this->openPayUConfig;
         $config::setOauthClientSecret($oAuthClientSecret);
@@ -237,7 +214,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setOauthGrantType($oAuthGrantType)
+    public function setOauthGrantType(string $oAuthGrantType): PayUConfigInterface
     {
         $config = $this->openPayUConfig;
         $config::setOauthGrantType($oAuthGrantType);
@@ -248,7 +225,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setOauthEmail($email)
+    public function setOauthEmail(string $email): PayUConfigInterface
     {
         $config = $this->openPayUConfig;
         $config::setOauthEmail($email);
@@ -259,7 +236,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setCustomerExtId($customerId)
+    public function setCustomerExtId(int $customerId): PayUConfigInterface
     {
         $config = $this->openPayUConfig;
         $config::setOauthExtCustomerId($customerId);
@@ -270,7 +247,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setSender($sender)
+    public function setSender($sender): PayUConfigInterface
     {
         $config = $this->openPayUConfig;
         $config::setSender($sender);
@@ -281,7 +258,7 @@ class Config implements PayUConfigInterface
     /**
      * {@inheritdoc}
      */
-    public function setGatewayConfigCode($code)
+    public function setGatewayConfigCode($code): PayUConfigInterface
     {
         $this->gatewayConfig->setMethodCode($code);
 
@@ -297,6 +274,4 @@ class Config implements PayUConfigInterface
 
         return (bool)$this->gatewayConfig->getValue('can_cancel_order_on_payment_wall', $this->storeId);
     }
-
-
 }

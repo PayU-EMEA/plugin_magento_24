@@ -73,6 +73,11 @@ class PaymentMethods extends Template
         if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId)) {
             return "";
         }
+        $paymethods = $this->payMethods->getAllPayMethodsForPbl(false, $this->getOrder()->getGrandTotal());
+
+        if (empty($paymethods)) {
+            return "";
+        }
 
         return json_encode(
             [
@@ -83,7 +88,7 @@ class PaymentMethods extends Template
                 static::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
                 static::TRANSFER_KEY => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
                 static::REPAY_URL => $this->getRepaymentUrl(),
-                static::METHODS => $this->payMethods->getAllPayMethodsForPbl(false, $this->getOrder()->getGrandTotal()),
+                static::METHODS => $paymethods,
             ],
         );
     }
@@ -97,6 +102,17 @@ class PaymentMethods extends Template
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_CARD);
         if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId)) {
             return "";
+        }
+
+        $allMethods = $this->payMethods->getAllAvailablePayMethods($this->getOrder()->getGrandTotal());
+        $hasCardMethod = (bool) array_filter(
+            $allMethods,
+            static function ($method): bool {
+                return $method->value === 'c';
+            }
+        );
+        if (!$hasCardMethod) {
+             return "";
         }
 
         $userPayMethods = $this->getUserStoredCards();

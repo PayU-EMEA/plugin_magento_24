@@ -92,12 +92,11 @@ class GetUserPayMethods implements PayUGetUserPayMethodsInterface
             return [];
         }
         try {
-            $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_CARD);
-            $this->payUConfig->setOauthGrantType(PayUConfigInterface::GRANT_TYPE_TRUSTED_MERCHANT);
-            $this->payUConfig->setOauthEmail($customerEmail);
-            $this->payUConfig->setCustomerExtId(
-                $customerId === null ? $this->customerSession->getCustomerId() : $customerId
-            );
+            $this->payUConfig
+                ->setDefaultConfig(PayUSupportedMethods::CODE_CARD)
+                ->setOauthGrantType(PayUConfigInterface::GRANT_TYPE_TRUSTED_MERCHANT)
+                ->setOauthEmail($customerEmail)
+                ->setCustomerExtId($customerId ?? $this->customerSession->getCustomerId());
             $payURetrieve = $this->openPayURetrieve;
             $response = $payURetrieve::payMethods($this->availableLocale->execute())->getResponse();
             if (isset($response->cardTokens)) {
@@ -105,7 +104,7 @@ class GetUserPayMethods implements PayUGetUserPayMethodsInterface
                     static::CARD_TOKENS => $response->cardTokens
                 ];
             }
-        } catch (\OpenPayU_Exception $exception) {
+        } catch (\Exception $exception) {
             $this->logger->critical($exception->getMessage());
             $this->result = [];
         }

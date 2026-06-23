@@ -3,6 +3,7 @@
 namespace PayU\PaymentGateway\Model\Ui;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
+use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Store\Model\StoreManagerInterface;
@@ -10,6 +11,7 @@ use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Api\PayUGetCreditCardSecureFormConfigInterface;
 use Magento\Framework\View\Asset\Repository as AssetRepository;
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
+use PayU\PaymentGateway\Api\PayUGetPayMethodsInterface;
 use PayU\PaymentGateway\Api\PayUGetUserPayMethodsInterface;
 use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
@@ -20,68 +22,40 @@ use PayU\PaymentGateway\Model\PayUSupportedMethods;
  */
 class CardConfigProvider implements ConfigProviderInterface
 {
-    /**
-     * @var PayUGetCreditCardSecureFormConfigInterface
-     */
-    private $secureFormConfig;
+    private PayUGetPayMethodsInterface $payMethods;
 
-    /**
-     * @var AssetRepository
-     */
-    private $assetRepository;
+    private PayUGetCreditCardSecureFormConfigInterface $secureFormConfig;
 
-    /**
-     * @var GatewayConfig
-     */
-    private $gatewayConfig;
+    private AssetRepository $assetRepository;
 
-    /**
-     * @var int
-     */
-    private $storeId;
+    private GatewayConfig $gatewayConfig;
 
-    /**
-     * @var PayUGetUserPayMethodsInterface
-     */
-    private $userPayMethods;
+    private int $storeId;
 
-    /**
-     * @var ResolverInterface
-     */
-    private $resolver;
+    private PayUGetUserPayMethodsInterface $userPayMethods;
 
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
+    private ResolverInterface $resolver;
 
-    /**
-     * CardConfigProvider constructor.
-     *
-     * @param PayUGetCreditCardSecureFormConfigInterface $secureFormConfig
-     * @param AssetRepository $assetRepository
-     * @param GatewayConfig $gatewayConfig
-     * @param StoreManagerInterface $storeManager
-     * @param PayUGetUserPayMethodsInterface $userPayMethods
-     * @param SerializerInterface $serializer
-     * @param ResolverInterface $resolver
-     */
+    private CheckoutSession $checkoutSession;
+
     public function __construct(
+        PayUGetPayMethodsInterface $payMethods,
         PayUGetCreditCardSecureFormConfigInterface $secureFormConfig,
         AssetRepository $assetRepository,
         GatewayConfig $gatewayConfig,
         StoreManagerInterface $storeManager,
         PayUGetUserPayMethodsInterface $userPayMethods,
-        SerializerInterface $serializer,
-        ResolverInterface $resolver
+        ResolverInterface $resolver,
+        CheckoutSession $checkoutSession
     ) {
+        $this->payMethods = $payMethods;
         $this->secureFormConfig = $secureFormConfig;
         $this->assetRepository = $assetRepository;
         $this->gatewayConfig = $gatewayConfig;
         $this->storeId = $storeManager->getStore()->getId();
         $this->userPayMethods = $userPayMethods;
-        $this->serializer = $serializer;
         $this->resolver = $resolver;
+        $this->checkoutSession = $checkoutSession;
     }
 
     /**
@@ -90,7 +64,24 @@ class CardConfigProvider implements ConfigProviderInterface
     public function getConfig()
     {
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_CARD);
-        $isActive = (bool)$this->gatewayConfig->getValue('active', $this->storeId);
+        $configActive = (bool)$this->gatewayConfig->getValue('active', $this->storeId);
+
+        if ($configActive) {
+            $quote = $this->checkoutSession->getQuote();
+            $totalAmount = $quote ? (float)$quote->getGrandTotal() : null;
+            $allMethods = $this->payMethods->getAllAvailablePayMethods($totalAmount);
+        } else {
+            $allMethods = [];
+        }
+
+        $hasCardMethod = (bool) array_filter(
+            $allMethods,
+            static function ($method): bool {
+                return $method->value === 'c';
+            }
+        );
+
+        $isActive = $configActive && $hasCardMethod;
 
         $userPayMethods = $isActive ? $this->userPayMethods->execute() : [];
 
