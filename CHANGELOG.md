@@ -1,3 +1,15 @@
+## 2.0.8
+* Fixed Credit Widget
+* Updated PayU SDK
+* Added checking for order access during repayment
+* Added the option to cancel the order on PayU
+* Cleaned code (thanks @hostep)
+* Fixed #43, #44 and guest repayment
+* Added better management of displayed payment methods (fix #23)
+* Fixed #61 - not displayed Klarna for CZK
+* Fixed #62 - Missing checkout agreements in credit methods
+* Change return url for repayment for guest
+
 ## 2.0.7
 * Fixed #49 - filtered payment methods (thanks @Tomasz-Silpion)
 
