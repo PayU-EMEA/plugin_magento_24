@@ -86,7 +86,7 @@ class ConfigProvider implements ConfigProviderInterface
                         ],
                         PayUSupportedMethods::CODE_KLARNA => [
                             'isActive' => $this->isPayMethodActive(PayUSupportedMethods::CODE_KLARNA)
-                                && $this->isAnyAvailable($allMethods, ['dpkl', 'dpkleur', 'dpklron', 'dpklhuf']),
+                                && $this->isAnyAvailable($allMethods, ['dpkl', 'dpkleur', 'dpklron', 'dpklhuf', 'dpklczk']),
                             'title' => (string) __('Pay with Klarna'),
                             'logoSrc' => $this->assetRepository->getUrl('PayU_PaymentGateway::images/payu_later_klarna_logo.svg'),
                         ],
