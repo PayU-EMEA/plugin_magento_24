@@ -22,7 +22,7 @@ class GetPayMethods implements PayUGetPayMethodsInterface
 
     private const METHODS_TO_REMOVE_WHEN_ENABLED = [
         PayUSupportedMethods::CODE_INSTALLMENTS => ['ai'],
-        PayUSupportedMethods::CODE_KLARNA => ['dpkl', 'dpkleur', 'dpklron', 'dpklhuf'],
+        PayUSupportedMethods::CODE_KLARNA => ['dpkl', 'dpkleur', 'dpklron', 'dpklhuf', 'dpklczk'],
         PayUSupportedMethods::CODE_PAYPO => ['dpp', 'dppron'],
         PayUSupportedMethods::CODE_PRAGMA => ['ppf'],
         PayUSupportedMethods::CODE_TWISTO => ['dpt', 'dpcz'],

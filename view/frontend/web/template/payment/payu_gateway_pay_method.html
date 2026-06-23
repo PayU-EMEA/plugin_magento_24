@@ -21,6 +21,11 @@
         <div class="field required" data-bind="visible: isAdditionalInfoVisible">
             <span data-bind="i18n: 'An order with payment obligation will be executed after a positive credit decision.'"></span>
         </div>
+        <div class="checkout-agreements-block">
+            <!-- ko foreach: $parent.getRegion('before-place-order') -->
+            <!-- ko template: getTemplate() --><!-- /ko -->
+            <!--/ko-->
+        </div>
         <div class="actions-toolbar">
             <div class="primary">
                 <button class="action primary checkout"
