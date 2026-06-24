@@ -61,12 +61,7 @@ The module adds these payment methods:
 #### Using Composer
 `composer require payu/magento24-payment-gateway`
 
-#### By copying files to a server
-1. Download the latest version of the module from the [GitHub repository][ext4]
-1. Unzip the downloaded file
-1. Connect to the ftp server and copy the unzipped files to the folder `app/code/PayU/PaymentGateway` of your Magento 2 store. If there is no such folder, create it.
-
-After installation using Composer or copying files from the console's level, run:
+After installation from the console's level, run:
    * php bin/magento module:enable PayU_PaymentGateway
    * php bin/magento setup:upgrade
    * php bin/magento setup:di:compile
@@ -75,10 +70,10 @@ After installation using Composer or copying files from the console's level, run
 ## Configuration
 
 1. Go to the administration page of your Magento 2 store [http://adres-sklepu/admin_xxx].
-1. Go to **Stores** > **Configuration**.
-1. On the **Configuration** page in the menu on the left-hand side, in the section **Sales** choose **Payment Methods**.
-1. On the list of available payment methods choose one of the **PayU** methods to configure the plugin's parameters.
-1. After changing the parameters click `Save config`.
+2. Go to **Stores** > **Configuration**.
+3. On the **Configuration** page in the menu on the left-hand side, in the section **Sales** choose **Payment Methods**.
+4. On the list of available payment methods choose one of the **PayU** methods to configure the plugin's parameters.
+5. After changing the parameters click `Save config`.
 
 ### API Parameters
 
