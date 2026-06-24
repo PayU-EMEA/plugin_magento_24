@@ -163,8 +163,8 @@ define(
                         ? window.checkoutConfig.quoteData
                         : null;
 
-                    if (quoteData && quoteData.totals && typeof quoteData.totals === 'object') {
-                        return quoteData.totals;
+                    if (quoteData && typeof quoteData === 'object') {
+                        return quoteData;
                     }
 
                     return {};
@@ -172,7 +172,7 @@ define(
 
                 getTotalPrice: function () {
                     const totalPrice = this.getCheckoutTotalsData();
-                    const grandTotal = totalPrice.base_grand_total || totalPrice.grand_total;
+                    const grandTotal = totalPrice.grand_total || totalPrice.base_grand_total;
 
                     return grandTotal ? Number(grandTotal).toFixed(2) : '0.00';
                 },
@@ -200,10 +200,6 @@ define(
                     this.pendingOpenGooglePaySheet = true;
                     this.initializeGooglePay();
 
-                    if (this.googlePayClient) {
-                        this.pendingOpenGooglePaySheet = false;
-                        this.openGooglePaySheet();
-                    }
 
                     return false;
                 },
