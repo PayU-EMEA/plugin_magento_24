@@ -16,6 +16,9 @@
         "php": ">=7.4",
         "ext-json": "*",
         "ext-curl": "*",
+        "openpayu/openpayu": "2.4.*",
+        "magento/module-payment": "103.0.*",
+        "magento/module-checkout": "103.0.*",
         "magento/module-sales": "103.0.*"
     },
     "autoload": {
