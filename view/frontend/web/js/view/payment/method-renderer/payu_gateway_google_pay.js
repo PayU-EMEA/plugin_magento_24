@@ -63,15 +63,8 @@ define(
                         return;
                     }
 
-                    const merchantInfo = {};
-
-                    if (this.merchantId && this.merchantId.trim() !== '') {
-                        merchantInfo.merchantId = this.merchantId;
-                    }
-
                     const googlePayClient = new window.google.payments.api.PaymentsClient({
-                        environment: this.environment,
-                        merchantInfo: merchantInfo
+                        environment: this.environment
                     });
 
                     const clientConfig = {
@@ -125,9 +118,6 @@ define(
                                 }
                             }
                         }],
-                        merchantInfo: {
-                            merchantId: this.merchantId
-                        },
                         transactionInfo: {
                             totalPriceStatus: 'FINAL',
                             totalPrice: this.getTotalPrice(),
@@ -135,6 +125,12 @@ define(
                             countryCode: 'PL'
                         }
                     };
+
+                    if (this.merchantId && this.merchantId.trim() !== '') {
+                        paymentDataRequest.merchantInfo = {
+                            merchantId: this.merchantId
+                        };
+                    }
 
                     this.googlePayClient.loadPaymentData(paymentDataRequest)
                         .then(paymentData => {
@@ -222,8 +218,6 @@ define(
                     return {
                         'method': this.item.method,
                         'additional_data': {
-                            'payu_method': 'ap',
-                            'payu_method_type': 'PBL',
                             'payu_authorization_code': this.googlePayToken(),
                         }
                     };

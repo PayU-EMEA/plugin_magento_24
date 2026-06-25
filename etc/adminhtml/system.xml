@@ -141,6 +141,33 @@
                         <config_path>payment/payu_gateway_card/sort_order</config_path>
                     </field>
                 </group>
+                <group id="payu_gateway_google_pay" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>PayU - Google Pay</label>
+                    <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Enable plugin?</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/payu_gateway_google_pay/active</config_path>
+                    </field>
+                    <field id="repayment" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Enable repayment?</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
+                        <config_path>payment/payu_gateway_google_pay/repayment</config_path>
+                    </field>
+                    <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Sort Order</label>
+                        <frontend_class>validate-number</frontend_class>
+                        <config_path>payment/payu_gateway_google_pay/sort_order</config_path>
+                    </field>
+                    <field id="merchant_id" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Google Pay Merchant ID</label>
+                        <config_path>payment/payu_gateway_google_pay/merchant_id</config_path>
+                    </field>
+                    <field id="gateway_merchant_id" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Gateway Merchant ID</label>
+                        <config_path>payment/payu_gateway_google_pay/gateway_merchant_id</config_path>
+                    </field>
+                </group>
                 <group id="payu_gateway_installments" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU - Installments</label>
                     <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -253,38 +280,6 @@
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/payu_gateway_twisto_slice/sort_order</config_path>
-                    </field>
-                </group>
-                <group id="payu_gateway_google_pay" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>PayU - Google Pay</label>
-                    <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Enable plugin?</label>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <config_path>payment/payu_gateway_google_pay/active</config_path>
-                    </field>
-                    <field id="repayment" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Enable repayment?</label>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
-                        <config_path>payment/payu_gateway_google_pay/repayment</config_path>
-                    </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Sort Order</label>
-                        <frontend_class>validate-number</frontend_class>
-                        <config_path>payment/payu_gateway_google_pay/sort_order</config_path>
-                    </field>
-                    <field id="sandbox_mode" translate="label" type="select" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Sandbox mode</label>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <config_path>payment/payu_gateway_google_pay/sandbox_mode</config_path>
-                    </field>
-                    <field id="merchant_id" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Google Pay Merchant ID</label>
-                        <config_path>payment/payu_gateway_google_pay/merchant_id</config_path>
-                    </field>
-                    <field id="gateway_merchant_id" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Gateway Merchant ID</label>
-                        <config_path>payment/payu_gateway_google_pay/gateway_merchant_id</config_path>
                     </field>
                 </group>
             </group>
