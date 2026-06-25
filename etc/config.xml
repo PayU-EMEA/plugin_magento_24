@@ -45,10 +45,27 @@
                 <is_gateway>1</is_gateway>
                 <can_cancel_order_on_payment_wall>0</can_cancel_order_on_payment_wall>
             </payu_gateway_card>
-            <payu_gateway_installments>
+            <payu_gateway_google_pay>
                 <active>0</active>
                 <repayment>0</repayment>
                 <sort_order>3</sort_order>
+                <model>PayUPaymentGatewayGooglePayFacade</model>
+                <payment_action>authorize</payment_action>
+                <title>Google Pay</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>0</can_void>
+                <can_review_payment>1</can_review_payment>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+                <can_cancel_order_on_payment_wall>0</can_cancel_order_on_payment_wall>
+            </payu_gateway_google_pay>
+            <payu_gateway_installments>
+                <active>0</active>
+                <repayment>0</repayment>
+                <sort_order>4</sort_order>
                 <model>PayUPaymentGatewayInstallmentsFacade</model>
                 <payment_action>authorize</payment_action>
                 <title>PayU - Installments</title>
@@ -65,7 +82,7 @@
             <payu_gateway_klarna>
                 <active>0</active>
                 <repayment>0</repayment>
-                <sort_order>4</sort_order>
+                <sort_order>5</sort_order>
                 <model>PayUPaymentGatewayKlarnaFacade</model>
                 <payment_action>authorize</payment_action>
                 <title>PayU - Klarna</title>
@@ -82,7 +99,7 @@
             <payu_gateway_paypo>
                 <active>0</active>
                 <repayment>0</repayment>
-                <sort_order>5</sort_order>
+                <sort_order>6</sort_order>
                 <model>PayUPaymentGatewayPayPoFacade</model>
                 <payment_action>authorize</payment_action>
                 <title>PayU - PayPo</title>
@@ -99,7 +116,7 @@
             <payu_gateway_pragma>
                 <active>0</active>
                 <repayment>0</repayment>
-                <sort_order>6</sort_order>
+                <sort_order>7</sort_order>
                 <model>PayUPaymentGatewayPragmaFacade</model>
                 <payment_action>authorize</payment_action>
                 <title>PayU - PragmaPay</title>
@@ -116,7 +133,7 @@
             <payu_gateway_twisto>
                 <active>0</active>
                 <repayment>0</repayment>
-                <sort_order>7</sort_order>
+                <sort_order>8</sort_order>
                 <model>PayUPaymentGatewayTwistoFacade</model>
                 <payment_action>authorize</payment_action>
                 <title>PayU - Twisto</title>
@@ -133,7 +150,7 @@
             <payu_gateway_twisto_slice>
                 <active>0</active>
                 <repayment>0</repayment>
-                <sort_order>8</sort_order>
+                <sort_order>9</sort_order>
                 <model>PayUPaymentGatewayTwistoSliceFacade</model>
                 <payment_action>authorize</payment_action>
                 <title>PayU - Twisto Pay in 3</title>
@@ -147,26 +164,6 @@
                 <is_gateway>1</is_gateway>
                 <can_cancel_order_on_payment_wall>0</can_cancel_order_on_payment_wall>
             </payu_gateway_twisto_slice>
-            <payu_gateway_google_pay>
-                <active>0</active>
-                <repayment>0</repayment>
-                <sort_order>9</sort_order>
-                <model>PayUPaymentGatewayGooglePayFacade</model>
-                <payment_action>authorize</payment_action>
-                <title>Google Pay</title>
-                <can_authorize>1</can_authorize>
-                <can_capture>1</can_capture>
-                <can_void>0</can_void>
-                <can_review_payment>1</can_review_payment>
-                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
-                <can_refund>1</can_refund>
-                <can_use_checkout>1</can_use_checkout>
-                <is_gateway>1</is_gateway>
-                <can_cancel_order_on_payment_wall>0</can_cancel_order_on_payment_wall>
-                <sandbox_mode>0</sandbox_mode>
-                <merchant_id></merchant_id>
-                <gateway_merchant_id></gateway_merchant_id>
-            </payu_gateway_google_pay>
         </payment>
     </default>
 </config>
