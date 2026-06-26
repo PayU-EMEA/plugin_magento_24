@@ -458,7 +458,7 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayGooglePayValueHandlerPool</argument>
-            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCommandPool</argument>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCardCommandPool</argument>
         </arguments>
     </virtualType>
 
