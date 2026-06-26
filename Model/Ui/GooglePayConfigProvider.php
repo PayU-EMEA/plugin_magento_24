@@ -42,7 +42,8 @@ class GooglePayConfigProvider implements ConfigProviderInterface
     public function getConfig(): array
     {
         $isSandbox = $this->isSandboxEnvironment();
-        $gatewayMerchantId = $this->resolveGooglePayGatewayMerchantId();
+        $gatewayMerchantId = $this->resolveGooglePayGatewayMerchantId($isSandbox);
+        $googleMerchantName = $this->resolveGooglePayMerchantName();
         $merchantId = $this->resolveGooglePayMerchantId($isSandbox);
 
         return [
@@ -54,8 +55,9 @@ class GooglePayConfigProvider implements ConfigProviderInterface
                     'termsUrl' => PayUConfigInterface::PAYU_TERMS_URL,
                     'language' => $this->getLanguage(),
                     'environment' => $isSandbox ? 'TEST' : 'PRODUCTION',
-                    'merchantId' => $merchantId,
                     'gatewayMerchantId' => $gatewayMerchantId,
+                    'merchantId' => $merchantId,
+                    'googleMerchantName' => $googleMerchantName,
                     'allowedCardNetworks' => ['VISA', 'MASTERCARD'],
                     'allowedAuthMethods' => ['PAN_ONLY', 'CRYPTOGRAM_3DS']
                 ]
@@ -84,7 +86,7 @@ class GooglePayConfigProvider implements ConfigProviderInterface
 
     private function validateProductionConfiguration(string $gatewayMerchantId, string $merchantId): bool
     {
-        return !empty($gatewayMerchantId) || !empty($merchantId);
+        return !empty($gatewayMerchantId) && !empty($merchantId);
     }
 
     private function getLanguage(): string
@@ -93,10 +95,10 @@ class GooglePayConfigProvider implements ConfigProviderInterface
     }
 
 
-    private function resolveGooglePayGatewayMerchantId(): string
+    private function resolveGooglePayGatewayMerchantId(bool $isSandbox): string
     {
-        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
-        $gatewayMerchantId = $this->gatewayConfig->getValue('gateway_merchant_id', $this->storeId);
+        $configPath = $isSandbox ? 'payment/payu/sandbox_pos_id' : 'payment/payu/pos_id';
+        $gatewayMerchantId = $this->scopeConfig->getValue($configPath, ScopeInterface::SCOPE_STORE, $this->storeId);
 
         return is_string($gatewayMerchantId) ? trim($gatewayMerchantId) : '';
     }
@@ -104,13 +106,21 @@ class GooglePayConfigProvider implements ConfigProviderInterface
     private function resolveGooglePayMerchantId(bool $isSandbox): string
     {
         if ($isSandbox) {
-            return '';
+            return '0';
         }
 
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
         $merchantId = $this->gatewayConfig->getValue('merchant_id', $this->storeId);
 
         return is_string($merchantId) ? trim($merchantId) : '';
+    }
+
+    private function resolveGooglePayMerchantName(): string
+    {
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
+        $googleMerchantName = $this->gatewayConfig->getValue('google_merchant_name', $this->storeId);
+
+        return is_string($googleMerchantName) ? trim($googleMerchantName) : '';
     }
 
     private function isSandboxEnvironment(): bool
