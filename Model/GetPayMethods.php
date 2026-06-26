@@ -26,7 +26,8 @@ class GetPayMethods implements PayUGetPayMethodsInterface
         PayUSupportedMethods::CODE_PAYPO => ['dpp', 'dppron'],
         PayUSupportedMethods::CODE_PRAGMA => ['ppf'],
         PayUSupportedMethods::CODE_TWISTO => ['dpt', 'dpcz'],
-        PayUSupportedMethods::CODE_TWISTO_SLICE => ['dpts']
+        PayUSupportedMethods::CODE_TWISTO_SLICE => ['dpts'],
+        PayUSupportedMethods::CODE_GOOGLE_PAY => [PayUConfigInterface::PAYU_GOOGLE_PAY_METHOD_VALUE]
     ];
 
     private \OpenPayU_Retrieve $openPayURetrieve;
