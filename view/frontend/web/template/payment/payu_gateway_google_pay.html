@@ -3,9 +3,10 @@
         <input type="radio"
                name="payment[method]"
                class="radio"
-               data-bind="attr: {id: getCode(), 'aria-label': title}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
+               data-bind="attr: {id: getCode(), 'aria-label': getTitle()}, value: getCode(), checked: isChecked, click: selectPaymentMethod, visible: isRadioButtonVisible()"/>
         <label class="label payu-payment-label" data-bind="attr: {'for': getCode()}">
-            <img class="payu-payment-logo" alt="Google Pay" data-bind="visible: logoSrc, attr: {src: logoSrc}"/> Google Pay
+            <img class="payu-payment-logo" data-bind="visible: logoSrc, attr: {src: logoSrc, alt: getTitle()}"/>
+            <span class="payu-payment-title" data-bind="text: getTitle()"></span>
         </label>
     </div>
     <div class="payment-method-content">

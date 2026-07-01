@@ -3,11 +3,9 @@
 namespace PayU\PaymentGateway\Model\Ui;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Locale\ResolverInterface;
 use Magento\Framework\View\Asset\Repository as AssetRepository;
 use Magento\Payment\Gateway\Config\Config as GatewayConfig;
-use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Model\PayUSupportedMethods;
@@ -23,25 +21,21 @@ class GooglePayConfigProvider implements ConfigProviderInterface
 
     private ResolverInterface $resolver;
 
-    private ScopeConfigInterface $scopeConfig;
-
     public function __construct(
         AssetRepository $assetRepository,
         GatewayConfig $gatewayConfig,
         StoreManagerInterface $storeManager,
-        ResolverInterface $resolver,
-        ScopeConfigInterface $scopeConfig
+        ResolverInterface $resolver
     ) {
         $this->assetRepository = $assetRepository;
         $this->gatewayConfig = $gatewayConfig;
         $this->storeId = $storeManager->getStore()->getId();
         $this->resolver = $resolver;
-        $this->scopeConfig = $scopeConfig;
     }
 
     public function getConfig(): array
     {
-        $isSandbox = $this->isSandboxEnvironment();
+        $isSandbox = $this->isSandboxEnv($this->storeId);
         $gatewayMerchantId = $this->resolveGooglePayGatewayMerchantId($isSandbox);
         $googleMerchantName = $this->resolveGooglePayMerchantName();
         $merchantId = $this->resolveGooglePayMerchantId($isSandbox);
@@ -50,7 +44,6 @@ class GooglePayConfigProvider implements ConfigProviderInterface
             'payment' => [
                 'payuGooglePay' => [
                     'isActive' => $this->isGooglePayActive($isSandbox, $gatewayMerchantId, $merchantId),
-                    'title' => (string) __('Google Pay'),
                     'logoSrc' => $this->assetRepository->getUrl('PayU_PaymentGateway::images/payu_google_pay_logo.svg'),
                     'termsUrl' => PayUConfigInterface::PAYU_TERMS_URL,
                     'language' => $this->getLanguage(),
@@ -97,8 +90,9 @@ class GooglePayConfigProvider implements ConfigProviderInterface
 
     private function resolveGooglePayGatewayMerchantId(bool $isSandbox): string
     {
-        $configPath = $isSandbox ? 'payment/payu/sandbox_pos_id' : 'payment/payu/pos_id';
-        $gatewayMerchantId = $this->scopeConfig->getValue($configPath, ScopeInterface::SCOPE_STORE, $this->storeId);
+        $this->gatewayConfig->setMethodCode('payu');
+        $configKey = $isSandbox ? 'sandbox_pos_id' : 'pos_id';
+        $gatewayMerchantId = $this->gatewayConfig->getValue($configKey, $this->storeId);
 
         return is_string($gatewayMerchantId) ? trim($gatewayMerchantId) : '';
     }
@@ -123,11 +117,24 @@ class GooglePayConfigProvider implements ConfigProviderInterface
         return is_string($googleMerchantName) ? trim($googleMerchantName) : '';
     }
 
-    private function isSandboxEnvironment(): bool
-    {
-        $environment = $this->scopeConfig->getValue('payment/payu/environment', ScopeInterface::SCOPE_STORE, $this->storeId);
+    public function isSandboxEnv(?int $storeId): bool {
+        $this->gatewayConfig->setMethodCode('payu');
+        $flag = $this->gatewayConfig->getValue('environment', $storeId);
 
-        return $environment === '1';
+        if ($flag === null) {
+            $this->gatewayConfig->setMethodCode('payu_gateway');
+            $flag = $this->gatewayConfig->getValue('environment', $storeId);
+        }
+        if ($flag === null) {
+            $this->gatewayConfig->setMethodCode('payu_gateway_card');
+            $flag = $this->gatewayConfig->getValue('environment', $storeId);
+        }
+        if ($flag === null) {
+            $this->gatewayConfig->setMethodCode('payu_gateway_google_pay');
+            $flag = $this->gatewayConfig->getValue('environment', $storeId);
+        }
+
+        return $flag === '1';
     }
 }
 

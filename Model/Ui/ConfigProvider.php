@@ -54,6 +54,7 @@ class ConfigProvider implements ConfigProviderInterface
         $quote = $this->checkoutSession->getQuote();
         $totalAmount = $quote ? (float) $quote->getGrandTotal() : null;
         $allMethods = $this->payMethods->getAllAvailablePayMethods($totalAmount);
+
         return [
             'payment' => [
                 'payuGateway' => [
@@ -112,8 +113,7 @@ class ConfigProvider implements ConfigProviderInterface
                                 && $this->isAnyAvailable($allMethods, ['dpts']),
                             'title' => (string) __('Pay with Twisto Pay in 3'),
                             'logoSrc' => $this->assetRepository->getUrl('PayU_PaymentGateway::images/payu_twisto_pay_in_3.svg'),
-                        ],
-
+                        ]
                     ]
                 ]
             ]
@@ -141,5 +141,4 @@ class ConfigProvider implements ConfigProviderInterface
     {
         return current(explode('_', $this->resolver->getLocale()));
     }
-
 }
