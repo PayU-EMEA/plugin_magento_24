@@ -40,6 +40,7 @@ The following operations are possible:
 The module adds these payment methods:
   * **PayU payment** - selection of payment method and redirection a bank or card form
   * **Card payment** - entry of the card number directly on the store's website and payment by card
+  * **PayU - Google Pay** - Google Pay payment directly on checkout (without redirecting the customer outside the store)
   * **PayU Installments** - installment payments with a redirect to the PayU installment form.
   * **PayU Klarna** - deferred Klarna payments with a redirect to the Klarna form in PayU.
   * **PayU PayPo** - deferred PayPo payments with a redirect to the PayPo form in PayU.
@@ -130,6 +131,16 @@ Available when the parameter `Test Mode (Sandbox)` is set for `Yes`.
 | Activate repeat payment? | [more information](#repeat-payment) |
 | Activate remembering of cards? | [more information](#saving-cards) |
 | Sort Order | Position of the payment method in the list of payment methods. |
+
+### "PayU - Google Pay" parameters
+
+| Parameter | Description |
+|---------|-----------|
+| Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments. |
+| Activate repeat payment? | [more information](#repeat-payment) |
+| Sort Order | Position of the payment method in the list of payment methods. |
+| Google Pay Merchant ID | Merchant ID from Google Pay. In production mode, your store must be verified by Google first. |
+| Google Merchant Name | Merchant name displayed in Google Pay (should match your Google Pay profile). |
 
 ### "PayU - Installments", "PayU - Klarna", "PayU - PayPo", "PayU - PragmaPay", "PayU - Twisto", "PayU - Twisto Pay in 3" payment parameters
 

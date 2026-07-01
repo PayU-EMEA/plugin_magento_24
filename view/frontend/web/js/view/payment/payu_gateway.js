@@ -25,6 +25,13 @@ define(
             });
         }
 
+        if (config.payuGooglePay && config.payuGooglePay.isActive) {
+            rendererList.push({
+                type: 'payu_gateway_google_pay',
+                component: 'PayU_PaymentGateway/js/view/payment/method-renderer/payu_gateway_google_pay'
+            });
+        }
+
         const payMethods = config.payuConfig.payMethods;
 
         for (const [payMethodCode, payMethodConfig] of Object.entries(payMethods)) {
