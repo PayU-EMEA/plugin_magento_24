@@ -88,23 +88,13 @@ class PayMethodsDataBuilder implements BuilderInterface
 
     private function buildGooglePayData($authorizationCode): array
     {
-        if (!is_string($authorizationCode)) {
-            return [];
-        }
-
-        $trimmedAuthorizationCode = trim($authorizationCode);
-
-        if ($trimmedAuthorizationCode === '') {
-            return [];
-        }
-
         return [
             'body' => [
                 'payMethods' => [
                     'payMethod' => [
                         'type' => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
                         'value' => PayUConfigInterface::PAYU_GOOGLE_PAY_METHOD_VALUE,
-                        'authorizationCode' => base64_encode($trimmedAuthorizationCode),
+                        'authorizationCode' => trim($authorizationCode),
                     ]
                 ]
             ]

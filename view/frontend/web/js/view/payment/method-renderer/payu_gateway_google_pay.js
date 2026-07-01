@@ -10,19 +10,20 @@ define(
     ) {
         'use strict';
 
+      const config = (window.checkoutConfig && window.checkoutConfig.payment && window.checkoutConfig.payment.payuGooglePay) || {};
+
         return Component.extend(
             {
                 defaults: {
                     template: 'PayU_PaymentGateway/payment/payu_gateway_google_pay',
                     postPlaceOrderData: 'payu/data/getPostPlaceOrderData',
-                    title: 'Google Pay',
-                    logoSrc: undefined,
-                    language: undefined,
-                    environment: undefined,
-                    merchantId: undefined,
-                    gatewayMerchantId: undefined,
-                    googleMerchantName: undefined,
-                    termsUrl: undefined,
+                    logoSrc: config.logoSrc,
+                    language: config.language,
+                    environment: config.environment,
+                    merchantId: String(config.merchantId).trim(),
+                    gatewayMerchantId: config.gatewayMerchantId,
+                    googleMerchantName: config.googleMerchantName,
+                    termsUrl: config.termsUrl,
                     payuAgreement: ko.observable(true),
                     payuMore1: ko.observable(false),
                     payuMore2: ko.observable(false),
@@ -35,16 +36,6 @@ define(
                 initialize: function () {
                     this._super();
 
-                    const config = (window.checkoutConfig && window.checkoutConfig.payment && window.checkoutConfig.payment.payuGooglePay) || {};
-
-                    this.logoSrc = config.logoSrc;
-                    this.language = config.language;
-                    this.environment = config.environment;
-                    this.merchantId = config.merchantId ? String(config.merchantId).trim() : this.merchantId;
-                    this.gatewayMerchantId = config.gatewayMerchantId;
-                    this.googleMerchantName = config.googleMerchantName;
-                    this.termsUrl = config.termsUrl;
-
                     return this;
                 },
 
@@ -56,7 +47,7 @@ define(
                     return {
                         'method': this.item.method,
                         'additional_data': {
-                            'payu_authorization_code': this.googlePayToken(),
+                            'payu_authorization_code': btoa(this.googlePayToken()),
                         }
                     };
                 }
