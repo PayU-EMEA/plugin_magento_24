@@ -7,7 +7,7 @@
                 <comment><![CDATA[If you do not already have PayU merchant account, <a href="https://secure.payu.com/boarding/?pk_campaign=Plugin&pk_kwd=Magento2#/form" target="_blank">please register in Production</a> or <a href="https://secure.snd.payu.com/boarding/?pk_campaign=Plugin&pk_kwd=Magento2#/form" target="_blank">please register in Sandbox</a>]]></comment>
                 <fieldset_css>complex payu-section</fieldset_css>
                 <frontend_model>PayU\PaymentGateway\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
-                <group id="payu_common" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="payu_common" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>API parameters</label>
                     <field id="environment" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Sandbox mode</label>
@@ -53,7 +53,7 @@
                         </field>
                     </group>
                 </group>
-                <group id="payu_credit_widget" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="payu_credit_widget" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU Credit widget</label>
                     <field id="enable_for_product" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable widget for product view</label>
@@ -92,56 +92,56 @@
                         <config_path>payment/payu_credit_widget/excluded_paytypes</config_path>
                     </field>
                 </group>
-                <group id="payu_gateway" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="payu_gateway" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU Payment</label>
                     <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable plugin?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/payu_gateway/active</config_path>
                     </field>
-                    <field id="payment_methods_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="payment_methods_order" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Payment Methods Order</label>
                         <comment><![CDATA[Enter payment methods values separated by comma. <a href="http://developers.payu.com/pl/overview.html#paymethods" target="_blank">List of payment methods</a>]]></comment>
                         <config_path>payment/payu_gateway/payment_methods_order</config_path>
                     </field>
-                <field id="repayment" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="repayment" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable repayment?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
                         <config_path>payment/payu_gateway/repayment</config_path>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="sort_order" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/payu_gateway/sort_order</config_path>
                     </field>
                 </group>
-                <group id="payu_gateway_card" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="payu_gateway_card" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU - Cards</label>
                     <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable plugin?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/payu_gateway_card/active</config_path>
                     </field>
-                    <field id="store_card" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="store_card" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable store card?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <comment><![CDATA[Additional configuration in PayU is needed. <a href="https://github.com/PayU/plugin_magento_2#zapisywanie-kart" target="_blank">More information</a>]]></comment>
                         <config_path>payment/payu_gateway_card/store_card</config_path>
                     </field>
-                    <field id="repayment" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="repayment" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable repayment?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
                         <config_path>payment/payu_gateway_card/repayment</config_path>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="sort_order" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/payu_gateway_card/sort_order</config_path>
                     </field>
                 </group>
-                <group id="payu_gateway_google_pay" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="payu_gateway_google_pay" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU - Google Pay</label>
                     <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable plugin?</label>
@@ -176,108 +176,108 @@
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/payu_gateway_installments/active</config_path>
                     </field>
-                    <field id="repayment" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="repayment" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable repayment?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
                         <config_path>payment/payu_gateway_installments/repayment</config_path>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/payu_gateway_installments/sort_order</config_path>
                     </field>
                 </group>
-                <group id="payu_gateway_klarna" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="payu_gateway_klarna" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU - Klarna</label>
                     <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable plugin?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/payu_gateway_klarna/active</config_path>
                     </field>
-                    <field id="repayment" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="repayment" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable repayment?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
                         <config_path>payment/payu_gateway_klarna/repayment</config_path>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/payu_gateway_klarna/sort_order</config_path>
                     </field>
                 </group>
-                <group id="payu_gateway_paypo" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="payu_gateway_paypo" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU - PayPo</label>
                     <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable plugin?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/payu_gateway_paypo/active</config_path>
                     </field>
-                    <field id="repayment" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="repayment" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable repayment?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
                         <config_path>payment/payu_gateway_paypo/repayment</config_path>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/payu_gateway_paypo/sort_order</config_path>
                     </field>
                 </group>
-                <group id="payu_gateway_pragma" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="payu_gateway_pragma" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU - PragmaPay</label>
                     <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable plugin?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/payu_gateway_pragma/active</config_path>
                     </field>
-                    <field id="repayment" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="repayment" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable repayment?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
                         <config_path>payment/payu_gateway_pragma/repayment</config_path>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/payu_gateway_pragma/sort_order</config_path>
                     </field>
                 </group>
-                <group id="payu_gateway_twisto" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="payu_gateway_twisto" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU - Twisto</label>
                     <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable plugin?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/payu_gateway_twisto/active</config_path>
                     </field>
-                    <field id="repayment" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="repayment" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable repayment?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
                         <config_path>payment/payu_gateway_twisto/repayment</config_path>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/payu_gateway_twisto/sort_order</config_path>
                     </field>
                 </group>
-                <group id="payu_gateway_twisto_slice" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <group id="payu_gateway_twisto_slice" translate="label" type="text" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU - Twisto Pay in 3</label>
                     <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable plugin?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <config_path>payment/payu_gateway_twisto_slice/active</config_path>
                     </field>
-                    <field id="repayment" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="repayment" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Enable repayment?</label>
                         <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                         <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
                         <config_path>payment/payu_gateway_twisto_slice/repayment</config_path>
                     </field>
-                    <field id="sort_order" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Sort Order</label>
                         <frontend_class>validate-number</frontend_class>
                         <config_path>payment/payu_gateway_twisto_slice/sort_order</config_path>
