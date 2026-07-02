@@ -162,7 +162,7 @@
                     <field id="merchant_id" translate="label comment" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Google Pay Merchant ID</label>
                         <comment><![CDATA[Your Google Merchant Id. You need to verify your shop in Google, following <a href="https://developers.google.com/pay/api/web/guides/test-and-deploy/publish-your-integration#create-your-profile" target="_blank" rel="nofollow">the instructions</a>.]]></comment>
-                        <config_path>payment/payu_gateway_google_pay/merchant_id</config_path>
+                        <config_path>payment/payu_gateway_google_pay/google_merchant_id</config_path>
                     </field>
                     <field id="merchant_name" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Google Merchant Name</label>

@@ -38,27 +38,25 @@ class GooglePayConfigProvider implements ConfigProviderInterface
         $isSandbox = $this->isSandboxEnv($this->storeId);
         $gatewayMerchantId = $this->resolveGooglePayGatewayMerchantId($isSandbox);
         $googleMerchantName = $this->resolveGooglePayMerchantName();
-        $merchantId = $this->resolveGooglePayMerchantId($isSandbox);
+        $googleMerchantId = $this->resolveGooglePayMerchantId($isSandbox);
 
         return [
             'payment' => [
                 'payuGooglePay' => [
-                    'isActive' => $this->isGooglePayActive($isSandbox, $gatewayMerchantId, $merchantId),
+                    'isActive' => $this->isGooglePayActive($isSandbox, $gatewayMerchantId, $googleMerchantId),
                     'logoSrc' => $this->assetRepository->getUrl('PayU_PaymentGateway::images/payu_google_pay_logo.svg'),
                     'termsUrl' => PayUConfigInterface::PAYU_TERMS_URL,
                     'language' => $this->getLanguage(),
                     'environment' => $isSandbox ? 'TEST' : 'PRODUCTION',
                     'gatewayMerchantId' => $gatewayMerchantId,
-                    'merchantId' => $merchantId,
+                    'googleMerchantId' => $googleMerchantId,
                     'googleMerchantName' => $googleMerchantName,
-                    'allowedCardNetworks' => ['VISA', 'MASTERCARD'],
-                    'allowedAuthMethods' => ['PAN_ONLY', 'CRYPTOGRAM_3DS']
                 ]
             ]
         ];
     }
 
-    private function isGooglePayActive(bool $isSandbox, string $gatewayMerchantId, string $merchantId): bool
+    private function isGooglePayActive(bool $isSandbox, string $gatewayMerchantId, string $googleMerchantId): bool
     {
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
         $isActiveInConfig = (bool) $this->gatewayConfig->getValue('active', $this->storeId);
@@ -69,7 +67,7 @@ class GooglePayConfigProvider implements ConfigProviderInterface
 
         return $isSandbox
             ? $this->validateSandboxConfiguration($gatewayMerchantId)
-            : $this->validateProductionConfiguration($gatewayMerchantId, $merchantId);
+            : $this->validateProductionConfiguration($gatewayMerchantId, $googleMerchantId);
     }
 
     private function validateSandboxConfiguration(string $gatewayMerchantId): bool
@@ -77,9 +75,9 @@ class GooglePayConfigProvider implements ConfigProviderInterface
         return !empty($gatewayMerchantId);
     }
 
-    private function validateProductionConfiguration(string $gatewayMerchantId, string $merchantId): bool
+    private function validateProductionConfiguration(string $gatewayMerchantId, string $googleMerchantId): bool
     {
-        return !empty($gatewayMerchantId) && !empty($merchantId);
+        return !empty($gatewayMerchantId) && !empty($googleMerchantId);
     }
 
     private function getLanguage(): string
@@ -104,9 +102,9 @@ class GooglePayConfigProvider implements ConfigProviderInterface
         }
 
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
-        $merchantId = $this->gatewayConfig->getValue('merchant_id', $this->storeId);
+        $googleMerchantId = $this->gatewayConfig->getValue('merchant_id', $this->storeId);
 
-        return is_string($merchantId) ? trim($merchantId) : '';
+        return is_string($googleMerchantId) ? trim($googleMerchantId) : '';
     }
 
     private function resolveGooglePayMerchantName(): string
@@ -117,22 +115,10 @@ class GooglePayConfigProvider implements ConfigProviderInterface
         return is_string($googleMerchantName) ? trim($googleMerchantName) : '';
     }
 
-    public function isSandboxEnv(?int $storeId): bool {
+    public function isSandboxEnv(?int $storeId): bool 
+    {
         $this->gatewayConfig->setMethodCode('payu');
         $flag = $this->gatewayConfig->getValue('environment', $storeId);
-
-        if ($flag === null) {
-            $this->gatewayConfig->setMethodCode('payu_gateway');
-            $flag = $this->gatewayConfig->getValue('environment', $storeId);
-        }
-        if ($flag === null) {
-            $this->gatewayConfig->setMethodCode('payu_gateway_card');
-            $flag = $this->gatewayConfig->getValue('environment', $storeId);
-        }
-        if ($flag === null) {
-            $this->gatewayConfig->setMethodCode('payu_gateway_google_pay');
-            $flag = $this->gatewayConfig->getValue('environment', $storeId);
-        }
 
         return $flag === '1';
     }

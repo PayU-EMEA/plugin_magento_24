@@ -2,14 +2,20 @@
 /*global define*/
 define(
     [
-        'paymentPblExtended',
+        'jquery',
+        'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/quote',
-        'Magento_Checkout/js/model/payment/additional-validators'
+        'Magento_Checkout/js/model/payment/additional-validators',
+        'mage/url',
+        'Magento_Checkout/js/model/full-screen-loader'
     ],
     function (
+        $,
         Component,
         quote,
-        additionalValidators
+        additionalValidators,
+        url,
+        fullScreenLoader
     ) {
         'use strict';
 
@@ -19,29 +25,19 @@ define(
              */
             initialize: function () {
                 this._super();
-                this.pendingOpenGooglePaySheet = false;
+                this.googlePayClient = null;
+
                 this.initializeGooglePay();
 
                 return this;
             },
 
             initializeGooglePay: function () {
-                if (this.googlePayClient) {
-                    if (this.pendingOpenGooglePaySheet) {
-                        this.pendingOpenGooglePaySheet = false;
-                        this.openGooglePaySheet();
-                    }
-
+                if (!window.google?.payments?.api?.PaymentsClient) {
                     return;
                 }
 
-                if (!window.google || !window.google.payments) {
-                    this.pendingOpenGooglePaySheet = false;
-                    console.error('Google Pay is not loaded');
-                    return;
-                }
-
-                const googlePayClient = new window.google.payments.api.PaymentsClient({
+                this.googlePayClient = new window.google.payments.api.PaymentsClient({
                     environment: this.environment
                 });
 
@@ -57,15 +53,10 @@ define(
                     }]
                 };
 
-                googlePayClient.isReadyToPay(clientConfig)
+                this.googlePayClient.isReadyToPay(clientConfig)
                     .then(response => {
                         if (response.result) {
-                            this.googlePayClient = googlePayClient;
-
-                            if (this.pendingOpenGooglePaySheet) {
-                                this.pendingOpenGooglePaySheet = false;
-                                this.openGooglePaySheet();
-                            }
+                            this.isAvailable(true);
                         }
                     })
                     .catch(err => {
@@ -74,15 +65,15 @@ define(
             },
 
             openGooglePaySheet: function () {
-                if (!this.googlePayClient) {
-                    this.pendingOpenGooglePaySheet = false;
-                    console.error('Google Pay client not initialized');
-                    return;
-                }
+                const self = this;
 
                 const paymentDataRequest = {
                     apiVersion: 2,
                     apiVersionMinor: 0,
+                    merchantInfo: {
+                        merchantId: this.googleMerchantId,
+                        merchantName: this.googleMerchantName
+                    },
                     allowedPaymentMethods: [{
                         type: 'CARD',
                         parameters: {
@@ -105,21 +96,37 @@ define(
                     }
                 };
 
-                if (this.merchantId && this.merchantId.trim() !== '') {
-                    paymentDataRequest.merchantInfo = {
-                        merchantId: this.merchantId,
-                        merchantName: this.googleMerchantName
-                    };
-                }
-
                 this.googlePayClient.loadPaymentData(paymentDataRequest)
                     .then(paymentData => {
                         const token = paymentData.paymentMethodData.tokenizationData.token;
                         this.googlePayToken(token);
-                        this.placeOrderWithToken();
+
+                        this.getPlaceOrderDeferredObject()
+                            .fail(
+                                function () {
+                                    self.isPlaceOrderActionAllowed(true);
+                                    fullScreenLoader.stopLoader();
+                                }
+                            )
+                            .done(
+                                function () {
+                                    self.afterPlaceOrder();
+
+                                    if (self.redirectAfterPlaceOrder) {
+                                        $.getJSON(url.build(self.postPlaceOrderData), function (response) {
+                                            if (response.success && response.redirectUri) {
+                                                window.location.replace(response.redirectUri);
+                                            } else {
+                                                self.isPlaceOrderActionAllowed(true);
+                                                fullScreenLoader.stopLoader();
+                                            }
+                                        });
+                                    }
+                                }
+                            );
                     })
                     .catch(err => {
-                        this.googlePayToken(null);
+                        this.isPlaceOrderActionAllowed(true);
 
                         if (err.statusCode !== 'CANCELED') {
                             console.error('Error loading payment data:', err);
@@ -131,37 +138,26 @@ define(
              * @return {Object}
              */
             getCheckoutTotalsData: function () {
-                const totals = typeof quote.totals === 'function' ? quote.totals() : null;
-
-                if (totals && typeof totals === 'object') {
-                    return totals;
-                }
-
-                const totalsData = window.checkoutConfig?.totalsData;
-                if (totalsData && typeof totalsData === 'object') {
-                    return totalsData;
-                }
-
-                const quoteData = window.checkoutConfig?.quoteData;
-                if (quoteData && typeof quoteData === 'object') {
-                    return quoteData;
-                }
-
-                return {};
+                return quote.totals();
             },
 
             getTotalPrice: function () {
                 const totalPrice = this.getCheckoutTotalsData();
-                const grandTotal = totalPrice.grand_total || totalPrice.base_grand_total;
 
-                return grandTotal ? Number(grandTotal).toFixed(2) : '0.00';
+                return Number(totalPrice.base_grand_total).toFixed(2);
             },
 
             getCurrencyCode: function () {
                 const totalPrice = this.getCheckoutTotalsData();
-                const currency = totalPrice.quote_currency_code || totalPrice.base_currency_code;
 
-                return currency ? String(currency).toUpperCase() : 'PLN';
+                return String(totalPrice.quote_currency_code).toUpperCase();
+            },
+
+            /**
+             * @return {Boolean}
+             */
+            isButtonActive: function () {
+                return this.getCode() === this.isChecked() && this.validate() && this.isPlaceOrderActionAllowed();
             },
 
             placeOrder: function (data, event) {
@@ -169,16 +165,14 @@ define(
                     event.preventDefault();
                 }
 
-                if (!this.validate() || !additionalValidators.validate() || this.isPlaceOrderActionAllowed() !== true) {
-                    return false;
-                }
-
-                this.googlePayToken(null);
-                this.pendingOpenGooglePaySheet = true;
-
-                if (this.googlePayClient) {
-                    this.pendingOpenGooglePaySheet = false;
+                if (this.validate() &&
+                    additionalValidators.validate() &&
+                    this.isPlaceOrderActionAllowed() === true
+                ) {
+                    this.isPlaceOrderActionAllowed(false);
                     this.openGooglePaySheet();
+
+                    return true;
                 }
 
                 return false;
