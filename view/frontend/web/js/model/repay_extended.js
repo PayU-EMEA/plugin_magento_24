@@ -6,8 +6,7 @@ define(
         'uiComponent',
         'ko',
         'mage/url',
-        'mage/translate',
-        'es6Promise'
+        'mage/translate'
     ],
     function (
         $,
