@@ -25,6 +25,16 @@ interface PayUConfigInterface
     const PAYU_METHOD_TYPE_CODE = 'payu_method_type';
 
     /**
+     * Google Pay authorization token key
+     */
+    const PAYU_AUTHORIZATION_CODE = 'payu_authorization_code';
+
+    /**
+     * Google Pay method mapping in PayU API
+     */
+    const PAYU_GOOGLE_PAY_METHOD_VALUE = 'ap';
+
+    /**
      * Redirect url key
      */
     const PAYU_REDIRECT_URI_CODE = 'payu_redirect_uri';
