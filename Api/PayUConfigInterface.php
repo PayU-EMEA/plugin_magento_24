@@ -90,6 +90,11 @@ interface PayUConfigInterface
     public const PAYU_CC_TRANSFER_LOGO_SRC = 'PayU_PaymentGateway::images/card-visa-mc.svg';
 
     /**
+     * PayU card logo static link
+     */
+    const PAYU_GOOGLE_PAY_TRANSFER_LOGO_SRC = 'PayU_PaymentGateway::images/payu_google_pay_logo.svg';
+
+    /**
      * Pay by links code
      */
     public const PAYU_BANK_TRANSFER_KEY = 'PBL';

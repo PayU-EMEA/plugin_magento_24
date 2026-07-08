@@ -5,6 +5,11 @@
     <update handle="sales_order_item_price"/>
     <update handle="sales_order_info_links"/>
     <body>
+        <referenceContainer name="head.additional">
+            <block template="PayU_PaymentGateway::checkout/google_pay_script.phtml"
+                    ifconfig="payment/payu_gateway_google_pay/active"
+                    before="-"/>
+        </referenceContainer>
         <referenceContainer name="page.main.title">
             <block class="Magento\Sales\Block\Order\Info" name="order.status" template="order/order_status.phtml"/>
             <block class="Magento\Sales\Block\Order\Info" name="order.date" template="order/order_date.phtml"/>

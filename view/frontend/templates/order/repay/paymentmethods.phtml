@@ -6,6 +6,7 @@
 <?php
 $config = $block->getPaymentGatewayConfig();
 $cardConfig = $block->getCardPaymentGatewayConfig();
+$googlePayConfig = $block->getGooglePayConfig();
 ?>
     <div class="payu-repay repay">
         <div class="repay__header">
@@ -16,6 +17,9 @@ $cardConfig = $block->getCardPaymentGatewayConfig();
                 <!-- ko template: getTemplate() --><!-- /ko -->
             </div>
             <div class="repay__method" id="payu_gateway_card_slot" data-bind="scope: 'payu_gateway_card'">
+                <!-- ko template: getTemplate() --><!-- /ko -->
+            </div>
+            <div class="repay__method" id="payu_gateway_google_pay_slot" data-bind="scope: 'payu_gateway_google_pay'">
                 <!-- ko template: getTemplate() --><!-- /ko -->
             </div>
         </div>
@@ -51,6 +55,23 @@ if (!empty($cardConfig)):
                     "payu_gateway_card": {
                         "component": "PayU_PaymentGateway/js/view/order/payu_gateway_card",
                         "config": <?= $cardConfig; ?>
+                    }
+                }
+            }
+        }
+    }
+    </script>
+<?php endif;
+if (!empty($googlePayConfig)):
+    ?>
+    <script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "payu_gateway_google_pay": {
+                        "component": "PayU_PaymentGateway/js/view/order/payu_gateway_google_pay",
+                        "config": <?= $googlePayConfig; ?>
                     }
                 }
             }
