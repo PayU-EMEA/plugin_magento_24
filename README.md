@@ -40,6 +40,7 @@ Możliwe są następujące operacje:
 Moduł dodaje następujące metody płatności:
   * **Płatność PayU** - wybór metody płatności i przekierowanie do banku lub formatkę kartową
   * **Płatność kartą** - wpisanie numeru karty bezpośrednio na stronie sklepu i płatność kartą
+  * **PayU - Google Pay** - płatność Google Pay bezpośrednio na stronie checkout (bez przekierowania poza sklep)
   * **PayU Raty** - płatności ratalne z przekierowaniem do formatki ratalnej PayU
   * **PayU Klarna** - odroczone płatności Klarna z przekierowaniem do formatki Klarna w PayU
   * **PayU PayPo** - odroczone płatności PayPo z przekierowaniem do formatki PayPo w PayU
@@ -129,6 +130,16 @@ Dostępne gdy parametr `Tryb testowy (Sandbox)` jest ustawiony na `Tak`.
 | Czy uaktywnić zapisywanie kart?     | [więcej informacji](#zapisywanie-kart)                                      |
 | Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności)                                  |
 | Pozycja na liście                   | Pozycja metody płatności na liście metod płatności                          |
+
+### Parametry płatności "PayU - Google Pay"
+
+| Parameter                           | Opis                                                                                                                                    |
+|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| Czy włączyć wtyczkę?                | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności.                                                           |
+| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności)                                                                                             |
+| Pozycja na liście                   | Pozycja metody płatności na liście metod płatności                                                                                     |
+| Google Pay Merchant ID              | Identyfikator Merchant ID z Google Pay. W środowisku produkcyjnym wymaga wcześniejszej weryfikacji sklepu po stronie Google.          |
+| Google Merchant Name                | Nazwa merchanta wyświetlana w Google Pay (zgodna z profilem Google Pay).                                                               |
 
 ### Parametry płatności "PayU - Raty",  "PayU - Klarna", "PayU - PayPo", "PayU - PragmaPay", "PayU - Twisto", "PayU - Twisto podziel na 3"
 

@@ -30,6 +30,7 @@
 "POS parameters - Sandbox mode","Parametry punktu płatności (POS) - tryb Sandbox"
 "Enable repayment?","Czy uaktywnić ponowienie płatności?"
 "Sort Order","Pozycja na liście"
+"Your Google Merchant Id. You need to verify your shop in Google, following <a href=""https://developers.google.com/pay/api/web/guides/test-and-deploy/publish-your-integration#create-your-profile"" target=""_blank"" rel=""nofollow"">the instructions</a>.","Twój identyfikator Google Merchant ID. Musisz zweryfikować swój sklep w Google, postępując zgodnie z <a href=""https://developers.google.com/pay/api/web/guides/test-and-deploy/publish-your-integration#create-your-profile"" target=""_blank"" rel=""nofollow"">instrukcją</a>."
 "Enable store card?","Czy uaktywnić zapisywanie kart?"
 "Enter payment methods values separated by comma. <a href=""http://developers.payu.com/pl/overview.html#paymethods"" target=""_blank"">List of payment methods</a>","Podawaj symbole metod płatności oddzielając je przecinkiem. <a href=""http://developers.payu.com/pl/overview.html#paymethods"" target=""_blank"">Lista metod płatności</a>"
 "Automatic collection on the POS should be disabled. <a href=""https://github.com/PayU/plugin_magento_2#ponowienie-płatności"" target=""_blank"">More information</a>","Wymagane wyłączenie autoodbioru na POS-ie. <a href=""https://github.com/PayU/plugin_magento_2#ponowienie-płatności"" target=""_blank"">Więcej informacji</a>"

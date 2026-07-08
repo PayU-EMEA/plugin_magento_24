@@ -6,6 +6,7 @@
             <argument name="configProviders" xsi:type="array">
                 <item name="payu_gateway_config_provider" xsi:type="object">PayU\PaymentGateway\Model\Ui\ConfigProvider</item>
                 <item name="payu_gateway_card_config_provider" xsi:type="object">PayU\PaymentGateway\Model\Ui\CardConfigProvider</item>
+                <item name="payu_google_pay_config_provider" xsi:type="object">PayU\PaymentGateway\Model\Ui\GooglePayConfigProvider</item>
             </argument>
         </arguments>
     </type>

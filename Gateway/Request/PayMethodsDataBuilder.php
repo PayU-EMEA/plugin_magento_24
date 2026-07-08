@@ -9,7 +9,6 @@ use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 class PayMethodsDataBuilder implements BuilderInterface
 {
-
     private const PAY_METHOD_CONFIGURATION = [
         'PLN' => [
             PayUSupportedMethods::CODE_INSTALLMENTS => 'ai',
@@ -44,6 +43,12 @@ class PayMethodsDataBuilder implements BuilderInterface
         $payment = $paymentDataObject->getPayment();
         $methodCode = $payment->getMethodInstance()->getCode();
 
+        if ($methodCode === PayUSupportedMethods::CODE_GOOGLE_PAY) {
+            return $this->buildGooglePayData(
+                $payment->getAdditionalInformation(PayUConfigInterface::PAYU_AUTHORIZATION_CODE)
+            );
+        }
+
         $payMethodType = null;
         $payMethodValue = null;
 
@@ -75,6 +80,21 @@ class PayMethodsDataBuilder implements BuilderInterface
                     'payMethod' => [
                         'type' => $payMethodType,
                         'value' => $payMethodValue
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    private function buildGooglePayData($authorizationCode): array
+    {
+        return [
+            'body' => [
+                'payMethods' => [
+                    'payMethod' => [
+                        'type' => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
+                        'value' => PayUConfigInterface::PAYU_GOOGLE_PAY_METHOD_VALUE,
+                        'authorizationCode' => trim($authorizationCode),
                     ]
                 ]
             ]
