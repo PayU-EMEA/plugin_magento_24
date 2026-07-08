@@ -55,6 +55,7 @@ class RepaymentResolver implements RepaymentResolverInterface
     {
         return $this->payUConfig->isRepaymentActive(PayUSupportedMethods::CODE_GATEWAY)
             || $this->payUConfig->isRepaymentActive(PayUSupportedMethods::CODE_CARD)
+            || $this->payUConfig->isRepaymentActive(PayUSupportedMethods::CODE_GOOGLE_PAY)
             || $this->payUConfig->isRepaymentActive(PayUSupportedMethods::CODE_INSTALLMENTS)
             || $this->payUConfig->isRepaymentActive(PayUSupportedMethods::CODE_KLARNA)
             || $this->payUConfig->isRepaymentActive(PayUSupportedMethods::CODE_PAYPO)

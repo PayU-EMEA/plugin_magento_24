@@ -30,7 +30,14 @@ abstract class RepayOrderResolverAbstract implements RepayOrderResolverInterface
     }
 
 
-    public function execute(OrderInterface $order, string $method, string $payUMethod, string $payUMethodType, array $payuBrowser): array
+    public function execute(
+        OrderInterface $order,
+        string $method,
+        string $payUMethod,
+        string $payUMethodType,
+        array $payuBrowser,
+        string $payUAuthorizationCode
+    ): array
     {
         $commandSubject = [
             'method' => $method,
@@ -41,6 +48,10 @@ abstract class RepayOrderResolverAbstract implements RepayOrderResolverInterface
         if (!empty($payUMethod) && !empty($payUMethodType)) {
             $commandSubject[PayUConfigInterface::PAYU_METHOD_CODE] = $payUMethod;
             $commandSubject[PayUConfigInterface::PAYU_METHOD_TYPE_CODE] = $payUMethodType;
+        }
+
+        if (!empty($payUAuthorizationCode)) {
+            $commandSubject[PayUConfigInterface::PAYU_AUTHORIZATION_CODE] = $payUAuthorizationCode;
         }
 
         $this->commandPool->get('repay')->execute($commandSubject);
