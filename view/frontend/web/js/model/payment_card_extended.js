@@ -7,7 +7,6 @@ define(
         'Magento_Checkout/js/model/payment/additional-validators',
         'mage/url',
         'Magento_Checkout/js/model/full-screen-loader',
-        'es6Promise'
     ],
     function (
         $,

@@ -8,8 +8,7 @@ define(
         'repayExtended',
         'mage/url',
         'ko',
-        payuSDK,
-        'es6Promise'
+        'payuSDK',
     ],
     function (
         $,
