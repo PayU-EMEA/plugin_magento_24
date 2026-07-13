@@ -9,57 +9,16 @@ use PayU\PaymentGateway\Model\Logger\Logger;
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;
 
-/**
- * Class GetPayMethods
- * @package PayU\PaymentGateway\Model
- */
 class GetUserPayMethods implements PayUGetUserPayMethodsInterface
 {
-    /**
-     * @var \OpenPayU_Retrieve
-     */
-    private $openPayURetrieve;
+    private \OpenPayU_Retrieve $openPayURetrieve;
+    private PayUConfigInterface $payUConfig;
+    private GetAvailableLocaleInterface $availableLocale;
+    private Session $checkoutSession;
+    private CustomerSession $customerSession;
+    private array $result = [];
+    private Logger $logger;
 
-    /**
-     * @var PayUConfigInterface
-     */
-    private $payUConfig;
-
-    /**
-     * @var GetAvailableLocaleInterface
-     */
-    private $availableLocale;
-
-    /**
-     * @var Session
-     */
-    private $checkoutSession;
-
-    /**
-     * @var CustomerSession
-     */
-    private $customerSession;
-
-    /**
-     * @var array
-     */
-    private $result = [];
-
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * GetPayMethods constructor.
-     *
-     * @param \OpenPayU_Retrieve $openPayURetrieve
-     * @param PayUConfigInterface $payUConfig
-     * @param GetAvailableLocaleInterface $availableLocale
-     * @param Session $checkoutSession
-     * @param CustomerSession $customerSession
-     * @param Logger $logger
-     */
     public function __construct(
         \OpenPayU_Retrieve $openPayURetrieve,
         PayUConfigInterface $payUConfig,
@@ -79,13 +38,9 @@ class GetUserPayMethods implements PayUGetUserPayMethodsInterface
     /**
      * {@inheritdoc}
      */
-    public function execute($email = null, $customerId = null)
+    public function execute(?string $email = null, ?int $customerId = null): array
     {
-        if ($email !== null) {
-            $customerEmail = $email;
-        } else {
-            $customerEmail = $this->checkoutSession->getQuote()->getCustomerEmail();
-        }
+        $customerEmail = $email ?? $this->checkoutSession->getQuote()->getCustomerEmail();
         if (!$this->payUConfig->isStoreCardEnable() ||
             $customerEmail === null ||
             !$this->customerSession->isLoggedIn()) {
@@ -115,9 +70,9 @@ class GetUserPayMethods implements PayUGetUserPayMethodsInterface
     /**
      * {@inheritdoc}
      */
-    public function toJson()
+    public function toJson(): string
     {
-        return json_encode($this->result);
+        return json_encode($this->result, JSON_THROW_ON_ERROR);
     }
 
 }

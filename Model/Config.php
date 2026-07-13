@@ -2,7 +2,6 @@
 
 namespace PayU\PaymentGateway\Model;
 
-use _PHPStan_bc6352b8e\Nette\Neon\Exception;
 use Magento\Framework\App\ProductMetadataInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
@@ -68,7 +67,7 @@ class Config implements PayUConfigInterface
 
         // common config
         $isSandboxEnvironment = $this->isSandboxEnv($storeId);
-        $this->setGatewayConfigCode('payu');
+        $this->setGatewayConfigCode(PayUConfigInterface::COMMON_CONFIGURATION_METHOD_CODE);
         $envPrefix = $isSandboxEnvironment ? 'sandbox_' : '';
         $posId = $this->gatewayConfig->getValue($envPrefix . 'pos_id', $storeId);
         $signatureKey = $this->gatewayConfig->getValue($envPrefix . 'second_key', $storeId);
@@ -82,7 +81,7 @@ class Config implements PayUConfigInterface
         $this->setGatewayConfigCode($code);
 
         try {
-            $environment = $isSandboxEnvironment ? PayUConfigInterface::ENVIRONMENT_SANBOX : PayUConfigInterface::ENVIRONMENT_SECURE;
+            $environment = $isSandboxEnvironment ? PayUConfigInterface::ENVIRONMENT_SANDBOX : PayUConfigInterface::ENVIRONMENT_SECURE;
             $this
                 ->setEnvironment($environment)
                 ->setMerchantPosId($posId)
@@ -100,15 +99,15 @@ class Config implements PayUConfigInterface
     }
 
     public function isSandboxEnv(?int $storeId): bool {
-        $this->gatewayConfig->setMethodCode('payu');
+        $this->gatewayConfig->setMethodCode(PayUConfigInterface::COMMON_CONFIGURATION_METHOD_CODE);
         $flag = $this->gatewayConfig->getValue('environment', $storeId);
 
         if ($flag === null) {
-            $this->gatewayConfig->setMethodCode('payu_gateway');
+            $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GATEWAY);
             $flag = $this->gatewayConfig->getValue('environment', $storeId);
         }
         if ($flag === null) {
-            $this->gatewayConfig->setMethodCode('payu_gateway_card');
+            $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_CARD);
             $flag = $this->gatewayConfig->getValue('environment', $storeId);
         }
 
@@ -120,6 +119,7 @@ class Config implements PayUConfigInterface
      */
     public function isStoreCardEnable(): bool
     {
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_CARD);
         return (bool)$this->gatewayConfig->getValue('store_card', $this->storeId);
     }
 
