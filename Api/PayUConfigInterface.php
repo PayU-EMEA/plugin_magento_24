@@ -92,7 +92,7 @@ interface PayUConfigInterface
     /**
      * PayU card logo static link
      */
-    const PAYU_GOOGLE_PAY_TRANSFER_LOGO_SRC = 'PayU_PaymentGateway::images/payu_google_pay_logo.svg';
+    public const PAYU_GOOGLE_PAY_TRANSFER_LOGO_SRC = 'PayU_PaymentGateway::images/payu_google_pay_logo.svg';
 
     /**
      * Pay by links code

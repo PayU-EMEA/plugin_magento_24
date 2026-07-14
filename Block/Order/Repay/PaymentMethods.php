@@ -210,7 +210,7 @@ class PaymentMethods extends Template
         return $this->getGooglePayPaymentGatewayConfig();
     }
 
-    public function getGooglePayEnv(): string
+    private function getGooglePayEnv(): string
     {
         return $this->isSandboxEnv() ? 'TEST' : 'PRODUCTION';
     }
