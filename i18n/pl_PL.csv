@@ -70,6 +70,7 @@ Order %1 [%2],Zamówienie %1 [%2]
 "Select payment method:","Wybierz metodę płatności:"
 "Pay with PayU","Płatność PayU"
 "Pay with a card", "Płatność kartą"
+"Pay with Google Pay", "Płatność GooglePay"
 "Pay with PayU Installments","Płatność Raty PayU"
 "Pay with Klarna","Płatność Klarna"
 "Pay with PayPo","Płatność PayPo"

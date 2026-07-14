@@ -32,6 +32,12 @@ class PaymentMethods extends Template
     private const SECURE_FORM = 'secureForm';
     private const ACTIVE = 'active';
     private const METHODS = 'methods';
+    private const AMOUNT = 'amount';
+    private const CURRENCY_CODE = 'currencyCode';
+    private const ENVIRONMENT = 'environment';
+    private const GATEWAY_MERCHANT_ID = 'gatewayMerchantId';
+    private const GOOGLE_MERCHANT_NAME = 'googleMerchantName';
+    private const GOOGLE_MERCHANT_ID = 'googleMerchantId';
 
     private RequestInterface $request;
     private PayUGetPayMethodsInterface $payMethods;
@@ -160,5 +166,92 @@ class PaymentMethods extends Template
         $requestHash = $this->request->getParam('hash');
 
         return 'sales/order/repay' . ($requestHash ? '/hash/' . $requestHash : '');
+    }
+
+    public function getGooglePayPaymentGatewayConfig(): string
+    {
+        $storeId = $this->_storeManager->getStore()->getId();
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
+        if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId)) {
+            return "";
+        }
+
+        $allMethods = $this->payMethods->getAllAvailablePayMethods($this->getOrder()->getGrandTotal());
+        $hasGooglePayMethod = (bool) array_filter(
+            $allMethods,
+            static function ($method): bool {
+                return $method->value === 'ap';
+            }
+        );
+        if (!$hasGooglePayMethod) {
+            return "";
+        }
+
+        return json_encode(
+            [
+                static::CODE => PayUSupportedMethods::CODE_GOOGLE_PAY,
+                static::LOGO_SRC => $this->getViewFileUrl(PayUConfigInterface::PAYU_GOOGLE_PAY_TRANSFER_LOGO_SRC),
+                static::ORDER_ID => $this->getOrder()->getEntityId(),
+                static::LANGUAGE => $this->availableLocale->execute(),
+                static::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
+                static::REPAY_URL => $this->getRepaymentUrl(),
+                static::AMOUNT => (float)$this->getOrder()->getGrandTotal(),
+                static::CURRENCY_CODE => (string)$this->getOrder()->getOrderCurrencyCode(),
+                static::ENVIRONMENT => $this->getGooglePayEnv(),
+                static::GATEWAY_MERCHANT_ID => $this->getGooglePayGatewayMerchantId(),
+                static::GOOGLE_MERCHANT_ID => $this->getGooglePayMerchantId(),
+                static::GOOGLE_MERCHANT_NAME => $this->getGooglePayMerchantName(),
+            ],
+        );
+    }
+
+    public function getGooglePayConfig(): string
+    {
+        return $this->getGooglePayPaymentGatewayConfig();
+    }
+
+    private function getGooglePayEnv(): string
+    {
+        return $this->isSandboxEnv() ? 'TEST' : 'PRODUCTION';
+    }
+
+    private function getGooglePayGatewayMerchantId(): string
+    {
+        $configKey = $this->isSandboxEnv() ? 'sandbox_pos_id' : 'pos_id';
+
+        $this->gatewayConfig->setMethodCode('payu');
+        $gatewayMerchantId = $this->gatewayConfig->getValue($configKey, $this->_storeManager->getStore()->getId());
+
+        return is_string($gatewayMerchantId) ? trim($gatewayMerchantId) : '';
+    }
+
+    private function getGooglePayMerchantId(): string
+    {
+        if ($this->isSandboxEnv()) {
+            return '0';
+        }
+
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
+        $googleMerchantId = $this->gatewayConfig->getValue('google_merchant_id', $this->_storeManager->getStore()->getId());
+
+        return is_string($googleMerchantId) ? trim($googleMerchantId) : '';
+    }
+
+    private function getGooglePayMerchantName(): string
+    {
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
+        $googleMerchantName = $this->gatewayConfig->getValue('google_merchant_name', $this->_storeManager->getStore()->getId());
+
+        return is_string($googleMerchantName) ? trim($googleMerchantName) : '';
+    }
+
+    private function isSandboxEnv(): bool
+    {
+        $storeId = $this->_storeManager->getStore()->getId();
+
+        $this->gatewayConfig->setMethodCode('payu');
+        $flag = $this->gatewayConfig->getValue('environment', $storeId);
+
+        return $flag === '1';
     }
 }

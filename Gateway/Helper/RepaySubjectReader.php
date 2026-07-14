@@ -3,6 +3,7 @@
 namespace PayU\PaymentGateway\Gateway\Helper;
 
 use Magento\Sales\Api\Data\OrderInterface;
+use PayU\PaymentGateway\Api\PayUConfigInterface;
 
 class RepaySubjectReader
 {
@@ -46,6 +47,14 @@ class RepaySubjectReader
     public static function readPayuMethodType(array $subject): string
     {
         return $subject['payu_method_type'] ?? '';
+    }
+
+    /**
+     * Reads Google Pay authorization code from subject
+     */
+    public static function readPayuAuthorizationCode(array $subject): string
+    {
+        return $subject[PayUConfigInterface::PAYU_AUTHORIZATION_CODE] ?? '';
     }
 
     /**

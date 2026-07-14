@@ -252,6 +252,12 @@
         </arguments>
     </type>
 
+    <type name="PayU\PaymentGateway\Model\RepayOrderGooglePayResolver">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCardCommandPool</argument>
+        </arguments>
+    </type>
+
     <virtualType name="PayUPaymentGatewayInstallmentsConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
             <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_INSTALLMENTS</argument>

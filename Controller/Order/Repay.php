@@ -10,6 +10,7 @@ use Magento\Sales\Model\OrderRepository;
 use PayU\PaymentGateway\Api\RepaymentResolverInterface;
 use PayU\PaymentGateway\Model\Logger\Logger;
 use PayU\PaymentGateway\Model\RepayOrderCardResolver;
+use PayU\PaymentGateway\Model\RepayOrderGooglePayResolver;
 use PayU\PaymentGateway\Model\RepayOrderResolver;
 
 class Repay implements HttpPostActionInterface
@@ -40,16 +41,18 @@ class Repay implements HttpPostActionInterface
     private Logger $logger;
     private RepayOrderResolver $repayOrderResolver;
     private RepayOrderCardResolver $repayOrderCardResolver;
+    private RepayOrderGooglePayResolver $repayOrderGooglePayResolver;
     private RepaymentResolverInterface $repaymentResolver;
 
     public function __construct(
-        OrderRepository            $orderRepository,
-        ResultFactory              $resultFactory,
-        RequestInterface           $request,
-        Logger                     $logger,
-        RepayOrderResolver         $repayOrderResolver,
-        RepayOrderCardResolver     $repayOrderCardResolver,
-        RepaymentResolverInterface $repaymentResolver
+        OrderRepository             $orderRepository,
+        ResultFactory               $resultFactory,
+        RequestInterface            $request,
+        Logger                      $logger,
+        RepayOrderResolver          $repayOrderResolver,
+        RepayOrderCardResolver      $repayOrderCardResolver,
+        RepayOrderGooglePayResolver $repayOrderGooglePayResolver,
+        RepaymentResolverInterface  $repaymentResolver
     )
     {
         $this->orderRepository = $orderRepository;
@@ -58,6 +61,7 @@ class Repay implements HttpPostActionInterface
         $this->logger = $logger;
         $this->repayOrderResolver = $repayOrderResolver;
         $this->repayOrderCardResolver = $repayOrderCardResolver;
+        $this->repayOrderGooglePayResolver = $repayOrderGooglePayResolver;
         $this->repaymentResolver = $repaymentResolver;
     }
 
@@ -86,6 +90,8 @@ class Repay implements HttpPostActionInterface
             $repayResolver = $this->repayOrderResolver;
         } elseif ($method === 'payu_gateway_card') {
             $repayResolver = $this->repayOrderCardResolver;
+        } elseif ($method === 'payu_gateway_google_pay') {
+            $repayResolver = $this->repayOrderGooglePayResolver;
         } else {
             $returnData[static::ERROR_FIELD] = __('Wrong Request');
             return $result->setData($returnData);
@@ -94,10 +100,18 @@ class Repay implements HttpPostActionInterface
         $payUMethod = strip_tags(trim($this->request->getParam('payu_method', '')));
         $payUMethodType = strip_tags(trim($this->request->getParam('payu_method_type', '')));
         $payuBrowser = $this->request->getParam('payu_browser', []);
+        $payUAuthorizationCode = trim((string)$this->request->getParam('payu_authorization_code', ''));
 
         try {
             $order = $this->orderRepository->get($orderId);
-            $returnData = $repayResolver->execute($order, $method, $payUMethod, $payUMethodType, $payuBrowser);
+            $returnData = $repayResolver->execute(
+                $order,
+                $method,
+                $payUMethod,
+                $payUMethodType,
+                $payuBrowser,
+                $payUAuthorizationCode
+            );
         } catch (NoSuchEntityException $exception) {
             $this->logger->critical($exception->getMessage());
             $returnData[static::ERROR_FIELD] = __(static::ERROR_MESASGE);
