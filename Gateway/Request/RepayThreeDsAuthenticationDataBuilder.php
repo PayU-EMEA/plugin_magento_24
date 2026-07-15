@@ -7,6 +7,7 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Gateway\Helper\RepaySubjectReader;
 use PayU\PaymentGateway\Gateway\Helper\Requests;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 class RepayThreeDsAuthenticationDataBuilder implements BuilderInterface
 {
@@ -26,6 +27,7 @@ class RepayThreeDsAuthenticationDataBuilder implements BuilderInterface
     public function build(array $buildSubject): array
     {
         $order = RepaySubjectReader::readOrder($buildSubject);
+        $methodCode = RepaySubjectReader::readMethod($buildSubject);
         $payMethodValue = RepaySubjectReader::readPayuMethod($buildSubject);
         $payMethodType = RepaySubjectReader::readPayuMethodType($buildSubject);
         $browser = RepaySubjectReader::readPayuBrowser($buildSubject);
@@ -77,7 +79,10 @@ class RepayThreeDsAuthenticationDataBuilder implements BuilderInterface
                 }
             }
 
-            if ($payMethodType === 'CARD_TOKEN') {
+            if ($payMethodType === PayUConfigInterface::PAYU_CC_TRANSFER_KEY ||
+                $payMethodValue === PayUConfigInterface::PAYU_GOOGLE_PAY_METHOD_VALUE ||
+                $methodCode === PayUSupportedMethods::CODE_GOOGLE_PAY
+            ) {
                 $browserData = [
                     'requestIP' => $this->payuRequests->getIp()
                 ];

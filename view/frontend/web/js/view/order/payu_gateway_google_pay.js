@@ -151,9 +151,18 @@ define(
 
             getData: function () {
                 return {
-                    method: this.getCode(),
-                    order_id: this.orderId,
-                    payu_authorization_code: btoa(this.googlePayToken())
+                    'method': this.getCode(),
+                    'order_id': this.orderId,
+                    'payu_authorization_code': btoa(this.googlePayToken()),
+                    'payu_browser': {
+                        'screenWidth': screen.width,
+                        'javaEnabled': navigator.javaEnabled(),
+                        'timezoneOffset': new Date().getTimezoneOffset(),
+                        'screenHeight': screen.height,
+                        'userAgent': navigator.userAgent,
+                        'colorDepth': screen.colorDepth,
+                        'language': navigator.language
+                    }
                 };
             },
 
