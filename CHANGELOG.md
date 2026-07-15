@@ -1,3 +1,9 @@
+## 2.1.0
+* Added Google Pay as a separate payment method
+* Fixed pay by stored card
+* Removed es6 promise polyfill
+* Added PayU SDK as composer depends
+
 ## 2.0.8
 * Fixed Credit Widget
 * Updated PayU SDK
