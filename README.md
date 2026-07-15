@@ -1,205 +1,207 @@
-[**English version**][ext8]
+[**Wersja polska**][ext8]
 
-# Moduł PayU dla Magento 2 w wersji 2.4
+# PayU module for Magento 2 version 2.4
+## BREAKING CHANGES
+**Due to changes described in [CHANGELOG][ext10] after updating plugin from version 1.X to 2.X, you must reconfigure plugin.**
 
-## UWAGA
-**W związku ze zmianami opisanymy w [CHANGELOG][ext10] po aktualizacji wtyczki z wersji 1.X na 2.X należy wykonać ponowną konfigurację wtyczki.**
+**If you have any questions or if you want to report an error, please contact our support at the address: tech@payu.pl.**
 
-**Jeżeli masz jakiekolwiek pytania lub chcesz zgłosić błąd zapraszamy do kontaktu z naszym wsparciem pod adresem: tech@payu.pl.**
+* If you are using Magento version 1.x, please use a [plugin for version 1.x][ext0]
+* If you are using Magento version >2.0.6, 2.1, 2.2, please use a [plugin for version >2.0.6, 2.1, 2.2][ext7]
+* If you are using Magento version 2.3, please use a [plugin for version 2.3][ext9]
 
-* Jeżeli używasz Magento w wersji 1.x proszę skorzystać z [pluginu dla wersji 1.x][ext0]
-* Jeżeli używasz Magento w wersji >2.0.6, 2.1, 2.2 proszę skorzystać z [pluginu dla wersji >2.0.6, 2.1, 2.2][ext7]
-* Jeżeli używasz Magento w wersji 2.3 proszę skorzystać z [pluginu dla wersji 2.3][ext9]
+## Table of contents
 
-## Spis treści
+1. [Properties](#properties)
+1. [Requirements](#requirements)
+1. [Installation](#installation)
+1. [Configuration](#configuration)
+    * [Parameters](#parameters)
+1. [Information about properties](#information-about-properties)
+    * [Order of payment methods](#order-of-payment-methods)
+    * [Repeat payment](#repeat-payment)
+    * [Saving card](#saving-cards)
 
-1. [Cechy](#cechy)
-1. [Wymagania](#wymagania)
-1. [Instalacja](#instalacja)
-1. [Konfiguracja](#konfiguracja)
-    * [Parametry](#parametry)
-1. [Informacje o cechach](#informacje-o-cechach)
-    * [Kolejność metod płatności](#kolejność-metod-płatności)
-    * [Ponowienie płatności](#ponowienie-płatności)
-    * [Zapisywanie kart](#zapisywanie-kart)
+## Properties
+PayU payment module adds a PayU payment option to Magento 2. The module works together with Magento 2 version 2.4
 
-## Cechy
-Moduł płatności PayU dodaje do Magento 2 opcję płatności PayU. Moduł współpracuje z Magento 2 w wersji 2.4
+The following operations are possible:
+* Creation of payment in the PayU system
+* Automatic receipt of notifications and change of order status
+* Receipt or rejection of payment (in case of switched off automatic receipt)
+* Display of payment method and selection of the method on the order summary page
+* Payment by card directly on the order summary page
+* Remembering of cards and payment with the remembered card
+* Repeat payment
+* Creation of online refund (full or partial)
+* Promoting credit payments using [credit widget](#credit-widget)  on different subpages of the store (e.g. on the product page, in the cart)
 
-Możliwe są następujące operacje:
-  * Utworzenie płatności w sytemie PayU
-  * Automatyczne odbieranie powiadomień i zmianę statusów zamówienia
-  * Odebranie lub odrzucenie płatności (w przypadku wyłączonego autoodbioru)
-  * Wyświetlenie metod płatności i wybranie metody na stronie podsumowania zamówienia
-  * Płatność kartą bezpośrednio na stronie podsumowania zamówienia
-  * Zapisanie karty i płatność zapisaną kartą
-  * Ponowienie płatności
-  * Utworzenie zwrotu online (pełnego lub częściowego)
-  * Promowanie płatności kredytowych wykorzystując [widget kredytowy](#widget-kredytowy) w różnych podstronach sklepu (np. na stronie produktu, w koszyku)
 
-Moduł dodaje następujące metody płatności:
-  * **Płatność PayU** - wybór metody płatności i przekierowanie do banku lub formatkę kartową
-  * **Płatność kartą** - wpisanie numeru karty bezpośrednio na stronie sklepu i płatność kartą
-  * **PayU - Google Pay** - płatność Google Pay bezpośrednio na stronie checkout (bez przekierowania poza sklep)
-  * **PayU Raty** - płatności ratalne z przekierowaniem do formatki ratalnej PayU
-  * **PayU Klarna** - odroczone płatności Klarna z przekierowaniem do formatki Klarna w PayU
-  * **PayU PayPo** - odroczone płatności PayPo z przekierowaniem do formatki PayPo w PayU
-  * **PayU PragmaPay** - odroczone płatności PragmaPay z przekierowaniem do formatki PragmaPay w PayU
-  * **PayU Twisto** - odroczone płatności Twisto z przekierowaniem do formatki Twisto w PayU
-  * **PayU Twisto podziel na 3** - odroczone płatności Twisto podziel na 3 z przekierowaniem do formatki Twisto podziel na 3 w PayU
+The module adds these payment methods:
+  * **PayU payment** - selection of payment method and redirection a bank or card form
+  * **Card payment** - entry of the card number directly on the store's website and payment by card
+  * **PayU - Google Pay** - Google Pay payment directly on checkout (without redirecting the customer outside the store)
+  * **PayU Installments** - installment payments with a redirect to the PayU installment form.
+  * **PayU Klarna** - deferred Klarna payments with a redirect to the Klarna form in PayU.
+  * **PayU PayPo** - deferred PayPo payments with a redirect to the PayPo form in PayU.
+  * **PayU PragmaPay** - deferred PragmaPay payments with a redirect to the PragmaPay form in PayU.
+  * **PayU Twisto** - deferred Twisto payments with a redirect to the Twisto form in PayU.
+  * **PayU Twisto Pay in 3** - deferred Twisto Pay in 3 payments with a redirect to the Twisto Pay in 3 form in PayU
 
 ![methods][img0]
 
-## Wymagania
+## Requirements
 
-**Ważne:** Moduł ta działa tylko z punktem płatności typu `REST API` (Checkout), jeżeli nie posiadasz jeszcze konta w systemie PayU [**zarejestruj się w systemie produkcyjnym**][ext1] lub [**zarejestruj się w systemie sandbox**][ext5]
+**Important:** The module works only with the REST API (Checkout) POS, if you don't have an account in the PayU system yet, [**register yourself in the production system**][ext1] or [**in the sandbox system**][ext5]
 
-* Wersja PHP zgodna z wymaganiami zainstalowanej wersji Magento 2
-* Rozszerzenia PHP: [cURL][ext2] i [hash][ext3].
+* PHP compliant with the requirements of the installed version of Magento 2
+* PHP extension: [cURL][ext2] and [hash][ext3].
 
-## Instalacja
+## Installation
 
-#### Przy użyciu Composer
+#### Using Composer
 `composer require payu/magento24-payment-gateway`
 
-Po instalacji z poziomu konsoli uruchom:
+After installation from the console's level, run:
    * php bin/magento module:enable PayU_PaymentGateway
    * php bin/magento setup:upgrade
    * php bin/magento setup:di:compile
    * php bin/magento setup:static-content:deploy
 
-## Konfiguracja
+## Configuration
 
-1. Przejdź do strony administracyjnej swojego sklepu Magento 2 [http://adres-sklepu/admin_xxx].
-2. Przejdź do  **Stores** > **Configuration**.
-3. Na stronie **Configuration** w menu po lewej stronie w sekcji **Sales** wybierz **Payment Methods**.
-4. Na liście dostępnych metod płatności należy wybrać właściwą sekcję z listy metod **PayU** w celu konfiguracji parametrów wtyczki.
-5. Po zmanie paramettrów naciśnij przycisk `Save config`.
+1. Go to the administration page of your Magento 2 store [http://adres-sklepu/admin_xxx].
+2. Go to **Stores** > **Configuration**.
+3. On the **Configuration** page in the menu on the left-hand side, in the section **Sales** choose **Payment Methods**.
+4. On the list of available payment methods choose one of the **PayU** methods to configure the plugin's parameters.
+5. After changing the parameters click `Save config`.
 
-### Parametry API
+### API Parameters
 
-| Parameter              | Opis                                                                                                                                    |
-|------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| Tryb testowy (Sandbox) | `Tak` - transakcje będą procesowane przez system Sandbox PayU. <br/> `Nie` - transakcje będą procesowane przez system produkcyjny PayU. |
+| Parameter              | Description                                                                                                                              |
+|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| Test mode (Sandbox)    | `Yes` - transactions are processed by the PayU Sandbox system. <br/> `No` - transactions are processed by the PayU production system.   |
 
-#### Parametry punktu płatności (POS)
 
-| Parameter | Opis |
+#### Point of sale (POS) parameters
+
+| Parameter | Descripction |
 |---------|-----------|
-| Id punktu płatności| Identyfikator POS-a z systemu PayU |
-| Drugi klucz MD5 | Drugi klucz MD5 z systemu PayU |
-| OAuth - client_id | client_id dla protokołu OAuth z systemu PayU |
-| OAuth - client_secret | client_secret for OAuth z systemu PayU |
+| POS IdD | POS ID from PayU system |
+| Second MD5 key | Second MD5 key from PayU system |
+| OAuth - client_id | client_id for OAuth protocol from PayU system |
+| OAuth - client_secret | client_secret for OAuth from PayU system |
 
-#### Parametry punktu płatności (POS) - Tryb testowy (Sandbox)
-Dostępne gdy parametr `Tryb testowy (Sandbox)` jest ustawiony na `Tak`.
+#### POS parameters - Test mode (Sandbox)
+Available when the parameter `Test Mode (Sandbox)` is set for `Yes`.
 
-| Parameter | Opis |
+| Parameter | Description |
 |---------|-----------|
-| Id punktu płatności| Identyfikator POS-a z systemu PayU |
-| Drugi klucz MD5 | Drugi klucz MD5 z systemu PayU |
-| OAuth - client_id | client_id dla protokołu OAuth z systemu PayU |
-| OAuth - client_secret | client_secret for OAuth z systemu PayU |
+| POS ID | POS ID from PayU system |
+| Second MD5 key | Second MD5 key from PayU system |
+| OAuth - client_id | client_id for OAuth protocol from PayU system |
+| OAuth - client_secret | client_secret for OAuth from PayU system |
 
-### Parametry wtyczki "PayU - widget kredytowy"
+### "PayU Credit widget" plugin parameters
 
-| Parameter                                                                       | Opis                                                                                                                                                                                                                                                                                    |
-|---------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Wyświetl widget kredytowy przy produktach                                       | Wartość `Tak`\|`Nie`. Wyświetla widget na stronach produktu                                                                                                                                                                                                                             |
-| Wyświetl widget kredytowy w katalogu produktów                                  | Wartość `Tak`\|`Nie`. Wyświetla widget na stronach z listą produktów (np. kategorie)                                                                                                                                                                                                    |
-| Wyświetl widget kredytowy w widgetach katalogu produktu np. bestseller, nowości | Wartość `Tak`\|`Nie`. Wyświetla widget na stronach z widgetami listami produktów (np. bestseller, nowości)<br>**Funkcja eksperymentalna**                                                                                                                                               |
-| Wyświetl widget kredytowy w koszyku                                             | Wartość `Tak`\|`Nie`. Wyświetla widget na stronie koszyka                                                                                                                                                                                                                               |
-| Wyświetl widget kredytowy w mini koszyku                                        | Wartość `Tak`\|`Nie`. Wyświetla widget na rozwijanej liście podsumowania koszyka                                                                                                                                                                                                        |
-| Wyświetl widget kredytowy w podsumowaniu koszyka                                | Wartość `Tak`\|`Nie`. Wyświetla widget na stronie podsumowania koszyka z wyborem metod płatności                                                                                                                                                                                        |
-| Wyklucz metody płatności kredytowych z widgetu                                  | Lista oddzielona przecinkami z [metodami płatności](https://developers.payu.com/europe/pl/docs/get-started/integration-overview/references/#installments-and-pay-later), które mają zostać pominięte w trakcie prezentacji widgetu. <br> **Rekomenduje się pozostawienie pustej listy** |
+| Parameter                                      | Description                                                                                                                                                                                                                                   |
+|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Enable widget for product view                 | Value `Yes`\|`No`. Displays the widget on product pages.                                                                                                                                                                                      |
+| Enable widget for catalog view                 | Value `Yes`\|`No`. Displays the widget on pages with product lists (e.g., categories).                                                                                                                                                        |
+| Enable widget for catalog widgets eg. hot, new | Value `Yes`\|`No`. Displays the widget on pages with product list widgets (e.g., bestseller, new).<br>**Experimental feature**                                                                                                                |
+| Enable widget for checkout                     | Value `Yes`\|`No`. Displays the widget on the cart page.                                                                                                                                                                                      |
+| Enable widget for minicart                     | Value `Yes`\|`No`. Displays the widget in the cart summary dropdown.                                                                                                                                                                          |
+| Enable widget for cart summary                 | Value `Yes`\|`No`. Displays the widget on the cart summary page with the payment method selection.                                                                                                                                            |
+| Excluded payTypes                              | Comma-separated list of [payment methods](https://developers.payu.com/europe/docs/get-started/integration-overview/references/#installments-and-pay-later) to omit during widget display. <br> **It is recommended to leave this list empty** |
 
-### Parametry płatności
+### "PayU Payment" parameters
 
-| Parameter                           | Opis                                                                                             |
-|-------------------------------------|--------------------------------------------------------------------------------------------------|
-| Czy włączyć wtyczkę?                | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności.                      |
-| Kolejność metod płatności           | Określa kolejnośc wyświetlanych metod płatności [więcej informacji](#kolejność-metod-płatności). |
-| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności)                                                       |
-| Pozycja na liście                   | Pozycja metody płatności na liście metod płatności                                               |
+| Parameter | Description |
+|---------|-----------|
+| Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments. |
+| Order of payment methods | Determines the order of the payment methods being displayed [more information](#order-of-payment-methods). |
+| Activate repeat payment? | [more information](#repeat-payment) |
+| Sort Order | Position of the payment method in the list of payment methods. |
 
-### Parametry płatności "PayU - Karty"
+### "PayU - Cards" parameters
 
-| Parameter                           | Opis                                                                        |
-|-------------------------------------|-----------------------------------------------------------------------------|
-| Czy włączyć wtyczkę?                | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności. |
-| Czy uaktywnić zapisywanie kart?     | [więcej informacji](#zapisywanie-kart)                                      |
-| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności)                                  |
-| Pozycja na liście                   | Pozycja metody płatności na liście metod płatności                          |
+| Parameter | Description |
+|---------|-----------|
+| Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments. |
+| Activate repeat payment? | [more information](#repeat-payment) |
+| Activate remembering of cards? | [more information](#saving-cards) |
+| Sort Order | Position of the payment method in the list of payment methods. |
 
-### Parametry płatności "PayU - Google Pay"
+### "PayU - Google Pay" parameters
 
-| Parameter                           | Opis                                                                                                                                    |
-|-------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| Czy włączyć wtyczkę?                | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności.                                                           |
-| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności)                                                                                             |
-| Pozycja na liście                   | Pozycja metody płatności na liście metod płatności                                                                                     |
-| Google Pay Merchant ID              | Identyfikator Merchant ID z Google Pay. W środowisku produkcyjnym wymaga wcześniejszej weryfikacji sklepu po stronie Google.          |
-| Google Merchant Name                | Nazwa merchanta wyświetlana w Google Pay (zgodna z profilem Google Pay).                                                               |
+| Parameter | Description                                                                                                 |
+|---------|-------------------------------------------------------------------------------------------------------------|
+| Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments.               |
+| Activate repeat payment? | [more information](#repeat-payment)                                                                         |
+| Sort Order | Position of the payment method in the list of payment methods.                                              |
+| Google Pay Merchant ID | Merchant identifier in Google. You need to verify your shop in Google, following the [instructions][ext11]. |
+| Google Merchant Name | Merchant name displayed in Google Pay (should match your Google Pay profile).                               |
 
-### Parametry płatności "PayU - Raty",  "PayU - Klarna", "PayU - PayPo", "PayU - PragmaPay", "PayU - Twisto", "PayU - Twisto podziel na 3"
+### "PayU - Installments", "PayU - Klarna", "PayU - PayPo", "PayU - PragmaPay", "PayU - Twisto", "PayU - Twisto Pay in 3" payment parameters
 
-| Parameter                           | Opis                                                                        |
-|-------------------------------------|-----------------------------------------------------------------------------|
-| Czy włączyć wtyczkę?                | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności. |
-| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności)                                  |
-| Pozycja na liście                   | Pozycja metody płatności na liście metod płatności                          |
+| Parameter                           | Description                                                                                 |
+|-------------------------------------|---------------------------------------------------------------------------------------------|
+| Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments. |
+| Activate repeat payment? | [more information](#repeat-payment) |
+| Sort Order                          | Position of the payment method in the list of payment methods.                              |
 
-## Informacje o cechach
 
-### Kolejność metod płatności
-W celu ustalenia kolejności wyświetlanych ikon matod płatności należy podać symbole metod płatności oddzielając je przecinkiem. [Lista metod płatności][ext6].
+## Information about properties
 
-### Ponowienie płatności
-Aby użyć tej opcji, należy również odpowiednio skonfigurować POSa w PayU i wyłączyć automatycznie odbieranie płatności (domyślnie auto-odbiór jest włączony).
-W tym celu należy zalogować się do panelu PayU, wejść do zakładki "Płatności elektroniczne", następnie wybrać "Moje sklepy" i punkt płatności na danym sklepie.
-Opcja "Automatyczny odbiór płatności" znajduje się na samym dole, pod listą metod płatności.
+### Order of payment methods
+To determine the order of display of payment method icons indicate the payment method symbols, separating them with a comma. [List of payment methods][ext6].
 
-Ponowienie płatności umożliwia zakładanie wielu płatności w PayU do jednego zamówienia w Magento. Wtyczka automatycznie odbierze pierwszą udaną płatność, a pozostałe zostaną anulowane.
-Ponowienie płatności z punktu widzenia kupującego jest możliwe poprzez listę zamówień w Magento (pojawi się tam link "Zapłać ponownie").
-Kupujący automatycznie otrzyma również wiadomość e-mail z takim linkiem.
-Tym samym kupujący otrzymuje możliwość skutecznego opłacenia zamówienia, nawet jeśli pierwsza płatność była nieudana (np. brak środków na karcie, problemy z logowaniem do banku itp.).
+### Repeat payment
+To use this option the POS should be properly configured in PayU and automatic receipt of payments should be disabled (auto-receipt is on by default). 
+To do that log in to the PayU panel, go to the tab "Electronic payments", then click "My stores" and POS in the given store. 
+The "Automatic payment receipt" option can be found at the bottom under the list of payment methods.
 
-### Zapisywanie kart
-Zapisywanie kart pozwala zalogowanym użytkownikom zapamiętać kartę na poczet przyszłych płatności.
-Każda zapisana karta jest "tokenizowana", przy czym Magento w żaden sposób nie przetwarza pełnych danych karty (podawane są one na wlanym widgecie hostowanym przez PayU),
-ani nie zapisuje w swojej bazie tokenów kartowych (przed użyciem, aktualne tokeny dla danego użytkownika są zawsze pobierane z PayU).
+Repeat payment makes it possible to activate multiple payments in PayU to a single order in Magento. 
+The plugin will automatically take receipt of the first successful payment while the other ones will be cancelled. 
+Repeat payment from the buyer's point of view is also possible through the list of orders in Magento (a link "Pay again" will appear there). 
+The buyer will also automatically receive an e-mail with such link. 
+Thus, the buyer is able to successfully pay for his order even if the first payment was unsuccessful (for instance, no funds on the card, problems logging in to the bank, etc.).
 
-W celu prawidłowego działania usługi konieczna jest dodatkowa konfiguracja w PayU, polegająca na umożliwieniu tworzenia i pobierania tokenów.
-Dodatkowo, można również ustalić zasady uwierzytelniania płatności zapisaną kartą (domyślnie każda płatność zapisaną karta wymaga podania kodu CVV i
-uwierzytelnieniu przez 3DS, ale można np. ustalić próg kwoty transakcji dla jakiego nie będzie to konieczne).
+### Saving cards
+Saving card allows logged in users to remember the card for future payments. 
+Each such remembered card is "tokenized", however, Magento does not process the card's full details in any way (they are entered using an embedded widget hosted by PayU) and does not save card tokens in its database (before use, current tokens for the given user are always downloaded from PayU).
 
-Kupujący może zapisać kartę podczas płatności, korzystając z opcji "Użyj i zapisz" na widgecie PayU podczas podawania danych karty.
-Każda zapisywana karta podlega silnemu uwierzytelnieniu przy pierwszej płatności (CVV i 3DS).
-Zapisana karta będzie pokazywać się po wybraniu płatności kartą przez PayU za zamówienie i jest widoczna w koncie użytkownika
-(zakładka "Moje zapisane karty"), gdzie jest również dostępna opcja jej usunięcia. 
+To ensure proper functioning of the service additional configuration in PayU, consisting in creating and receiving tokens, is required. 
+Additionally, the principles of authenticating payments with the remembered card can also be determined (by default every payment with a saved card requires providing a CVV code and being authenticated by 3DS but, for instance, an amount limit up to which this will not be necessary can be defined).
 
-### Widget kredytowy
+The buyer may save the card while making a payment, using the option "Use and save" on PayU widget while entering the card's details. 
+Each card being remembered is subject to strong authentication during first payment (CVV and 3DS). 
+A saved card will appear after choosing to pay with a card through PayU for the order and is visible in the user's account (tab "My saved cards"), where an option to delete it is also available.
 
-W celu poinformowania klienta o możliwościach płatności kredytowej dla konkretnego produktu, zalecamy umieszczenie widgetu kredytowego przy produktach w listach produktów, opisie (szczegółach) wybranego produktu, koszyku i przy finalizacji zamówienia (przed płatnością).
-Parametry konfiguracji opisane w sekcji [Parametry wtyczki "PayU - widget kredytowy"](#parametry-wtyczki-payu-widget-kredytowy) pozwalają na elastyczne zarządzanie miejscami wyświetlania widgetu kredytowego.
+### Credit widget
 
-Przykładowa prezentacja widgetu kredytowego
+To inform customers about credit payment options for a specific product, we recommend placing the credit widget next to products in product lists, in the description (details) of the selected product, in the cart, and at checkout (before payment).
+The configuration parameters described in the section ["PayU Credit widget" plugin parameters](#payu-credit-widget-plugin-parameters) allow flexible management of where the credit widget is displayed.
+
+Example presentation of the credit widget
 
 ![widget][img1]
 
 <!--external links:-->
 [ext0]: https://github.com/PayU-EMEA/plugin_magento
-[ext1]: https://www.payu.pl/oferta-handlowa
+[ext1]: https://www.payu.pl/en/commercial-offer
 [ext2]: http://php.net/manual/en/book.curl.php
 [ext3]: http://php.net/manual/en/book.hash.php
-[ext4]: https://github.com/PayU-EMEA/plugin_magento_24/releases/latest
+[ext4]: https://github.com/PayU-EMEA/plugin_magento_23/releases/latest
 [ext5]: https://secure.snd.payu.com/boarding/?pk_campaign=Plugin-Github&pk_kwd=Magento2#/form
 [ext6]: http://developers.payu.com/pl/overview.html#paymethods
 [ext7]: https://github.com/PayU-EMEA/plugin_magento_2
-[ext8]: README.EN.md
+[ext8]: README.PL.md
 [ext9]: https://github.com/PayU-EMEA/plugin_magento_23
 [ext10]: CHANGELOG.md
+[ext11]: https://developers.google.com/pay/api/web/guides/test-and-deploy/publish-your-integration#create-your-profile
 
 <!--images:-->
-[img0]: readme_images/methods_pl.png
-[img1]: readme_images/widget_pl.png
+[img0]: readme_images/methods_en.png
+[img1]: readme_images/widget_en.png
+
