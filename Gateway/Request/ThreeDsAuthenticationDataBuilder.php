@@ -6,6 +6,7 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
 use PayU\PaymentGateway\Gateway\Helper\Requests;
+use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 class ThreeDsAuthenticationDataBuilder implements BuilderInterface
 {
@@ -27,6 +28,7 @@ class ThreeDsAuthenticationDataBuilder implements BuilderInterface
         $paymentDataObject = SubjectReader::readPayment($buildSubject);
         $payment = $paymentDataObject->getPayment();
         $order = $paymentDataObject->getOrder();
+        $methodCode = $payment->getMethodInstance()->getCode();
 
         $payMethodType = $payment->getAdditionalInformation(PayUConfigInterface::PAYU_METHOD_TYPE_CODE);
         $payMethodValue = $payment->getAdditionalInformation(PayUConfigInterface::PAYU_METHOD_CODE);
@@ -78,7 +80,9 @@ class ThreeDsAuthenticationDataBuilder implements BuilderInterface
                 }
             }
 
-            if ($payMethodType === 'CARD_TOKEN') {
+            if ($payMethodType === PayUConfigInterface::PAYU_CC_TRANSFER_KEY
+                || $methodCode === PayUSupportedMethods::CODE_GOOGLE_PAY
+            ) {
                 $browserData = [
                     'requestIP' => $this->payuRequests->getIp()
                 ];
