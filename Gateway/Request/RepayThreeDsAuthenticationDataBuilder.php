@@ -79,9 +79,8 @@ class RepayThreeDsAuthenticationDataBuilder implements BuilderInterface
                 }
             }
 
-            if ($payMethodType === PayUConfigInterface::PAYU_CC_TRANSFER_KEY ||
-                $payMethodValue === PayUConfigInterface::PAYU_GOOGLE_PAY_METHOD_VALUE ||
-                $methodCode === PayUSupportedMethods::CODE_GOOGLE_PAY
+            if ($payMethodType === PayUConfigInterface::PAYU_CC_TRANSFER_KEY
+                || $methodCode === PayUSupportedMethods::CODE_GOOGLE_PAY
             ) {
                 $browserData = [
                     'requestIP' => $this->payuRequests->getIp()
