@@ -10,15 +10,15 @@
         "payu magento 2.4"
     ],
     "type": "magento2-module",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "license": "apache-2.0",
     "require": {
         "php": ">=7.4",
         "ext-json": "*",
         "ext-curl": "*",
         "openpayu/openpayu": "2.4.*",
-        "magento/module-payment": "103.0.*",
-        "magento/module-checkout": "103.0.*",
+        "magento/module-payment": "100.4.*",
+        "magento/module-checkout": "100.4.*",
         "magento/module-sales": "103.0.*"
     },
     "autoload": {
