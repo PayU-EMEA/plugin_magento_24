@@ -1,3 +1,7 @@
+## 2.1.1
+* Fixed magento modules dependencies version (#76)
+* Fixed translates (#75)
+
 ## 2.1.0
 * Added Google Pay as a separate payment method
 * Fixed pay by stored card
