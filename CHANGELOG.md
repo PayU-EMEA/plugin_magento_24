@@ -1,3 +1,6 @@
+## 2.1.2
+* Fixed undefined constant in Interceptor (#78)
+
 ## 2.1.1
 * Fixed magento modules dependencies version (#76)
 * Fixed translates (#75)
