@@ -76,7 +76,7 @@ class PaymentMethods extends Template
     {
         $storeId = $this->_storeManager->getStore()->getId();
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GATEWAY);
-        if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId)) {
+        if (!(bool)$this->gatewayConfig->getValue(self::ACTIVE, $storeId)) {
             return "";
         }
         $paymethods = $this->payMethods->getAllPayMethodsForPbl(false, $this->getOrder()->getGrandTotal());
@@ -87,14 +87,14 @@ class PaymentMethods extends Template
 
         return json_encode(
             [
-                static::CODE => PayUSupportedMethods::CODE_GATEWAY,
-                static::LOGO_SRC => $this->getViewFileUrl(PayUConfigInterface::PAYU_BANK_TRANSFER_LOGO_SRC),
-                static::ORDER_ID => $this->getOrder()->getEntityId(),
-                static::LANGUAGE => $this->availableLocale->execute(),
-                static::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
-                static::TRANSFER_KEY => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
-                static::REPAY_URL => $this->getRepaymentUrl(),
-                static::METHODS => $paymethods,
+                self::CODE => PayUSupportedMethods::CODE_GATEWAY,
+                self::LOGO_SRC => $this->getViewFileUrl(PayUConfigInterface::PAYU_BANK_TRANSFER_LOGO_SRC),
+                self::ORDER_ID => $this->getOrder()->getEntityId(),
+                self::LANGUAGE => $this->availableLocale->execute(),
+                self::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
+                self::TRANSFER_KEY => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
+                self::REPAY_URL => $this->getRepaymentUrl(),
+                self::METHODS => $paymethods,
             ],
         );
     }
@@ -106,7 +106,7 @@ class PaymentMethods extends Template
     {
         $storeId = $this->_storeManager->getStore()->getId();
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_CARD);
-        if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId)) {
+        if (!(bool)$this->gatewayConfig->getValue(self::ACTIVE, $storeId)) {
             return "";
         }
 
@@ -125,15 +125,15 @@ class PaymentMethods extends Template
 
         return json_encode(
             [
-                static::CODE => PayUSupportedMethods::CODE_CARD,
-                static::LOGO_SRC => $this->getViewFileUrl(PayUConfigInterface::PAYU_CC_TRANSFER_LOGO_SRC),
-                static::ORDER_ID => $this->getOrder()->getEntityId(),
-                static::LANGUAGE => $this->availableLocale->execute(),
-                static::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
-                static::TRANSFER_KEY => PayUConfigInterface::PAYU_CC_TRANSFER_KEY,
-                static::REPAY_URL => $this->getRepaymentUrl(),
-                static::STORED_CARDS => array_key_exists(PayUGetUserPayMethodsInterface::CARD_TOKENS, $userPayMethods) && $userPayMethods[PayUGetUserPayMethodsInterface::CARD_TOKENS] ? $userPayMethods[PayUGetUserPayMethodsInterface::CARD_TOKENS] : [],
-                static::SECURE_FORM => $this->secureFormConfig->execute(),
+                self::CODE => PayUSupportedMethods::CODE_CARD,
+                self::LOGO_SRC => $this->getViewFileUrl(PayUConfigInterface::PAYU_CC_TRANSFER_LOGO_SRC),
+                self::ORDER_ID => $this->getOrder()->getEntityId(),
+                self::LANGUAGE => $this->availableLocale->execute(),
+                self::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
+                self::TRANSFER_KEY => PayUConfigInterface::PAYU_CC_TRANSFER_KEY,
+                self::REPAY_URL => $this->getRepaymentUrl(),
+                self::STORED_CARDS => array_key_exists(PayUGetUserPayMethodsInterface::CARD_TOKENS, $userPayMethods) && $userPayMethods[PayUGetUserPayMethodsInterface::CARD_TOKENS] ? $userPayMethods[PayUGetUserPayMethodsInterface::CARD_TOKENS] : [],
+                self::SECURE_FORM => $this->secureFormConfig->execute(),
             ],
         );
     }
@@ -172,7 +172,7 @@ class PaymentMethods extends Template
     {
         $storeId = $this->_storeManager->getStore()->getId();
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
-        if (!(bool)$this->gatewayConfig->getValue(static::ACTIVE, $storeId)) {
+        if (!(bool)$this->gatewayConfig->getValue(self::ACTIVE, $storeId)) {
             return "";
         }
 
@@ -189,18 +189,18 @@ class PaymentMethods extends Template
 
         return json_encode(
             [
-                static::CODE => PayUSupportedMethods::CODE_GOOGLE_PAY,
-                static::LOGO_SRC => $this->getViewFileUrl(PayUConfigInterface::PAYU_GOOGLE_PAY_TRANSFER_LOGO_SRC),
-                static::ORDER_ID => $this->getOrder()->getEntityId(),
-                static::LANGUAGE => $this->availableLocale->execute(),
-                static::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
-                static::REPAY_URL => $this->getRepaymentUrl(),
-                static::AMOUNT => (float)$this->getOrder()->getGrandTotal(),
-                static::CURRENCY_CODE => (string)$this->getOrder()->getOrderCurrencyCode(),
-                static::ENVIRONMENT => $this->getGooglePayEnv(),
-                static::GATEWAY_MERCHANT_ID => $this->getGooglePayGatewayMerchantId(),
-                static::GOOGLE_MERCHANT_ID => $this->getGooglePayMerchantId(),
-                static::GOOGLE_MERCHANT_NAME => $this->getGooglePayMerchantName(),
+                self::CODE => PayUSupportedMethods::CODE_GOOGLE_PAY,
+                self::LOGO_SRC => $this->getViewFileUrl(PayUConfigInterface::PAYU_GOOGLE_PAY_TRANSFER_LOGO_SRC),
+                self::ORDER_ID => $this->getOrder()->getEntityId(),
+                self::LANGUAGE => $this->availableLocale->execute(),
+                self::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
+                self::REPAY_URL => $this->getRepaymentUrl(),
+                self::AMOUNT => (float)$this->getOrder()->getGrandTotal(),
+                self::CURRENCY_CODE => (string)$this->getOrder()->getOrderCurrencyCode(),
+                self::ENVIRONMENT => $this->getGooglePayEnv(),
+                self::GATEWAY_MERCHANT_ID => $this->getGooglePayGatewayMerchantId(),
+                self::GOOGLE_MERCHANT_ID => $this->getGooglePayMerchantId(),
+                self::GOOGLE_MERCHANT_NAME => $this->getGooglePayMerchantName(),
             ],
         );
     }

@@ -18,7 +18,7 @@ class Config implements PayUConfigInterface
     /**
      * Current Plugin Version
      */
-    private const PLUGIN_VERSION = '2.1.1';
+    private const PLUGIN_VERSION = '2.1.2';
 
     private \OpenPayU_Configuration $openPayUConfig;
 
@@ -89,7 +89,7 @@ class Config implements PayUConfigInterface
                 ->setOauthClientId($clientId)
                 ->setOauthClientSecret($clientSecret)
                 ->setOauthGrantType(PayUConfigInterface::GRANT_TYPE_CLIENT_CREDENTIALS)
-                ->setSender('Magento 2 ver ' . $this->metadata->getVersion() . '/Plugin ver ' . static::PLUGIN_VERSION);
+                ->setSender('Magento 2 ver ' . $this->metadata->getVersion() . '/Plugin ver ' . self::PLUGIN_VERSION);
         } catch (\OpenPayU_Exception_Configuration $exception) {
             $this->logger->critical('Problem with set PayU Configuration', [$exception->getMessage()]);
             throw new \Exception('Problem with PayU Configuration');
