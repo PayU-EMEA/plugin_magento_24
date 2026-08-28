@@ -49,6 +49,12 @@ class PayMethodsDataBuilder implements BuilderInterface
             );
         }
 
+        if ($methodCode === PayUSupportedMethods::CODE_APPLE_PAY) {
+            $authorizationCode = $payment->getAdditionalInformation(PayUConfigInterface::PAYU_APPLE_PAY_AUTHORIZATION_TOKEN);
+
+            return $this->buildApplePayData($authorizationCode);
+        }
+
         $payMethodType = null;
         $payMethodValue = null;
 
@@ -95,6 +101,25 @@ class PayMethodsDataBuilder implements BuilderInterface
                         'type' => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
                         'value' => PayUConfigInterface::PAYU_GOOGLE_PAY_METHOD_VALUE,
                         'authorizationCode' => trim($authorizationCode),
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    private function buildApplePayData($authorizationCode): array
+    {
+        if (empty(trim((string) $authorizationCode))) {
+            return [];
+        }
+
+        return [
+            'body' => [
+                'payMethods' => [
+                    'payMethod' => [
+                        'type' => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
+                        'value' => PayUConfigInterface::PAYU_APPLE_PAY_METHOD_VALUE,
+                        'authorizationCode' => trim((string) $authorizationCode),
                     ]
                 ]
             ]
