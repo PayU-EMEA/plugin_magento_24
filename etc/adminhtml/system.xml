@@ -169,6 +169,35 @@
                         <config_path>payment/payu_gateway_google_pay/google_merchant_name</config_path>
                     </field>
                 </group>
+                <group id="payu_gateway_apple_pay" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>PayU - Apple Pay</label>
+                    <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Enable plugin?</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <config_path>payment/payu_gateway_apple_pay/active</config_path>
+                    </field>
+                    <field id="repayment" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Enable repayment?</label>
+                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                        <comment><![CDATA[Automatic collection on the POS should be disabled. <a href="https://github.com/PayU/plugin_magento_2#ponowienie-płatności" target="_blank">More information</a>]]></comment>
+                        <config_path>payment/payu_gateway_apple_pay/repayment</config_path>
+                    </field>
+                    <field id="sort_order" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Sort Order</label>
+                        <frontend_class>validate-number</frontend_class>
+                        <config_path>payment/payu_gateway_apple_pay/sort_order</config_path>
+                    </field>
+                    <field id="domain_name" translate="label comment" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Domain name</label>
+                        <comment><![CDATA[Domain name registered in Apple. To register the domain follow the <a href="https://developers.payu.com/europe/docs/payment-solutions/cards/digital-wallets/apple-pay/" target="_blank" rel="nofollow">instructions</a>.<br/><br/><b>IMPORTANT</b>: The domain must match the checkout page domain, otherwise Apple will reject the payment request.]]></comment>
+                        <config_path>payment/payu_gateway_apple_pay/domain_name</config_path>
+                    </field>
+                    <field id="display_name" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Store Display Name</label>
+                        <comment><![CDATA[Apple Pay display name. A string of 64 or fewer UTF-8 characters containing the canonical name for your store, suitable for display.]]></comment>
+                        <config_path>payment/payu_gateway_apple_pay/store_display_name</config_path>
+                    </field>
+                </group>
                 <group id="payu_gateway_installments" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>PayU - Installments</label>
                     <field id="active" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">

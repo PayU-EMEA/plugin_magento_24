@@ -62,6 +62,23 @@
                 <is_gateway>1</is_gateway>
                 <can_cancel_order_on_payment_wall>0</can_cancel_order_on_payment_wall>
             </payu_gateway_google_pay>
+            <payu_gateway_apple_pay>
+                <active>0</active>
+                <repayment>0</repayment>
+                <sort_order>3</sort_order>
+                <model>PayUPaymentGatewayApplePayFacade</model>
+                <payment_action>authorize</payment_action>
+                <title>Apple Pay</title>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_void>0</can_void>
+                <can_review_payment>1</can_review_payment>
+                <can_refund_partial_per_invoice>1</can_refund_partial_per_invoice>
+                <can_refund>1</can_refund>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+                <can_cancel_order_on_payment_wall>0</can_cancel_order_on_payment_wall>
+            </payu_gateway_apple_pay>
             <payu_gateway_installments>
                 <active>0</active>
                 <repayment>0</repayment>
