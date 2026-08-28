@@ -108,6 +108,10 @@ class GetPayMethods implements PayUGetPayMethodsInterface
             $result = $this->removePayMethod($result, ['ap']);
         }
 
+        if ($this->isPayMethodActive(PayUSupportedMethods::CODE_APPLE_PAY)) {
+            $result = $this->removePayMethod($result, ['jp']);
+        }
+
         if($filterCreditMethods) {
             foreach (self::METHODS_TO_REMOVE_WHEN_ENABLED as $methodCode => $payTypesToRemove) {
                 if ($this->isPayMethodActive($methodCode)) {
