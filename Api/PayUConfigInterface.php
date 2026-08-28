@@ -40,6 +40,16 @@ interface PayUConfigInterface
     public const PAYU_GOOGLE_PAY_METHOD_VALUE = 'ap';
 
     /**
+     * Apple Pay authorization token key
+     */
+    public const PAYU_APPLE_PAY_AUTHORIZATION_TOKEN = 'payu_apple_pay_authorization_token';
+
+    /**
+     * Apple Pay method mapping in PayU API
+     */
+    public const PAYU_APPLE_PAY_METHOD_VALUE = 'jp';
+
+    /**
      * Redirect url key
      */
     public const PAYU_REDIRECT_URI_CODE = 'payu_redirect_uri';
