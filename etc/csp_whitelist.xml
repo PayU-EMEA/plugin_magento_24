@@ -9,6 +9,7 @@
                 <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
                 <value id="google-pay-connect" type="host">pay.google.com</value>
                 <value id="google-api-connect" type="host">*.googleapis.com</value>
+                <value id="apple-pay-connect" type="host">apple-pay-gateway.apple.com</value>
             </values>
         </policy>
         <policy id="script-src">
@@ -21,6 +22,7 @@
                 <value id="google-pay-pay" type="host">pay.google.com</value>
                 <value id="google-gstatic" type="host">*.gstatic.com</value>
                 <value id="google-apis" type="host">*.googleapis.com</value>
+                <value id="apple-pay-script" type="host">applepay.cdn-apple.com</value>
             </values>
         </policy>
         <policy id="img-src">
