@@ -5,6 +5,9 @@
             <block template="PayU_PaymentGateway::checkout/google_pay_script.phtml"
                     ifconfig="payment/payu_gateway_google_pay/active"
                     before="-"/>
+            <block template="PayU_PaymentGateway::checkout/apple_pay_script.phtml"
+                   ifconfig="payment/payu_gateway_apple_pay/active"
+                   before="-"/>
             <block template="PayU_PaymentGateway::credit_widget/head_script.phtml"
                     before="-">
                 <arguments>
@@ -58,6 +61,10 @@
                                                                         <item name="payu_gateway_google_pay" xsi:type="array">
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
                                                                         </item>
+                                                                        <item name="payu_gateway_apple_pay" xsi:type="array">
+                                                                            <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
+                                                                        </item>
+
                                                                     </item>
                                                                 </item>
                                                             </item>
