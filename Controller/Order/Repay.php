@@ -9,6 +9,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Sales\Model\OrderRepository;
 use PayU\PaymentGateway\Api\RepaymentResolverInterface;
 use PayU\PaymentGateway\Model\Logger\Logger;
+use PayU\PaymentGateway\Model\RepayOrderApplePayResolver;
 use PayU\PaymentGateway\Model\RepayOrderCardResolver;
 use PayU\PaymentGateway\Model\RepayOrderGooglePayResolver;
 use PayU\PaymentGateway\Model\RepayOrderResolver;
@@ -42,6 +43,7 @@ class Repay implements HttpPostActionInterface
     private RepayOrderResolver $repayOrderResolver;
     private RepayOrderCardResolver $repayOrderCardResolver;
     private RepayOrderGooglePayResolver $repayOrderGooglePayResolver;
+    private RepayOrderApplePayResolver $repayOrderApplePayResolver;
     private RepaymentResolverInterface $repaymentResolver;
 
     public function __construct(
@@ -52,6 +54,7 @@ class Repay implements HttpPostActionInterface
         RepayOrderResolver          $repayOrderResolver,
         RepayOrderCardResolver      $repayOrderCardResolver,
         RepayOrderGooglePayResolver $repayOrderGooglePayResolver,
+        RepayOrderApplePayResolver  $repayOrderApplePayResolver,
         RepaymentResolverInterface  $repaymentResolver
     )
     {
@@ -62,6 +65,7 @@ class Repay implements HttpPostActionInterface
         $this->repayOrderResolver = $repayOrderResolver;
         $this->repayOrderCardResolver = $repayOrderCardResolver;
         $this->repayOrderGooglePayResolver = $repayOrderGooglePayResolver;
+        $this->repayOrderApplePayResolver = $repayOrderApplePayResolver;
         $this->repaymentResolver = $repaymentResolver;
     }
 
@@ -92,6 +96,8 @@ class Repay implements HttpPostActionInterface
             $repayResolver = $this->repayOrderCardResolver;
         } elseif ($method === 'payu_gateway_google_pay') {
             $repayResolver = $this->repayOrderGooglePayResolver;
+        } elseif ($method === 'payu_gateway_apple_pay') {
+            $repayResolver = $this->repayOrderApplePayResolver;
         } else {
             $returnData[static::ERROR_FIELD] = __('Wrong Request');
             return $result->setData($returnData);
