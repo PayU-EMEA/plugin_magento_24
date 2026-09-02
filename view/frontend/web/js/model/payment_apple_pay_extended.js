@@ -37,7 +37,17 @@ define(
 			},
 
 			initializeApplePay: function () {
-				if (!window.ApplePaySession || !window.ApplePaySession.canMakePayments()) {
+				if (!window.ApplePaySession) {
+					return;
+				}
+
+				try {
+					if (!window.ApplePaySession.canMakePayments()) {
+						return;
+					}
+				} catch (e) {
+					console.error('Apple Pay is not ready:', e);
+
 					return;
 				}
 

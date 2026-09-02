@@ -7,6 +7,7 @@
 $config = $block->getPaymentGatewayConfig();
 $cardConfig = $block->getCardPaymentGatewayConfig();
 $googlePayConfig = $block->getGooglePayConfig();
+$applePayConfig = $block->getApplePayConfig();
 ?>
     <div class="payu-repay repay">
         <div class="repay__header">
@@ -22,6 +23,9 @@ $googlePayConfig = $block->getGooglePayConfig();
             <div class="repay__method" id="payu_gateway_google_pay_slot" data-bind="scope: 'payu_gateway_google_pay'">
                 <!-- ko template: getTemplate() --><!-- /ko -->
             </div>
+            <div class="repay__method" id="payu_gateway_apple_pay_slot" data-bind="scope: 'payu_gateway_apple_pay'">
+                <!-- ko template: getTemplate() --><!-- /ko -->
+            </div>
         </div>
     </div>
 <?php if (!empty($config)): ?>
@@ -33,6 +37,23 @@ $googlePayConfig = $block->getGooglePayConfig();
                     "payu_gateway": {
                         "component": "PayU_PaymentGateway/js/view/order/payu_gateway",
                         "config": <?= $config; ?>
+                    }
+                }
+            }
+        }
+    }
+    </script>
+<?php endif;
+if (!empty($applePayConfig)):
+    ?>
+    <script type="text/x-magento-init">
+    {
+        "*": {
+            "Magento_Ui/js/core/app": {
+                "components": {
+                    "payu_gateway_apple_pay": {
+                        "component": "PayU_PaymentGateway/js/view/order/payu_gateway_apple_pay",
+                        "config": <?= $applePayConfig; ?>
                     }
                 }
             }
