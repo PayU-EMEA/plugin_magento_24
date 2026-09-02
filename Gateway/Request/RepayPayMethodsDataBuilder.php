@@ -23,6 +23,10 @@ class RepayPayMethodsDataBuilder implements BuilderInterface
             return $this->buildGooglePayData(RepaySubjectReader::readPayuAuthorizationCode($buildSubject));
         }
 
+        if ($methodCode === PayUSupportedMethods::CODE_APPLE_PAY) {
+            return $this->buildApplePayData(RepaySubjectReader::readPayuAuthorizationCode($buildSubject));
+        }
+
         if (empty($payuMethod) || empty($payuMethodType)) {
             return [];
         }
@@ -51,6 +55,25 @@ class RepayPayMethodsDataBuilder implements BuilderInterface
                     'payMethod' => [
                         'type' => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
                         'value' => PayUConfigInterface::PAYU_GOOGLE_PAY_METHOD_VALUE,
+                        'authorizationCode' => trim($authorizationCode),
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    private function buildApplePayData(string $authorizationCode): array
+    {
+        if (empty(trim($authorizationCode))) {
+            return [];
+        }
+
+        return [
+            'body' => [
+                'payMethods' => [
+                    'payMethod' => [
+                        'type' => PayUConfigInterface::PAYU_BANK_TRANSFER_KEY,
+                        'value' => PayUConfigInterface::PAYU_APPLE_PAY_METHOD_VALUE,
                         'authorizationCode' => trim($authorizationCode),
                     ]
                 ]
