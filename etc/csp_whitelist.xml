@@ -6,7 +6,7 @@
                 <value id="payu" type="host">secure.payu.com</value>
                 <value id="payu-sandbox" type="host">merch-prod.snd.payu.com</value>
                 <value id="payu-static" type="host">static.payu.com</value>
-                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
+                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com</value>
                 <value id="google-pay-connect" type="host">pay.google.com</value>
                 <value id="google-api-connect" type="host">*.googleapis.com</value>
                 <value id="apple-pay-connect" type="host">apple-pay-gateway.apple.com</value>
@@ -17,7 +17,7 @@
                 <value id="payu" type="host">secure.payu.com</value>
                 <value id="payu-sandbox" type="host">secure.snd.payu.com</value>
                 <value id="payu-static" type="host">static.payu.com</value>
-                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
+                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com</value>
                 <value id="google-pay-script" type="host">*.google.com</value>
                 <value id="google-pay-pay" type="host">pay.google.com</value>
                 <value id="google-gstatic" type="host">*.gstatic.com</value>
@@ -28,7 +28,7 @@
         <policy id="img-src">
             <values>
                 <value id="payu-static" type="host">static.payu.com</value>
-                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
+                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com</value>
             </values>
         </policy>
         <policy id="frame-src">
@@ -36,7 +36,7 @@
                 <value id="payu" type="host">secure.payu.com</value>
                 <value id="payu-sandbox" type="host">merch-prod.snd.payu.com</value>
                 <value id="payu-static" type="host">static.payu.com</value>
-                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com/</value>
+                <value id="payu-credit-widget" type="host">credit-widget-config.payu.com</value>
                 <value id="google-pay-frame" type="host">pay.google.com</value>
             </values>
         </policy>

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace PayU\PaymentGateway\Controller\Data;
 
 use Magento\Framework\App\Action\HttpGetActionInterface;

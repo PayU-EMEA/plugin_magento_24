@@ -33,12 +33,10 @@ define(
              * @return {Object}
              */
             getData: function () {
-              const token = this.applePayToken();
-
               return {
                 'method': this.item.method,
                 'additional_data': {
-                  'payu_authorization_code': token ? btoa(token) : '',
+                  'payu_authorization_code': btoa(this.applePayToken()),
                   'payu_browser_screenWidth': screen.width,
                   'payu_browser_javaEnabled': navigator.javaEnabled(),
                   'payu_browser_timezoneOffset': new Date().getTimezoneOffset(),
