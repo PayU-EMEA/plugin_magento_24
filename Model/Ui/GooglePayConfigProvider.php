@@ -102,7 +102,7 @@ class GooglePayConfigProvider implements ConfigProviderInterface
         }
 
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_GOOGLE_PAY);
-        $googleMerchantId = $this->gatewayConfig->getValue('merchant_id', $this->storeId);
+        $googleMerchantId = $this->gatewayConfig->getValue('google_merchant_id', $this->storeId);
 
         return is_string($googleMerchantId) ? trim($googleMerchantId) : '';
     }
@@ -115,7 +115,7 @@ class GooglePayConfigProvider implements ConfigProviderInterface
         return is_string($googleMerchantName) ? trim($googleMerchantName) : '';
     }
 
-    public function isSandboxEnv(?int $storeId): bool 
+    public function isSandboxEnv(?int $storeId): bool
     {
         $this->gatewayConfig->setMethodCode('payu');
         $flag = $this->gatewayConfig->getValue('environment', $storeId);
