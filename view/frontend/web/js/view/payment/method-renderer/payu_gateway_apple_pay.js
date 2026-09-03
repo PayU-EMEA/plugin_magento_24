@@ -20,8 +20,6 @@ define(
               applePaySessionUrl: 'payu/data/getApplePayMerchantSession',
               logoSrc: config.logoSrc,
               language: config.language,
-              environment: config.environment,
-              domainName: config.domainName,
               displayName: config.displayName,
               termsUrl: config.termsUrl,
               payuAgreement: ko.observable(true),
@@ -40,7 +38,7 @@ define(
               return {
                 'method': this.item.method,
                 'additional_data': {
-                  'payu_apple_pay_authorization_token': token ? btoa(token) : '',
+                  'payu_authorization_code': token ? btoa(token) : '',
                   'payu_browser_screenWidth': screen.width,
                   'payu_browser_javaEnabled': navigator.javaEnabled(),
                   'payu_browser_timezoneOffset': new Date().getTimezoneOffset(),

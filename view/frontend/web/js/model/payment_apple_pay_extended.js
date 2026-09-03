@@ -19,7 +19,6 @@ define(
 	) {
 		'use strict';
 
-		const APPLE_PAY_API_MAX_VERSION = 14;
 		const APPLE_PAY_SUCCESS = window.ApplePaySession ? window.ApplePaySession.STATUS_SUCCESS : 1;
 		const APPLE_PAY_FAILURE = window.ApplePaySession ? window.ApplePaySession.STATUS_FAILURE : 2;
 
@@ -55,16 +54,16 @@ define(
 			},
 
 			getApplePayApiVersion: function () {
-				let apiVersion = 1;
+				const APPLE_PAY_API_MAX_VERSION = 14;
+				const APPLE_PAY_API_MIN_VERSION = 1;
 
-				for (let i = APPLE_PAY_API_MAX_VERSION; i > 1; i--) {
+				for (let i = APPLE_PAY_API_MAX_VERSION; i > APPLE_PAY_API_MIN_VERSION; i--) {
 					if (window.ApplePaySession.supportsVersion(i)) {
-						apiVersion = i;
-						break;
+						return i;
 					}
 				}
 
-				return apiVersion;
+				return APPLE_PAY_API_MIN_VERSION;
 			},
 
 			getCheckoutTotalsData: function () {
@@ -114,10 +113,7 @@ define(
 				}
 
 				this.applePaySession.onvalidatemerchant = function () {
-					$.getJSON(url.build(self.applePaySessionUrl), {
-						domainName: self.domainName,
-						displayName: self.displayName
-					})
+					$.getJSON(url.build(self.applePaySessionUrl))
 						.done(function (response) {
 							try {
 								self.applePaySession.completeMerchantValidation(response);
@@ -154,7 +150,7 @@ define(
 					}
 
 					self.applePayToken(token);
-					self.placeOrderWithToken(self.applePaySession);
+					self.placeOrderWithToken();
 				};
 
 				this.applePaySession.oncancel = function () {
@@ -165,21 +161,21 @@ define(
 				this.applePaySession.begin();
 			},
 
-			placeOrderWithToken: function (applePaySession) {
+			placeOrderWithToken: function () {
 				const self = this;
 
 				this.getPlaceOrderDeferredObject()
 					.fail(function () {
-						applePaySession.completePayment(APPLE_PAY_FAILURE);
+						self.applePaySession.completePayment(APPLE_PAY_FAILURE);
 						self.isPlaceOrderActionAllowed(true);
 						fullScreenLoader.stopLoader();
 					})
-					.done(function () {
-						applePaySession.completePayment(APPLE_PAY_SUCCESS);
+					.done(function (orderId) {
+						self.applePaySession.completePayment(APPLE_PAY_SUCCESS);
 						self.afterPlaceOrder();
 
 						if (self.redirectAfterPlaceOrder) {
-							$.getJSON(url.build(self.postPlaceOrderData), function (response) {
+							$.getJSON(url.build(`${self.postPlaceOrderData}/id/${orderId}`), function (response) {
 								if (response.success && response.redirectUri) {
 									window.location.replace(response.redirectUri);
 								} else {

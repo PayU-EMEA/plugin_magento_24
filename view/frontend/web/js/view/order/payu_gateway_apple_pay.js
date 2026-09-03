@@ -19,7 +19,6 @@ define(
     ) {
         'use strict';
 
-        const APPLE_PAY_API_MAX_VERSION = 14;
         const APPLE_PAY_SUCCESS = window.ApplePaySession ? window.ApplePaySession.STATUS_SUCCESS : 1;
         const APPLE_PAY_FAILURE = window.ApplePaySession ? window.ApplePaySession.STATUS_FAILURE : 2;
 
@@ -64,16 +63,16 @@ define(
             },
 
             getApplePayApiVersion: function () {
-                let apiVersion = 1;
+                const APPLE_PAY_API_MAX_VERSION = 14;
+                const APPLE_PAY_API_MIN_VERSION = 1;
 
-                for (let i = APPLE_PAY_API_MAX_VERSION; i > 1; i--) {
+                for (let i = APPLE_PAY_API_MAX_VERSION; i > APPLE_PAY_API_MIN_VERSION; i--) {
                     if (window.ApplePaySession.supportsVersion(i)) {
-                        apiVersion = i;
-                        break;
+                        return i;
                     }
                 }
 
-                return apiVersion;
+                return APPLE_PAY_API_MIN_VERSION;
             },
 
             isButtonActiveApplePay: function () {
@@ -128,10 +127,7 @@ define(
                 }
 
                 this.applePaySession.onvalidatemerchant = function () {
-                    $.getJSON(url.build(self.applePaySessionUrl), {
-                        domainName: self.domainName,
-                        displayName: self.displayName
-                    })
+                    $.getJSON(url.build(self.applePaySessionUrl))
                         .done(function (response) {
                             try {
                                 self.applePaySession.completeMerchantValidation(response);
@@ -171,7 +167,7 @@ define(
                     }
 
                     self.applePayToken(token);
-                    self.repayWithApplePay(self.applePaySession);
+                    self.repayWithApplePay();
                 };
 
                 this.applePaySession.oncancel = function () {
@@ -182,7 +178,7 @@ define(
                 this.applePaySession.begin();
             },
 
-            repayWithApplePay: function (applePaySession) {
+            repayWithApplePay: function () {
                 var self = this;
 
                 $.ajax({
@@ -192,16 +188,16 @@ define(
                     type: 'POST',
                     success: function (response) {
                         if (response.success && response.redirectUri) {
-                            applePaySession.completePayment(APPLE_PAY_SUCCESS);
+                            self.applePaySession.completePayment(APPLE_PAY_SUCCESS);
                             window.location.replace(response.redirectUri);
                         } else {
-                            applePaySession.completePayment(APPLE_PAY_FAILURE);
+                            self.applePaySession.completePayment(APPLE_PAY_FAILURE);
                             $(document.body).trigger('processStop');
                             self.repayErrorCallback(response.error);
                         }
                     },
                     error: function () {
-                        applePaySession.completePayment(APPLE_PAY_FAILURE);
+                        self.applePaySession.completePayment(APPLE_PAY_FAILURE);
                         $(document.body).trigger('processStop');
                         self.repayErrorCallback();
                     },
