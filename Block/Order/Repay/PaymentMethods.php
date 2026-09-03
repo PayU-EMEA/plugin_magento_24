@@ -35,7 +35,6 @@ class PaymentMethods extends Template
     private const AMOUNT = 'amount';
     private const CURRENCY_CODE = 'currencyCode';
     private const ENVIRONMENT = 'environment';
-    private const DOMAIN_NAME = 'domainName';
     private const DISPLAY_NAME = 'displayName';
     private const GATEWAY_MERCHANT_ID = 'gatewayMerchantId';
     private const GOOGLE_MERCHANT_NAME = 'googleMerchantName';
@@ -247,8 +246,6 @@ class PaymentMethods extends Template
                 self::REPAY_URL => $this->getRepaymentUrl(),
                 self::AMOUNT => (float)$this->getOrder()->getGrandTotal(),
                 self::CURRENCY_CODE => (string)$this->getOrder()->getOrderCurrencyCode(),
-                self::ENVIRONMENT => $this->isSandboxEnv() ? 'TEST' : 'PRODUCTION',
-                self::DOMAIN_NAME => $domainName,
                 self::DISPLAY_NAME => $displayName,
             ],
         );
@@ -297,7 +294,7 @@ class PaymentMethods extends Template
     private function getApplePayDomainName(): string
     {
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_APPLE_PAY);
-        $domainName = $this->gatewayConfig->getValue('domain_name', $this->_storeManager->getStore()->getId());
+        $domainName = $this->gatewayConfig->getValue('apple_domain_name', $this->_storeManager->getStore()->getId());
 
         return is_string($domainName) ? trim($domainName) : '';
     }
@@ -305,7 +302,7 @@ class PaymentMethods extends Template
     private function getApplePayDisplayName(): string
     {
         $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_APPLE_PAY);
-        $displayName = $this->gatewayConfig->getValue('store_display_name', $this->_storeManager->getStore()->getId());
+        $displayName = $this->gatewayConfig->getValue('apple_store_display_name', $this->_storeManager->getStore()->getId());
 
         return is_string($displayName) ? trim($displayName) : '';
     }

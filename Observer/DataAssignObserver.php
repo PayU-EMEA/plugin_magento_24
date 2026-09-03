@@ -20,7 +20,6 @@ class DataAssignObserver extends AbstractDataAssignObserver
         PayUConfigInterface::PAYU_METHOD_CODE,
         PayUConfigInterface::PAYU_METHOD_TYPE_CODE,
         PayUConfigInterface::PAYU_AUTHORIZATION_CODE,
-        PayUConfigInterface::PAYU_APPLE_PAY_AUTHORIZATION_TOKEN,
         PayUConfigInterface::PAYU_BROWSER_PREFIX . PayUConfigInterface::PAYU_BROWSER_SCREEN_WIDTH,
         PayUConfigInterface::PAYU_BROWSER_PREFIX . PayUConfigInterface::PAYU_BROWSER_JAVA_ENABLED,
         PayUConfigInterface::PAYU_BROWSER_PREFIX . PayUConfigInterface::PAYU_BROWSER_TIMEZONE_OFFSET,

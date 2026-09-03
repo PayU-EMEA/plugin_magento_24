@@ -34,7 +34,6 @@ class ApplePayConfigProvider implements ConfigProviderInterface
 
     public function getConfig(): array
     {
-        $isSandbox = $this->isSandboxEnv($this->storeId);
         $domainName = $this->resolveDomainName();
         $displayName = $this->resolveDisplayName();
 
@@ -45,8 +44,6 @@ class ApplePayConfigProvider implements ConfigProviderInterface
                     'logoSrc' => $this->assetRepository->getUrl('PayU_PaymentGateway::images/payu_apple_pay.svg'),
                     'termsUrl' => PayUConfigInterface::PAYU_TERMS_URL,
                     'language' => $this->getLanguage(),
-                    'environment' => $isSandbox ? 'TEST' : 'PRODUCTION',
-                    'domainName' => $domainName,
                     'displayName' => $displayName,
                 ],
             ],
@@ -62,14 +59,14 @@ class ApplePayConfigProvider implements ConfigProviderInterface
 
     private function resolveDomainName(): string
     {
-        $domainName = $this->getApplePayConfigValue('domain_name');
+        $domainName = $this->getApplePayConfigValue('apple_domain_name');
 
         return is_string($domainName) ? trim($domainName) : '';
     }
 
     private function resolveDisplayName(): string
     {
-        $displayName = $this->getApplePayConfigValue('store_display_name');
+        $displayName = $this->getApplePayConfigValue('apple_store_display_name');
 
         return is_string($displayName) ? trim($displayName) : '';
     }
@@ -84,14 +81,6 @@ class ApplePayConfigProvider implements ConfigProviderInterface
     private function getLanguage(): string
     {
         return current(explode('_', $this->resolver->getLocale()));
-    }
-
-    public function isSandboxEnv(?int $storeId): bool
-    {
-        $this->gatewayConfig->setMethodCode('payu');
-        $flag = $this->gatewayConfig->getValue('environment', $storeId);
-
-        return $flag === '1';
     }
 }
 
