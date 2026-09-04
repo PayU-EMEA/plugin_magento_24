@@ -82,7 +82,7 @@ define(
                                 self.afterPlaceOrder();
 
                                 if (self.redirectAfterPlaceOrder) {
-                                    $.getJSON(url.build(self.postPlaceOrderData), function (response) {
+                                    $.getJSON(url.build(`${self.postPlaceOrderData}/id/${orderId}`), function (response) {
                                         if (response.success && response.redirectUri) {
                                             window.location.replace(response.redirectUri);
                                         } else {
