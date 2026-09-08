@@ -7,6 +7,7 @@ class PayUSupportedMethods
     public const CODE_GATEWAY = 'payu_gateway';
     public const CODE_CARD = 'payu_gateway_card';
     public const CODE_GOOGLE_PAY = 'payu_gateway_google_pay';
+    public const CODE_APPLE_PAY = 'payu_gateway_apple_pay';
     public const CODE_INSTALLMENTS = 'payu_gateway_installments';
     public const CODE_KLARNA = 'payu_gateway_klarna';
     public const CODE_PAYPO = 'payu_gateway_paypo';
@@ -19,6 +20,7 @@ class PayUSupportedMethods
             self::CODE_GATEWAY,
             self::CODE_CARD,
             self::CODE_GOOGLE_PAY,
+            self::CODE_APPLE_PAY,
             self::CODE_INSTALLMENTS,
             self::CODE_KLARNA,
             self::CODE_PAYPO,

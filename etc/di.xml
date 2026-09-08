@@ -258,6 +258,12 @@
         </arguments>
     </type>
 
+    <type name="PayU\PaymentGateway\Model\RepayOrderApplePayResolver">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCardCommandPool</argument>
+        </arguments>
+    </type>
+
     <virtualType name="PayUPaymentGatewayInstallmentsConfig" type="Magento\Payment\Gateway\Config\Config">
         <arguments>
             <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_INSTALLMENTS</argument>
@@ -464,6 +470,36 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
             <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayGooglePayValueHandlerPool</argument>
+            <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCardCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayApplePayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_APPLE_PAY</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayApplePayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">PayUPaymentGatewayApplePayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayApplePayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">PayUPaymentGatewayApplePayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="PayUPaymentGatewayApplePayFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">PayU\PaymentGateway\Model\PayUSupportedMethods::CODE_APPLE_PAY</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">PayUPaymentGatewayInfoBlock</argument>
+            <argument name="valueHandlerPool" xsi:type="object">PayUPaymentGatewayApplePayValueHandlerPool</argument>
             <argument name="commandPool" xsi:type="object">PayUPaymentGatewayCardCommandPool</argument>
         </arguments>
     </virtualType>

@@ -9,6 +9,9 @@
             <block template="PayU_PaymentGateway::checkout/google_pay_script.phtml"
                     ifconfig="payment/payu_gateway_google_pay/active"
                     before="-"/>
+            <block template="PayU_PaymentGateway::checkout/apple_pay_script.phtml"
+                   ifconfig="payment/payu_gateway_apple_pay/active"
+                   before="-"/>
         </referenceContainer>
         <referenceContainer name="page.main.title">
             <block class="Magento\Sales\Block\Order\Info" name="order.status" template="order/order_status.phtml"/>

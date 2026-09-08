@@ -30,7 +30,7 @@ interface PayUConfigInterface
     public const PAYU_METHOD_TYPE_CODE = 'payu_method_type';
 
     /**
-     * Google Pay authorization token key
+     * Digital wallet (Google Pay, Apple Pay) authorization token key
      */
     public const PAYU_AUTHORIZATION_CODE = 'payu_authorization_code';
 
@@ -38,6 +38,11 @@ interface PayUConfigInterface
      * Google Pay method mapping in PayU API
      */
     public const PAYU_GOOGLE_PAY_METHOD_VALUE = 'ap';
+
+    /**
+     * Apple Pay method mapping in PayU API
+     */
+    public const PAYU_APPLE_PAY_METHOD_VALUE = 'jp';
 
     /**
      * Redirect url key

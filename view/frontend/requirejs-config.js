@@ -9,6 +9,7 @@ var config = {
             gatewayCardMethods: 'PayU_PaymentGateway/js/model/gateway_card_methods',
             paymentCardExtended:'PayU_PaymentGateway/js/model/payment_card_extended',
             paymentGooglePayExtended:'PayU_PaymentGateway/js/model/payment_google_pay_extended',
+            paymentApplePayExtended:'PayU_PaymentGateway/js/model/payment_apple_pay_extended',
             paymentPblExtended: 'PayU_PaymentGateway/js/model/payment_pbl_extended',
             repayExtended:      'PayU_PaymentGateway/js/model/repay_extended',
             repay:              'PayU_PaymentGateway/js/model/repay'

@@ -35,6 +35,7 @@ class PaymentMethods extends Template
     private const AMOUNT = 'amount';
     private const CURRENCY_CODE = 'currencyCode';
     private const ENVIRONMENT = 'environment';
+    private const DISPLAY_NAME = 'displayName';
     private const GATEWAY_MERCHANT_ID = 'gatewayMerchantId';
     private const GOOGLE_MERCHANT_NAME = 'googleMerchantName';
     private const GOOGLE_MERCHANT_ID = 'googleMerchantId';
@@ -210,6 +211,51 @@ class PaymentMethods extends Template
         return $this->getGooglePayPaymentGatewayConfig();
     }
 
+    public function getApplePayPaymentGatewayConfig(): string
+    {
+        $storeId = $this->_storeManager->getStore()->getId();
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_APPLE_PAY);
+        if (!(bool)$this->gatewayConfig->getValue(self::ACTIVE, $storeId)) {
+            return "";
+        }
+
+        $domainName = $this->getApplePayDomainName();
+        $displayName = $this->getApplePayDisplayName();
+        if (empty($domainName) || empty($displayName)) {
+            return "";
+        }
+
+        $allMethods = $this->payMethods->getAllAvailablePayMethods($this->getOrder()->getGrandTotal());
+        $hasApplePayMethod = (bool) array_filter(
+            $allMethods,
+            static function ($method): bool {
+                return $method->value === PayUConfigInterface::PAYU_APPLE_PAY_METHOD_VALUE;
+            }
+        );
+        if (!$hasApplePayMethod) {
+            return "";
+        }
+
+        return json_encode(
+            [
+                self::CODE => PayUSupportedMethods::CODE_APPLE_PAY,
+                self::LOGO_SRC => $this->getViewFileUrl('PayU_PaymentGateway::images/payu_apple_pay.svg'),
+                self::ORDER_ID => $this->getOrder()->getEntityId(),
+                self::LANGUAGE => $this->availableLocale->execute(),
+                self::TERMS_URL => PayUConfigInterface::PAYU_TERMS_URL,
+                self::REPAY_URL => $this->getRepaymentUrl(),
+                self::AMOUNT => (float)$this->getOrder()->getGrandTotal(),
+                self::CURRENCY_CODE => (string)$this->getOrder()->getOrderCurrencyCode(),
+                self::DISPLAY_NAME => $displayName,
+            ],
+        );
+    }
+
+    public function getApplePayConfig(): string
+    {
+        return $this->getApplePayPaymentGatewayConfig();
+    }
+
     private function getGooglePayEnv(): string
     {
         return $this->isSandboxEnv() ? 'TEST' : 'PRODUCTION';
@@ -243,6 +289,22 @@ class PaymentMethods extends Template
         $googleMerchantName = $this->gatewayConfig->getValue('google_merchant_name', $this->_storeManager->getStore()->getId());
 
         return is_string($googleMerchantName) ? trim($googleMerchantName) : '';
+    }
+
+    private function getApplePayDomainName(): string
+    {
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_APPLE_PAY);
+        $domainName = $this->gatewayConfig->getValue('apple_domain_name', $this->_storeManager->getStore()->getId());
+
+        return is_string($domainName) ? trim($domainName) : '';
+    }
+
+    private function getApplePayDisplayName(): string
+    {
+        $this->gatewayConfig->setMethodCode(PayUSupportedMethods::CODE_APPLE_PAY);
+        $displayName = $this->gatewayConfig->getValue('apple_store_display_name', $this->_storeManager->getStore()->getId());
+
+        return is_string($displayName) ? trim($displayName) : '';
     }
 
     private function isSandboxEnv(): bool

@@ -44,10 +44,10 @@ class GetPostPlaceOrderData implements HttpGetActionInterface
         $orderId = (int) $this->request->getParam('id');
 
         if ($orderId === 0) {
-            return [
+            return $result->setData([
                 static::SUCCESS_FIELD => false,
                 'message' => __('Wrong Request')
-            ];
+            ]);
         }
 
         try {
