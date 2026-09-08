@@ -1,3 +1,6 @@
+## 2.2.0
+* Added Apple Pay as a separate payment method
+
 ## 2.1.2
 * Fixed undefined constant in Interceptor (#78)
 
