@@ -1,5 +1,7 @@
 ## 2.2.0
 * Added Apple Pay as a separate payment method
+* Fixed Google Pay
+* Better get redirect url
 
 ## 2.1.2
 * Fixed undefined constant in Interceptor (#78)
