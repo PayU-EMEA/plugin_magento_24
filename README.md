@@ -41,6 +41,7 @@ The module adds these payment methods:
   * **PayU payment** - selection of payment method and redirection a bank or card form
   * **Card payment** - entry of the card number directly on the store's website and payment by card
   * **PayU - Google Pay** - Google Pay payment directly on checkout (without redirecting the customer outside the store)
+  * **PayU - Apple Pay** - Apple Pay payment directly on checkout (without redirecting the customer outside the store)
   * **PayU Installments** - installment payments with a redirect to the PayU installment form.
   * **PayU Klarna** - deferred Klarna payments with a redirect to the Klarna form in PayU.
   * **PayU PayPo** - deferred PayPo payments with a redirect to the PayPo form in PayU.
@@ -142,6 +143,16 @@ Available when the parameter `Test Mode (Sandbox)` is set for `Yes`.
 | Google Pay Merchant ID | Merchant identifier in Google. You need to verify your shop in Google, following the [instructions][ext11]. |
 | Google Merchant Name | Merchant name displayed in Google Pay (should match your Google Pay profile).                               |
 
+### "PayU - Apple Pay" parameters
+
+| Parameter | Description                                                                                                                                             |
+|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Activate the plugin? | Determines whether the payment method will be available in the store on the list of payments.                                                              |
+| Activate repeat payment? | [more information](#repeat-payment)                                                                                                                          |
+| Sort Order | Position of the payment method in the list of payment methods.                                                                                              |
+| Domain name | Domain name registered in Apple, following the [instructions][ext12]. **Important:** the domain must match the checkout page domain, otherwise Apple will reject the payment request. |
+| Store Display Name | Apple Pay display name shown in the payment sheet - a string of up to 64 UTF-8 characters with the canonical name of your store.                            |
+
 ### "PayU - Installments", "PayU - Klarna", "PayU - PayPo", "PayU - PragmaPay", "PayU - Twisto", "PayU - Twisto Pay in 3" payment parameters
 
 | Parameter                           | Description                                                                                 |
@@ -200,6 +211,7 @@ Example presentation of the credit widget
 [ext9]: https://github.com/PayU-EMEA/plugin_magento_23
 [ext10]: CHANGELOG.md
 [ext11]: https://developers.google.com/pay/api/web/guides/test-and-deploy/publish-your-integration#create-your-profile
+[ext12]: https://developers.payu.com/europe/docs/payment-solutions/cards/digital-wallets/apple-pay/#apple-pay-web-with-managed-domains
 
 <!--images:-->
 [img0]: readme_images/methods_en.png

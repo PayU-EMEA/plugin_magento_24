@@ -41,6 +41,7 @@ Moduł dodaje następujące metody płatności:
   * **Płatność PayU** - wybór metody płatności i przekierowanie do banku lub formatkę kartową
   * **Płatność kartą** - wpisanie numeru karty bezpośrednio na stronie sklepu i płatność kartą
   * **PayU - Google Pay** - płatność Google Pay bezpośrednio na stronie checkout (bez przekierowania poza sklep)
+  * **PayU - Apple Pay** - płatność Apple Pay bezpośrednio na stronie checkout (bez przekierowania poza sklep)
   * **PayU Raty** - płatności ratalne z przekierowaniem do formatki ratalnej PayU
   * **PayU Klarna** - odroczone płatności Klarna z przekierowaniem do formatki Klarna w PayU
   * **PayU PayPo** - odroczone płatności PayPo z przekierowaniem do formatki PayPo w PayU
@@ -141,6 +142,16 @@ Dostępne gdy parametr `Tryb testowy (Sandbox)` jest ustawiony na `Tak`.
 | Google Pay Merchant ID              | Identyfikator sprzedawcy w Google. Należy zweryfikować swoją stronę w Google postępując zgodnie z [instrukcją][ext11]. |
 | Google Merchant Name                | Nazwa merchanta wyświetlana w Google Pay (zgodna z profilem Google Pay).                                               |
 
+### Parametry płatności "PayU - Apple Pay"
+
+| Parameter                           | Opis                                                                                                                                                    |
+|--------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Czy włączyć wtyczkę?                | Określa czy metoda płatności będzie dostępna w sklepie na liście płatności.                                                                              |
+| Czy uaktywnić ponowienie płatności? | [więcej informacji](#ponowienie-płatności)                                                                                                               |
+| Pozycja na liście                   | Pozycja metody płatności na liście metod płatności                                                                                                       |
+| Domain name                         | Nazwa domeny zarejestrowana w Apple, zgodnie z [instrukcją][ext12]. **Ważne:** domena musi być zgodna z domeną strony checkout, w przeciwnym razie Apple odrzuci żądanie płatności. |
+| Store Display Name                  | Nazwa sklepu wyświetlana w arkuszu płatności Apple Pay - ciąg do 64 znaków UTF-8 z kanoniczną nazwą sklepu.                                              |
+
 ### Parametry płatności "PayU - Raty",  "PayU - Klarna", "PayU - PayPo", "PayU - PragmaPay", "PayU - Twisto", "PayU - Twisto podziel na 3"
 
 | Parameter                           | Opis                                                                        |
@@ -200,6 +211,7 @@ Przykładowa prezentacja widgetu kredytowego
 [ext9]: https://github.com/PayU-EMEA/plugin_magento_23
 [ext10]: CHANGELOG.md
 [ext11]: https://developers.google.com/pay/api/web/guides/test-and-deploy/publish-your-integration#create-your-profile
+[ext12]: https://developers.payu.com/europe/pl/docs/payment-solutions/cards/digital-wallets/apple-pay/#apple-pay-web-with-managed-domains
 
 <!--images:-->
 [img0]: readme_images/methods_pl.png
