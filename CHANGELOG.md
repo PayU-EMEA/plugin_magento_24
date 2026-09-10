@@ -1,3 +1,6 @@
+## 2.2.1
+* Fixed redirect when pay by card
+
 ## 2.2.0
 * Added Apple Pay as a separate payment method
 * Fixed Google Pay

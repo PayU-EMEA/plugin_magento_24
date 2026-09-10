@@ -141,7 +141,7 @@ define(
                         }
                     )
                     .done(
-                        function (oderId) {
+                        function (orderId) {
                             self.afterPlaceOrder();
                             if (self.redirectAfterPlaceOrder) {
                                 $.getJSON(url.build(`${self.postPlaceOrderData}/id/${orderId}`), function (response) {
