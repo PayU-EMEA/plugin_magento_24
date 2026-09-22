@@ -11,13 +11,8 @@ interface WaitingOrderPaymentInterface
 {
 
     /**
-     * Set order status by status from PayU REST API (REJECTED, PAYMENT_REWIEV)
-     *
-     * @param string $txnId
-     * @param string $payUStatus
-     *
-     * @return void
+     * Set order status by status from PayU REST API
      * @throws CommandException
      */
-    public function execute($txnId, $payUStatus);
+    public function execute(string $txnId): void;
 }

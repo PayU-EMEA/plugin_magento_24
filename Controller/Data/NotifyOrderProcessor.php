@@ -37,8 +37,7 @@ class NotifyOrderProcessor
                 $this->cancelOrderPayment->execute($txnId, $totalAmount);
                 break;
             case \OpenPayuOrderStatus::STATUS_WAITING_FOR_CONFIRMATION:
-            case \OpenPayuOrderStatus::STATUS_REJECTED:
-                $this->waitingOrderPayment->execute($txnId, $status);
+                $this->waitingOrderPayment->execute($txnId);
                 break;
             case \OpenPayuOrderStatus::STATUS_PENDING:
                 break;

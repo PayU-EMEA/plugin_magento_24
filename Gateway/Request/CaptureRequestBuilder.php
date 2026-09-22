@@ -18,7 +18,7 @@ class CaptureRequestBuilder implements BuilderInterface
 
         return [
             'body' => [
-                PayUAbstractClient::ORDER_ID => $payment->getLastTransId()
+                PayUAbstractClient::ORDER_ID => $payment->getAdditionalInformation('completed_order_id')
             ]
         ];
     }
