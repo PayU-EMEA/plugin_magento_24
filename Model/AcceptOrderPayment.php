@@ -44,6 +44,8 @@ class AcceptOrderPayment implements AcceptOrderPaymentInterface
         if ($paymentId !== null) {
             $payment->setTransactionAdditionalInfo('payment_id', $paymentId);
         }
+        $payment->setAdditionalInformation('completed_order_id', $txnId);
+        $payment->setParentTransactionId($txnId);
         $payment->capture();
         $order = $payment->getOrder();
         $eventData = ['order' => $order, 'payment' => $payment];
