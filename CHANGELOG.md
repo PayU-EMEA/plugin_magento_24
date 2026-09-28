@@ -1,3 +1,6 @@
+## 2.2.2
+* Fixed capture transaction for repayment
+
 ## 2.2.1
 * Fixed redirect when pay by card
 
