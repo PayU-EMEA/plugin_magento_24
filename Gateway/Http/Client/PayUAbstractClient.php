@@ -31,10 +31,10 @@ abstract class PayUAbstractClient implements ClientInterface
     public function placeRequest(TransferInterface $transferObject): array
     {
         $clientConfig = $transferObject->getClientConfig();
+        $body = $transferObject->getBody();
 
         try {
             $this->payUConfig->setDefaultConfig($clientConfig[self::CLIENT_CONFIG_TYPE], $clientConfig[self::CLIENT_CONFIG_STORE_ID]);
-            $body = $transferObject->getBody();
 
             return $this->payuApi($body);
         } catch (\Exception $e) {
