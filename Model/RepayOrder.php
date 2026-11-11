@@ -43,8 +43,8 @@ class RepayOrder implements PayURepayOrderInterface
         $this->updatePayment(
             $payment,
             $method,
-            $payUMethod,
             $payUMethodType,
+            $payUMethod,
             $payuBrowser,
             $transactionId
         );
