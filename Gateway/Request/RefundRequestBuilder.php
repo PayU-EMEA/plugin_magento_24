@@ -4,7 +4,6 @@ namespace PayU\PaymentGateway\Gateway\Request;
 
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Sales\Api\Data\TransactionInterface;
 use Magento\Sales\Model\Order\Creditmemo;
 use PayU\PaymentGateway\Gateway\Helper\Requests;
 use PayU\PaymentGateway\Gateway\Http\Client\PayUAbstractClient;
@@ -43,7 +42,7 @@ class RefundRequestBuilder implements BuilderInterface
 
     private function getTxnId(string $transId): string
     {
-        return str_replace('-' . TransactionInterface::TYPE_CAPTURE, '', $transId);
+        return preg_replace('/(-(capture|refund))+$/', '', $transId);
     }
 
     private function getLastCreditMemoComment(Creditmemo $creditMemo, string $orderId): string
