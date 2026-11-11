@@ -59,10 +59,9 @@ class OrderByExtOrderIdResolver implements OrderByExtOrderIdResolverInterface
      */
     private function getIncrementIdFromExtOrderId($extOrderId)
     {
-        list($incrementId, $noTransaction) = explode('_', $extOrderId);
-        unset($noTransaction);
+        $separatorPosition = strrpos($extOrderId, '_');
 
-        return $incrementId;
+        return $separatorPosition === false ? $extOrderId : substr($extOrderId, 0, $separatorPosition);
     }
 
 }
