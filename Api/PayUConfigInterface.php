@@ -82,7 +82,7 @@ interface PayUConfigInterface
     /**
      * Terms url
      */
-    public const PAYU_TERMS_URL = 'http://static.payu.com/sites/terms/files/payu_terms_of_service_single_transaction_pl_pl.pdf';
+    public const PAYU_TERMS_URL = 'https://static.payu.com/sites/terms/files/payu_terms_of_service_single_transaction_pl_pl.pdf';
 
     /**
      * PayU logo static link
