@@ -2,6 +2,8 @@
 
 namespace PayU\PaymentGateway\Model;
 
+use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\Command\CommandPoolInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
@@ -21,12 +23,18 @@ abstract class RepayOrderResolverAbstract implements RepayOrderResolverInterface
     const ORDER_ID = 'order_id';
 
     private CommandPoolInterface $commandPool;
+    private CustomerSession $customerSession;
+    private UrlInterface $urlBuilder;
 
     public function __construct(
-        CommandPoolInterface $commandPool
+        CommandPoolInterface $commandPool,
+        CustomerSession $customerSession,
+        UrlInterface $urlBuilder
     )
     {
         $this->commandPool = $commandPool;
+        $this->customerSession = $customerSession;
+        $this->urlBuilder = $urlBuilder;
     }
 
 
