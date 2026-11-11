@@ -32,10 +32,7 @@ class UpdateRefundStatus implements PayUUpdateRefundStatusInterface
      */
     public function cancel(string $extOrderId): void
     {
-        $orderByIncrementId = $this->extOrderIdResolver->resolve($extOrderId);
-        if (!$orderByIncrementId) {
-            throw new CommandException(__('Order does not exist'));
-        }
+        $orderByIncrementId = $this->getOrder($extOrderId);
         $orderByIncrementId->addCommentToStatusHistory(__('Refund was canceled.'));
         /** @var Creditmemo $creditMemo */
         $creditMemo = $orderByIncrementId->getCreditmemosCollection()->getLastItem();
@@ -50,14 +47,24 @@ class UpdateRefundStatus implements PayUUpdateRefundStatusInterface
      */
     public function addSuccessMessage(string $extOrderId): void
     {
-        $orderByIncrementId = $this->extOrderIdResolver->resolve($extOrderId);
-        if (!$orderByIncrementId) {
-            throw new CommandException(__('Order does not exist'));
-        }
+        $orderByIncrementId = $this->getOrder($extOrderId);
         $orderByIncrementId->addCommentToStatusHistory(__('Refund was finalized.'));
         if ($orderByIncrementId->getTotalRefunded() === $orderByIncrementId->getTotalPaid()) {
             $orderByIncrementId->setState(Order::STATE_CLOSED)->setStatus(Order::STATE_CLOSED);
         }
         $this->orderRepository->save($orderByIncrementId);
+    }
+
+    /**
+     * @throws CommandException
+     */
+    private function getOrder(string $extOrderId): Order
+    {
+        $order = $this->extOrderIdResolver->resolve($extOrderId);
+        if (!$order) {
+            throw new CommandException(__('Order does not exist'));
+        }
+
+        return $order;
     }
 }
