@@ -144,7 +144,7 @@ define(
             getTotalPrice: function () {
                 const totalPrice = this.getCheckoutTotalsData();
 
-                return Number(totalPrice.base_grand_total).toFixed(2);
+                return Number(totalPrice.grand_total).toFixed(2);
             },
 
             getCurrencyCode: function () {
