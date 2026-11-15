@@ -8,7 +8,6 @@ use Magento\Sales\Api\TransactionRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
-use Magento\Framework\DB\Transaction;
 use Magento\Sales\Model\Order\Payment\Transaction as TransactionModel;
 use Magento\Sales\Api\Data\TransactionInterface;
 
@@ -20,16 +19,13 @@ class CancelTransaction implements ObserverInterface
 {
     private TransactionRepositoryInterface $transactionRepository;
     private SearchCriteriaBuilder $searchCriteriaBuilder;
-    private Transaction $transaction;
 
     public function __construct(
         TransactionRepositoryInterface $transactionRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        Transaction $transaction
+        SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
         $this->transactionRepository = $transactionRepository;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->transaction = $transaction;
     }
 
     /**
@@ -43,12 +39,9 @@ class CancelTransaction implements ObserverInterface
         $payment = $observer->getData('payment');
 
         $transactions = $this->getTransactions($order->getEntityId(), $payment->getEntityId());
-        if ($transactions) {
-            foreach ($transactions as $transaction) {
-                $transaction->setIsClosed(1);
-                $this->transaction->addObject($transaction);
-            }
-            $this->transaction->save();
+        foreach ($transactions as $transaction) {
+            $transaction->setIsClosed(1);
+            $order->addRelatedObject($transaction);
         }
     }
 
