@@ -43,7 +43,10 @@ class RefundRequestBuilder implements BuilderInterface
 
     private function getTxnId(string $transId): string
     {
-        return str_replace('-' . TransactionInterface::TYPE_CAPTURE, '', $transId);
+        $suffixes = preg_quote(TransactionInterface::TYPE_CAPTURE, '/')
+            . '|' . preg_quote(TransactionInterface::TYPE_REFUND, '/');
+
+        return preg_replace('/(-(' . $suffixes . '))+$/', '', $transId);
     }
 
     private function getLastCreditMemoComment(Creditmemo $creditMemo, string $orderId): string
