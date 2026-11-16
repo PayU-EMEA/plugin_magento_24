@@ -61,7 +61,30 @@ class GetPayMethods implements PayUGetPayMethodsInterface
         $result = [];
 
         try {
-            $this->payUConfig->setDefaultConfig(PayUSupportedMethods::CODE_GATEWAY);
+            $methodCode = null;
+            foreach ([
+                PayUSupportedMethods::CODE_GATEWAY,
+                PayUSupportedMethods::CODE_CARD,
+                PayUSupportedMethods::CODE_GOOGLE_PAY,
+                PayUSupportedMethods::CODE_APPLE_PAY,
+                PayUSupportedMethods::CODE_INSTALLMENTS,
+                PayUSupportedMethods::CODE_KLARNA,
+                PayUSupportedMethods::CODE_PAYPO,
+                PayUSupportedMethods::CODE_PRAGMA,
+                PayUSupportedMethods::CODE_TWISTO,
+                PayUSupportedMethods::CODE_TWISTO_SLICE,
+            ] as $code) {
+                if ($this->isPayMethodActive($code)) {
+                    $methodCode = $code;
+                    break;
+                }
+            }
+
+            if ($methodCode === null) {
+                return $result;
+            }
+
+            $this->payUConfig->setDefaultConfig($methodCode);
         } catch (\Exception $e) {
             return $result;
         }
