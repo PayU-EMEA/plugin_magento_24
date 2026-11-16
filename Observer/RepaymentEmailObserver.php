@@ -6,6 +6,7 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Sales\Model\Order;
 use PayU\PaymentGateway\Api\PayUConfigInterface;
+use PayU\PaymentGateway\Model\Logger\Logger;
 use PayU\PaymentGateway\Model\PayUSupportedMethods;
 
 /**
@@ -25,17 +26,25 @@ class RepaymentEmailObserver implements ObserverInterface
     private $emailProcessor;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * StatusAssignObserver constructor.
      *
      * @param PayUConfigInterface $payUConfig
      * @param AfterPlaceOrderRepayEmailProcessor $emailProcessor
+     * @param Logger $logger
      */
     public function __construct(
         PayUConfigInterface $payUConfig,
-        AfterPlaceOrderRepayEmailProcessor $emailProcessor
+        AfterPlaceOrderRepayEmailProcessor $emailProcessor,
+        Logger $logger
     ) {
         $this->payUConfig = $payUConfig;
         $this->emailProcessor = $emailProcessor;
+        $this->logger = $logger;
     }
 
     /**
@@ -50,7 +59,11 @@ class RepaymentEmailObserver implements ObserverInterface
             return;
         }
         if ($this->payUConfig->isRepaymentActive($method)) {
-            $this->emailProcessor->process($order);
+            try {
+                $this->emailProcessor->process($order);
+            } catch (\Throwable $e) {
+                $this->logger->critical($e);
+            }
         }
     }
 }
