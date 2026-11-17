@@ -74,7 +74,7 @@ class ConfigProvider implements ConfigProviderInterface
                         'key' => $this->creditWidgetViewModel->getKey(),
                         'excludedPaytypes' => $this->creditWidgetViewModel->getExcludedPaytypes(),
                         'lang' => $this->creditWidgetViewModel->getLanguageCode(),
-                        'currency' => $this->creditWidgetViewModel->getCurrencyCode()
+                        'currencyCode' => $this->creditWidgetViewModel->getCurrencyCode()
                     ],
                     'payMethods' => [
                         PayUSupportedMethods::CODE_INSTALLMENTS => [
