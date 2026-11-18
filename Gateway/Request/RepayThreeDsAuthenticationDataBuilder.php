@@ -51,32 +51,28 @@ class RepayThreeDsAuthenticationDataBuilder implements BuilderInterface
 
             $isBillingAddress = !empty($address) || !empty($postalCode) || !empty($city) || (!empty($countryCode) && strlen($countryCode) === 2);
 
-            if (!empty($name) || $isBillingAddress) {
-                $threeDsAuthentication['cardholder'] = [];
+            $threeDsAuthentication['cardholder'] = [];
 
-                if (!empty($name)) {
-                    $threeDsAuthentication['cardholder']['name'] = mb_substr($name, 0, 50);
-                }
+            $threeDsAuthentication['cardholder']['name'] = mb_substr($name, 0, 50);
 
-                if ($isBillingAddress) {
-                    $threeDsAuthentication['cardholder']['billingAddress'] = [];
-                }
+            if ($isBillingAddress) {
+                $threeDsAuthentication['cardholder']['billingAddress'] = [];
+            }
 
-                if (!empty($countryCode) && strlen($countryCode) === 2) {
-                    $threeDsAuthentication['cardholder']['billingAddress']['countryCode'] = $countryCode;
-                }
+            if (!empty($countryCode) && strlen($countryCode) === 2) {
+                $threeDsAuthentication['cardholder']['billingAddress']['countryCode'] = $countryCode;
+            }
 
-                if (!empty($address)) {
-                    $threeDsAuthentication['cardholder']['billingAddress']['street'] = mb_substr($address, 0, 50);
-                }
+            if (!empty($address)) {
+                $threeDsAuthentication['cardholder']['billingAddress']['street'] = mb_substr($address, 0, 50);
+            }
 
-                if (!empty($city)) {
-                    $threeDsAuthentication['cardholder']['billingAddress']['city'] = mb_substr($city, 0, 50);
-                }
+            if (!empty($city)) {
+                $threeDsAuthentication['cardholder']['billingAddress']['city'] = mb_substr($city, 0, 50);
+            }
 
-                if (!empty($postalCode)) {
-                    $threeDsAuthentication['cardholder']['billingAddress']['postalCode'] = mb_substr($postalCode, 0, 16);
-                }
+            if (!empty($postalCode)) {
+                $threeDsAuthentication['cardholder']['billingAddress']['postalCode'] = mb_substr($postalCode, 0, 16);
             }
 
             if ($payMethodType === PayUConfigInterface::PAYU_CC_TRANSFER_KEY

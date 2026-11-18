@@ -31,8 +31,9 @@ class ProductsListPlugin
 
         $resultHtml = is_string($result) ? $result : (string)$result;
 
-        $widgetBlock = $subject->getLayout()->createBlock(Template::class);
-        $widgetBlock = $widgetBlock->setTemplate('PayU_PaymentGateway::credit_widget/head_script.phtml');
+        $widgetBlock = $subject->getLayout()->createBlock(Template::class, '', [
+            'data' => ['template' => 'PayU_PaymentGateway::credit_widget/head_script.phtml']
+        ]);
         $widgetBlock->setData('creditWidgetViewModel', $this->creditWidgetViewModel);
         $widgetBlock->setData('configKey', 'enable_for_catalog_widgets');
 
@@ -49,8 +50,9 @@ class ProductsListPlugin
 
         $resultHtml = is_string($result) ? $result : (string)$result;
 
-        $widgetBlock = $subject->getLayout()->createBlock(Block::class);
-        $widgetBlock = $widgetBlock->setTemplate('PayU_PaymentGateway::product/credit_widget.phtml');
+        $widgetBlock = $subject->getLayout()->createBlock(Block::class, '', [
+            'data' => ['template' => 'PayU_PaymentGateway::product/credit_widget.phtml']
+        ]);
         $widgetBlock->setData('creditWidgetViewModel', $this->creditWidgetViewModel);
         $widgetBlock->setData('configKey', 'enable_for_catalog_widgets');
         $widgetBlock->setProduct($product);
