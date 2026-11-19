@@ -119,3 +119,4 @@ Order %1 [%2],Zamówienie %1 [%2]
 "and I want to use it for further payments.","i chcę jej używać do kolejnych płatności"
 "https://static.payu.com/sites/terms/files/TERMS_AND_CONDITIONS_OF_PROVIDING_PAYU_SERVICE.pdf","https://static.payu.com/sites/terms/files/REGULAMIN_SWIADCZENIA_USLUGI_PAYU.pdf"
 "An order with payment obligation will be executed after a positive credit decision.","Zamówienie z obowiązkiem zapłaty dojdzie do skutku po pozytywnej decyzji kredytodawcy."
+"Additional PayU payment of %1 received. It is not invoiced, refund it in the PayU panel if it is not intended.","Otrzymano dodatkową płatność PayU w kwocie %1. Nie została zafakturowana, zwróć ją w panelu PayU, jeśli nie była zamierzona."
