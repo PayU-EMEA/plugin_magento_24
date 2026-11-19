@@ -4,11 +4,12 @@ namespace PayU\PaymentGateway\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Magento\Sales\Api\InvoiceRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Invoice;
 use Magento\Framework\Phrase;
 use Magento\Sales\Model\Order\Email\Sender\InvoiceSender;
+use Magento\Sales\Model\ResourceModel\Order\Invoice as InvoiceResource;
+use Magento\SalesSequence\Model\Manager as SequenceManager;
 
 /**
  * Class DataAssignObserver
@@ -22,20 +23,30 @@ class AcceptOrderPaymentInvoice implements ObserverInterface
     private $invoiceSender;
 
     /**
-     * @var InvoiceRepositoryInterface
+     * @var InvoiceResource
      */
-    private $invoiceRepository;
+    private $invoiceResource;
+
+    /**
+     * @var SequenceManager
+     */
+    private $sequenceManager;
 
     /**
      * AcceptOrderPaymentInvoice constructor.
      *
      * @param InvoiceSender $invoiceSender
-     * @param InvoiceRepositoryInterface $invoiceRepository
+     * @param InvoiceResource $invoiceResource
+     * @param SequenceManager $sequenceManager
      */
-    public function __construct(InvoiceSender $invoiceSender, InvoiceRepositoryInterface $invoiceRepository)
-    {
+    public function __construct(
+        InvoiceSender $invoiceSender,
+        InvoiceResource $invoiceResource,
+        SequenceManager $sequenceManager
+    ) {
         $this->invoiceSender = $invoiceSender;
-        $this->invoiceRepository = $invoiceRepository;
+        $this->invoiceResource = $invoiceResource;
+        $this->sequenceManager = $sequenceManager;
     }
 
     /**
@@ -47,8 +58,9 @@ class AcceptOrderPaymentInvoice implements ObserverInterface
         $payment = $observer->getData('payment');
         /** @var Order $order */
         $order = $observer->getData('order');
-        $invoice = $this->getInvoice($payment->getOrder());
-        if ($invoice !== null) {
+        $invoice = $payment->getCreatedInvoice();
+        if ($invoice instanceof Invoice) {
+            $this->assignIncrementId($invoice);
             $this->addInvoiceComment($invoice);
             $order->addStatusHistoryComment($this->getInvoiceComment($invoice))->setIsCustomerNotified(
                 true
@@ -57,23 +69,28 @@ class AcceptOrderPaymentInvoice implements ObserverInterface
     }
 
     /**
-     * Get last generated invoice
+     * Reserve the invoice number, the invoice itself is saved together with the order
      *
-     * @param Order $order
+     * @param Invoice $invoice
      *
-     * @return Invoice|null|\Magento\Framework\DataObject
+     * @return void
      */
-    private function getInvoice(Order $order)
+    private function assignIncrementId(Invoice $invoice)
     {
-        if ($order->hasInvoices()) {
-            return $order->getInvoiceCollection()->getLastItem();
+        if ($invoice->getEntityId() == null && $invoice->getIncrementId() == null) {
+            $store = $invoice->getStore();
+            $storeId = $store->getId();
+            if ($storeId === null) {
+                $storeId = $store->getGroup()->getDefaultStoreId();
+            }
+            $invoice->setIncrementId(
+                $this->sequenceManager->getSequence($invoice->getEntityType(), $storeId)->getNextValue()
+            );
         }
-
-        return null;
     }
 
     /**
-     * Add invoice comment and send email to customer
+     * Add invoice comment and send email to customer once the order is saved
      *
      * @param Invoice $invoice
      *
@@ -83,8 +100,12 @@ class AcceptOrderPaymentInvoice implements ObserverInterface
     {
         $invoice->addComment($this->getInvoiceComment($invoice), true, true);
         $invoice->setEmailSent(true);
-        $this->invoiceRepository->save($invoice);
-        $this->invoiceSender->send($invoice);
+        $this->invoiceResource->addCommitCallback(function () use ($invoice) {
+            // stays registered when the notification fails before the order save opens a transaction
+            if ($invoice->getId() !== null) {
+                $this->invoiceSender->send($invoice);
+            }
+        });
     }
 
     /**

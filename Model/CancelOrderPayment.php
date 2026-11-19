@@ -48,12 +48,12 @@ class CancelOrderPayment implements CancelOrderPaymentInterface
             && !$this->payUConfig->isRepaymentActive($payment->getMethod())
         ) {
             $order->cancel();
-            $this->orderRepository->save($order);
-            $this->updateCouponUsages->execute($order, false);
             $this->eventManager->dispatch(
                 'payu_close_repayment_transaction',
                 ['order' => $payment->getOrder(), 'payment' => $payment]
             );
+            $this->orderRepository->save($order);
+            $this->updateCouponUsages->execute($order, false);
         }
     }
 }
