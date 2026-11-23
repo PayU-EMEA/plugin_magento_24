@@ -12,6 +12,11 @@ use PayU\PaymentGateway\Api\PayUConfigInterface;
 class Info extends ConfigurableInfo
 {
     /**
+     * @var string
+     */
+    protected $_template = 'PayU_PaymentGateway::info/default.phtml';
+
+    /**
      * Readable names of the pay method values known by the module,
      * other values (pay-by-links) are displayed as received from PayU
      */
@@ -38,6 +43,14 @@ class Info extends ConfigurableInfo
         'MC' => 'Mastercard',
         'VS' => 'Visa',
     ];
+
+    /**
+     * PayU logo URL
+     */
+    public function getLogoUrl(): string
+    {
+        return $this->getViewFileUrl(PayUConfigInterface::PAYU_BANK_TRANSFER_LOGO_SRC);
+    }
 
     /**
      * {@inheritdoc}
