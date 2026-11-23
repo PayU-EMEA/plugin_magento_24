@@ -43,7 +43,7 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="PayUPaymentGatewayInfoBlock" type="Magento\Payment\Block\ConfigurableInfo">
+    <virtualType name="PayUPaymentGatewayInfoBlock" type="PayU\PaymentGateway\Block\Info">
         <arguments>
             <argument name="config" xsi:type="object">PayUPaymentGatewayConfig</argument>
         </arguments>
@@ -106,7 +106,7 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="PayUPaymentGatewayCardInfoBlock" type="Magento\Payment\Block\ConfigurableInfo">
+    <virtualType name="PayUPaymentGatewayCardInfoBlock" type="PayU\PaymentGateway\Block\Info">
         <arguments>
             <argument name="config" xsi:type="object">PayUPaymentGatewayCardConfig</argument>
         </arguments>
@@ -165,6 +165,7 @@
             <argument name="transferFactory" xsi:type="object">PayU\PaymentGateway\Gateway\Http\TransferFactory</argument>
             <argument name="client" xsi:type="object">PayU\PaymentGateway\Gateway\Http\Client\PayUGetOrder</argument>
             <argument name="validator" xsi:type="object">PayU\PaymentGateway\Gateway\Validator\Order\ResponseGetValidator</argument>
+            <argument name="handler" xsi:type="object">PayU\PaymentGateway\Gateway\Response\CaptureResponseHandler</argument>
         </arguments>
     </virtualType>
 
