@@ -30,6 +30,21 @@ interface PayUConfigInterface
     public const PAYU_METHOD_TYPE_CODE = 'payu_method_type';
 
     /**
+     * Pay method value of the completed PayU transaction (e.g. "c", "blik", "m")
+     */
+    public const PAYU_TRANSACTION_PAY_METHOD = 'payu_transaction_pay_method';
+
+    /**
+     * Card scheme of the completed PayU card transaction (e.g. "MC", "VS")
+     */
+    public const PAYU_TRANSACTION_CARD_SCHEME = 'payu_transaction_card_scheme';
+
+    /**
+     * Masked card number of the completed PayU card transaction
+     */
+    public const PAYU_TRANSACTION_CARD_NUMBER_MASKED = 'payu_transaction_card_number_masked';
+
+    /**
      * Digital wallet (Google Pay, Apple Pay) authorization token key
      */
     public const PAYU_AUTHORIZATION_CODE = 'payu_authorization_code';

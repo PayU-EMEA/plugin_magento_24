@@ -1,0 +1,13 @@
+<?php
+/**
+ * PayU logo above the standard Magento payment info.
+ *
+ * @var \PayU\PaymentGateway\Block\Info $block
+ */
+?>
+<div class="payu-payment-logo">
+    <img src="<?= $block->escapeUrl($block->getLogoUrl()) ?>"
+         alt="PayU"
+         height="40" />
+</div>
+<?= /* @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Payment::info/default.phtml')) ?>

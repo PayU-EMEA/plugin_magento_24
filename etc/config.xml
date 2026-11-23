@@ -26,6 +26,8 @@
                 <can_use_checkout>1</can_use_checkout>
                 <is_gateway>1</is_gateway>
                 <can_cancel_order_on_payment_wall>0</can_cancel_order_on_payment_wall>
+                <paymentInfoKeys>payu_transaction_pay_method,payu_transaction_card_scheme,payu_transaction_card_number_masked,completed_order_id</paymentInfoKeys>
+                <privateInfoKeys>payu_transaction_card_number_masked,completed_order_id</privateInfoKeys>
             </payu_gateway>
             <payu_gateway_card>
                 <active>0</active>
@@ -44,6 +46,8 @@
                 <can_use_checkout>1</can_use_checkout>
                 <is_gateway>1</is_gateway>
                 <can_cancel_order_on_payment_wall>0</can_cancel_order_on_payment_wall>
+                <paymentInfoKeys>payu_transaction_pay_method,payu_transaction_card_scheme,payu_transaction_card_number_masked,completed_order_id</paymentInfoKeys>
+                <privateInfoKeys>payu_transaction_card_number_masked,completed_order_id</privateInfoKeys>
             </payu_gateway_card>
             <payu_gateway_google_pay>
                 <active>0</active>
